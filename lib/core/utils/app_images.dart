@@ -35,4 +35,14 @@ abstract class AppImages {
       "assets/images/ratingStar.svg";
   static const String penImage =
       "assets/images/Pen.svg";
+  static const String calendarImage =
+      "assets/images/calendar.svg";
+  static const String calendarDoneImage =
+      "assets/images/calender2.svg";
+  static const String visaImage =
+      "assets/images/visa.svg";
+  static const String paypalImage =
+      "assets/images/paypal.svg";
+  static const String applePayImage =
+      "assets/images/applePay.svg";
 }

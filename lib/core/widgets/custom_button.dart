@@ -21,7 +21,7 @@ class CustomButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        onPressed:(){},
+        onPressed:onPressed,
         child:  Text(
           text,
           style:AppStyle.styleMedium16(context).copyWith(

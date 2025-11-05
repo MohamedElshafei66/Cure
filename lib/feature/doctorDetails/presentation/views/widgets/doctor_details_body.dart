@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
 import 'package:round_7_mobile_cure_team3/core/widgets/custom_button.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/about_doctor.dart';
@@ -47,8 +49,13 @@ class _DoctorDetailsBodyState extends State<DoctorDetailsBody> {
           ),
           CustomButton(
             text:AppStrings.bookAppointment,
-            onPressed:(){},
-          )
+            onPressed:(){
+              context.push(AppRoutes.confirmAppointmentScreen);
+            },
+          ),
+          SizedBox(
+            height:29,
+          ),
         ],
       ),
     );

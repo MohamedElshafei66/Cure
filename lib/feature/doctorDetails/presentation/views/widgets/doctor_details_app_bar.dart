@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:svg_image/svg_image.dart';
 import '../../../../../core/utils/app_colors.dart';
-import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
 class DoctorDetailsAppbar extends StatelessWidget implements PreferredSizeWidget {
   final bool showActions;
+  final String  text;
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
   const DoctorDetailsAppbar({
     super.key,
-    this.showActions = false
+    this.showActions = false,
+    required this.text
   });
   @override
   Widget build(BuildContext context) {
@@ -19,13 +21,15 @@ class DoctorDetailsAppbar extends StatelessWidget implements PreferredSizeWidget
       centerTitle:true,
       elevation: 0,
       title:Text(
-          AppStrings.doctorDetailsTitle,
+          text,
           style:AppStyle.styleRegular24(context).copyWith(
               color:AppColors.blackColor
           )
       ),
       leading:IconButton(
-          onPressed:(){},
+          onPressed:(){
+            context.pop();
+          },
           icon:Icon(
             Icons.arrow_back_ios_rounded,
             color:AppColors.textPrimary,

@@ -111,7 +111,7 @@ abstract class AppStrings {
 
   //  Appointment
 
-  static const String selectDay = "Select Date";
+  static const String selectDay = "Select a day";
   static const String selectTime = "Select Time";
   static const String continuePay = "Continue to Pay";
   static const String pay = "Pay";
@@ -120,6 +120,7 @@ abstract class AppStrings {
       "Your appointment with Dr. David Patel is confirmed for June 30, 2023, at 10:00 AM.";
   static const String done="Done";
   static const String editAppointment="Edit your appointment";
+  static const String reschedule = "Reschedule";
 
   // Review
   static const String review = "Review";
@@ -162,11 +163,14 @@ abstract class AppStrings {
   static const String creditDebitCard = "Credit / Debit Card";
   static const String mobileWallet = "Mobile Wallet";
   static const String paypal = "PayPal";
+  static const String creditCard = "Credit Cart";
+  static const String applePay = "Apple Pay";
 
   //  Empty Cards Screen
   static const String emptyCardsTitle = "Payment Method";
   static const String emptyCardsMessage = "Nothing to display here!";
   static const String addYourCard ="Add your cards to make payment easier";
+  static const String addNewCard = "Add new card";
   static const String addCardButton = "Add Card";
 
   //  Add New Card Screen
