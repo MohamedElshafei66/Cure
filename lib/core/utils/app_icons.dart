@@ -32,8 +32,13 @@ abstract class AppIcons {
 
   //  Chat & Communication Icons
   static const String recordVoice = 'assets/icons/record_voice.png';
-  static const String sendChat = 'assets/icons/send_chat.png';
+  static const String sendChat = 'assets/icons/sendChat.png';
   static const String sendDocumentChat = 'assets/icons/send_document_chat.png';
   static const String videoCamera = 'assets/icons/Videocamera.png';
   static const String trashBin = 'assets/icons/trash bin.png';
+  static const String mute = 'assets/icons/mute.png';
+  static const String delete = 'assets/icons/delete.png';
+  static const String call = 'assets/icons/call.png';
+  static const String camera = 'assets/icons/Camera.png';
+  static const String microphone = 'assets/icons/microphone.png';
 }
