@@ -10,6 +10,20 @@ abstract class AppIcons {
   static const String search = 'assets/icons/search.png';
   static const String star = 'assets/icons/star.png';
   static const String notification = 'assets/icons/notification.png';
+  static const String password = 'assets/icons/password.png';
+  static const String person = 'assets/icons/person.png';
+  static const String visa = 'assets/icons/visa.png';
+  static const String masterCaed  = 'assets/icons/mastercard.png';
+  static const String applePay = 'assets/icons/applepay.png';
+  static const String payPal = 'assets/icons/paypal.png';
+  static const String locke = 'assets/icons/Lock.png';
+  static const String logout = 'assets/icons/Logout.png';
+  static const String banknote = 'assets/icons/Banknote.png';
+  static const String chatLine = 'assets/icons/ChatLine.png';
+  static const String arrow = 'assets/icons/arrow.png';
+  static const String circle = 'assets/icons/circle.png';
+  static const String card = 'assets/icons/creditCard.png';
+  static const String favorite = 'assets/icons/Heart.png';
 
   // Bottom Navigation Bar
   static const String chat = 'assets/icons/chat.png';

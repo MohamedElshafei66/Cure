@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
+import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 
 class FaqsScreen extends StatefulWidget {
   const FaqsScreen({super.key});
@@ -11,11 +12,12 @@ class FaqsScreen extends StatefulWidget {
 
 class _FaqsScreenState extends State<FaqsScreen> {
   int? expandedIndex;
+
   final List<Map<String, String>> faqs = [
     {
       'question': 'What is this app used for?',
       'answer':
-          'This app allows you to search for doctors, book appointments, and consult in person easily from your phone.',
+          'This app allows you to search for doctors book appointments, and consult in person easily from your phone.',
     },
     {
       'question': 'Is the app free to use?',
@@ -31,7 +33,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
           'Yes, you can cancel or reschedule from the “My Bookings” section.',
     },
     {
-      'question': 'What payment are supported?',
+      'question': 'What payment methods are supported?',
       'answer':
           'We support multiple payment options including cards and wallets.',
     },
@@ -41,74 +43,78 @@ class _FaqsScreenState extends State<FaqsScreen> {
           'Go to Profile > Settings and update your personal information.',
     },
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      //app Bar
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back_ios_new),
-        title: Text(AppStrings.fAQs),
+        backgroundColor: Colors.white,
+        leading: const Icon(Icons.arrow_back_ios_new),
+        title: Text(
+          AppStrings.fAQs,
+          style: AppStyle.styleRegular24(context),
+        ),
         centerTitle: true,
       ),
+        //
       body: ListView.builder(
         itemCount: faqs.length,
-
         itemBuilder: (_, index) {
           final faq = faqs[index];
           final isExpanded = expandedIndex == index;
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                
+               
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.lightGrey,
+                   
                   ),
+                ],
+              ),
+              child: ExpansionTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-
-                 ExpansionTile(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  collapsedShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  tilePadding: const EdgeInsets.symmetric(horizontal: 15),
-                  childrenPadding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  title: Text(faq["question"]!),
-                  trailing: isExpanded ? Icon(Icons.remove) : Icon(Icons.add),
-                  onExpansionChanged: (value) {
-                    setState(() {
-                      expandedIndex = value ? index : null;
-                    });
-                  },
-                  children: [
-                    Divider(color: Colors.grey.shade300),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100, //
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-
-                      child: Text(faq["answer"]!),
-                    ),
-                  ],
+                collapsedShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              ],
+                tilePadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                childrenPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                title: Text(
+                  faq["question"]!,
+                  style: AppStyle.styleRegular20(context)
+                      
+                ),
+                trailing: Icon(
+                  isExpanded ? Icons.remove : Icons.add,
+                  
+                ),
+                onExpansionChanged: (value) {
+                  setState(() {
+                    expandedIndex = value ? index : null;
+                  });
+                },
+                children: [
+                  Divider(color: AppColors.textHint),
+                  Text(
+                    faq["answer"]!,
+                    style: AppStyle.styleMedium16(context)
+                       
+                  ),
+                   SizedBox(height: 10),
+                ],
+              ),
             ),
           );
         },

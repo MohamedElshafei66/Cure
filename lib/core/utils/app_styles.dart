@@ -74,7 +74,7 @@ abstract class AppStyle{
   }
   static TextStyle styleMedium16 (BuildContext context){
     return  TextStyle(
-        fontSize:getResponsive(context, fontSize: 16),
+        fontSize:getResponsive(context, fontSize: 14),
         fontWeight: FontWeight.w500,
         fontFamily:'Montserrat',
         color:Color(0xff6D7379)
