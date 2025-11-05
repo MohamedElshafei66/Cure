@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:svg_image/svg_image.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_images.dart';
@@ -24,7 +26,9 @@ class ReviewAndRate extends StatelessWidget {
                   )
               ),
               InkWell(
-                onTap:(){},
+                onTap:(){
+                  context.push(AppRoutes.addReviewScreen);
+                },
                 child: Row(
                   children:[
                     SvgImage(

@@ -127,6 +127,9 @@ abstract class AppStrings {
   static const String yourRate = "Your Rate";
   static const String yourReview = "Your review";
   static const String writeYourReview = "Write your review";
+  static const String sendYourReview = "Send your review";
+  static const String thankForReview = "Thanks for your review";
+  static const String backToHome = "Back to Home";
 
   //profile
 
