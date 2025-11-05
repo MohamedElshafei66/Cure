@@ -45,4 +45,6 @@ abstract class AppImages {
       "assets/images/paypal.svg";
   static const String applePayImage =
       "assets/images/applePay.svg";
+  static const String checkImage =
+      "assets/images/checkImage.svg";
 }

@@ -5,6 +5,7 @@ import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/vie
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/doctor_info.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/price_of_doctor.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/select_payment_method.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/success_appointment.dart';
 import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
 class PayAfterScheduleBody extends StatelessWidget {
@@ -52,7 +53,9 @@ class PayAfterScheduleBody extends StatelessWidget {
                       ),
                       CustomButton(
                         text: AppStrings.pay,
-                        onPressed:(){},
+                        onPressed:(){
+                          successAppointment(context);
+                        },
                       ),
                     ],
                   ),
