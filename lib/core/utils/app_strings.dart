@@ -89,6 +89,7 @@ abstract class AppStrings {
   static const String experienceLabel = "experience";
   static const String ratingLabel = "rating";
   static const String reviewsLabel = "reviews";
+  static const String addReview = "add review";
 
   static const String aboutMeTitle = "About me";
   static const String aboutMeDescription =
@@ -103,6 +104,7 @@ abstract class AppStrings {
   static const String reviewTime = "30 min ago";
 
   static const String priceLabel = "Price";
+  static const String hourLabel = r"\hour";
   static const String priceValue = "350\$";
 
   static const String bookAppointment = "Book Appointment";

@@ -19,4 +19,20 @@ abstract class AppImages {
       'assets/images/no_credit-card_screen.png';
    static const String addCardImage =
       'assets/images/add_card.png';
+   static const String chatImage =
+       "assets/images/chat.svg";
+  static const String locationImage =
+      "assets/images/location.svg";
+  static const String patiantsImage =
+      "assets/images/patients.svg";
+  static const String experienceImage =
+      "assets/images/experience.svg";
+  static const String starImage =
+      "assets/images/star.svg";
+  static const String reviewsImage =
+      "assets/images/reviews.svg";
+  static const String ratingStarImage =
+      "assets/images/ratingStar.svg";
+  static const String penImage =
+      "assets/images/Pen.svg";
 }
