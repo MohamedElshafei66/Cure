@@ -21,4 +21,6 @@ abstract class AppImages {
       'assets/images/no_credit-card_screen.png';
    static const String addCardImage =
       'assets/images/add_card.png';
+   static const String doctorImage=
+       "assets/images/doctor_image.png";
 }

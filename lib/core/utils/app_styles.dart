@@ -9,11 +9,12 @@ abstract class AppStyle{
     );
   }
   static TextStyle styleRegular14 (BuildContext context){
+
     return  TextStyle(
         fontSize:getResponsive(context, fontSize: 14),
         fontWeight: FontWeight.w400,
         fontFamily:'georgia',
-        color:Color(0xff05162C)
+        color:Color(0xff99A2AB)
     );
   }
   static TextStyle styleRegular16 (BuildContext context){
@@ -21,7 +22,7 @@ abstract class AppStyle{
         fontSize:getResponsive(context, fontSize: 16),
         fontWeight: FontWeight.w400,
         fontFamily:'georgia',
-        color:Color(0xff000000)
+        color:Color(0xff05162C)
     );
   }
    static TextStyle styleRegularMon16 (BuildContext context){
@@ -82,10 +83,10 @@ abstract class AppStyle{
   }
   static TextStyle styleMedium16 (BuildContext context){
     return  TextStyle(
-        fontSize:getResponsive(context, fontSize: 16),
+        fontSize:getResponsive(context, fontSize: 14),
         fontWeight: FontWeight.w500,
         fontFamily:'Montserrat',
-        color:Color(0xff6D7379)
+        color:Color(0xff05162C)
     );
   }
   static TextStyle styleMonMedium16 (BuildContext context){

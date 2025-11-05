@@ -132,6 +132,9 @@ abstract class AppStrings {
   static const String paymentMethod = "Payment Method";
   static const String settings = "Settings";
   static const String privacyPolicy = "Privacy Policy";
+  static const String fAQs = "FAQs";
+  
+
   static const String logout = "Logout";
 
   //  Edit Profile Screen
