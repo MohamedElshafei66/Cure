@@ -19,18 +19,18 @@ abstract class AppStrings {
   static const String signInWithPhone = "Sign in with your number";
   static const String signInWithGoogle = "Sign in with Google";
   static const String dontHaveAccount = "Don't have an account?";
-  static const String signUp = "Sign up";
+  static const String signUp = " Sign up";
   static const String or = "or";
 
   //  Sign Up Screen
   static const String signUpTitle = "Create New Account";
-  static const String fullName = "Full name";
+  static const String fullName = "Full Name";
   static const String email = "Email";
   static const String phoneNumber = "Enter your number";
   static const String rememberMe = "Remember me";
   static const String signUpWithGoogle = "Sign up with Google";
   static const String alreadyHaveAccount = "Already have an account?";
-  static const String signIn = "Sign in";
+  static const String signIn = " Sign in";
 
   //  OTP Verification Screen
   static const String otpTitle = "OTP Code Verification";

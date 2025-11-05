@@ -10,6 +10,7 @@ abstract class AppColors {
   static const Color yellow = Color(0xFFF9E000);            // star
   static const Color green = Color(0xFF4CAF50);
   static const Color chatRecieve = Color(0xFFBBC1C7);
+  static const Color white = Colors.white;
 
   // Notification Icons
   static const Color backgroundUpcomming = Color(0xFFE8EFF8);

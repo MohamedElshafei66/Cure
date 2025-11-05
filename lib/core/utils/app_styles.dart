@@ -24,6 +24,14 @@ abstract class AppStyle{
         color:Color(0xff000000)
     );
   }
+   static TextStyle styleRegularMon16 (BuildContext context){
+    return  TextStyle(
+        fontSize:getResponsive(context, fontSize: 16),
+        fontWeight: FontWeight.w400,
+        fontFamily:'Montserrat',
+        color:Color(0xff6D7379)
+    );
+  }
   static TextStyle styleRegular20 (BuildContext context){
     return  TextStyle(
         fontSize:getResponsive(context, fontSize: 20),
@@ -78,6 +86,14 @@ abstract class AppStyle{
         fontWeight: FontWeight.w500,
         fontFamily:'Montserrat',
         color:Color(0xff6D7379)
+    );
+  }
+  static TextStyle styleMonMedium16 (BuildContext context){
+    return  TextStyle(
+        fontSize:getResponsive(context, fontSize: 16),
+        fontWeight: FontWeight.w500,
+        fontFamily:'Montserrat',
+        color:Color(0xffFFFFFF)
     );
   }
   static TextStyle styleMedium20 (BuildContext context){
