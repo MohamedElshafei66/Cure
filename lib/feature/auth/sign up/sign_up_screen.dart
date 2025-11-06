@@ -100,7 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SliverToBoxAdapter(
               child: CustomButton(
                 text:AppStrings.signUp,
-                onPressed: () => context.go(AppRoutes.otp_screen),
+                onPressed: () => context.push(AppRoutes.otp_screen),
               ),
             ),
             SliverToBoxAdapter(child: SizedBox(height: 20)),
@@ -122,7 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: CustomTextSpan(
                   text1:AppStrings.alreadyHaveAccount,
                   text2:  AppStrings.signIn,
-                  onTap: () => context.go(AppRoutes.sign_in_screen),
+                  onTap: () => context.push(AppRoutes.sign_in_screen),
                 ),
               ),
             ),

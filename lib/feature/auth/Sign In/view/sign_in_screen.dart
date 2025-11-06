@@ -10,7 +10,6 @@ import 'package:round_7_mobile_cure_team3/core/widgets/custom_button.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_app_bar.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_container.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_or.dart';
-import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_text_span.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/default_phone_field.dart';
 
@@ -55,10 +54,7 @@ class _SignInScreenState extends State<SignInScreen> {
               child: CustomPhoneField(
                 hintText: AppStrings.enterYourNumber,
                 controller: phoneController,
-                validator: (value) {
-
-                },
-
+                validator: (value) {},
               ),
             ),
 
@@ -66,8 +62,7 @@ class _SignInScreenState extends State<SignInScreen> {
             SliverToBoxAdapter(
               child: CustomButton(
                 text: AppStrings.signInWithPhone,
-                onPressed: () => context.go(AppRoutes.notification_screen),
-
+                onPressed: () => context.go(AppRoutes.home),
               ),
             ),
             SliverToBoxAdapter(child: SizedBox(height: 15)),
@@ -88,7 +83,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   text1: AppStrings.dontHaveAccount,
                   text2: AppStrings.signUp,
                   onTap: () {
-                    context.go(AppRoutes.sign_up_screen);
+                    context.push(AppRoutes.sign_up_screen);
                   },
                 ),
               ),

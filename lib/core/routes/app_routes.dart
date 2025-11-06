@@ -2,10 +2,17 @@ import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/view/sign_in_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/sign_up_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
+import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/reschedule_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/chat_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/chats_list_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/pay_after_schedule.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctors_nearby/presentation/doctors_nearby.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/favourites.dart';
+import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
 import 'package:round_7_mobile_cure_team3/feature/notifications/presentation/view/notification_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/onboarding/presentation/view/onboarding_screen.dart';
@@ -44,9 +51,11 @@ abstract class AppRoutes {
   static String search = '/search';
   static String favourites = '/favourites';
   static String map = '/map';
+  static String home = '/home';
 
   static final router = GoRouter(
     routes: [
+      GoRoute(path: home, builder: (context, state) => Home()),
       GoRoute(path: search, builder: (context, state) => SearchScreen()),
       GoRoute(path: favourites, builder: (context, state) => Favourites()),
       GoRoute(path: map, builder: (context, state) => MapScreen()),
@@ -105,6 +114,30 @@ abstract class AppRoutes {
         builder: (context, state) => PrivacyPolicyScreen(),
       ),
       GoRoute(path: faqsSreen, builder: (context, state) => FaqsScreen()),
+      GoRoute(
+        path: AppRoutes.doctorDetailsScreen,
+        builder: (context, state) => DoctorDetailsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.confirmAppointmentScreen,
+        builder: (context, state) => ConfirmAppointmentScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.payAfterScheduleScreen,
+        builder: (context, state) => PayAfterScheduleScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.addReviewScreen,
+        builder: (context, state) => AddReviewScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.bookingScreen,
+        builder: (context, state) => BookingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.rescheduleScreen,
+        builder: (context, state) => RescheduleView(),
+      ),
     ],
   );
 }
