@@ -7,6 +7,8 @@ abstract class AppImages {
       'assets/images/onboarding2.png';
   static const String signInImage =
       'assets/images/signIn.png';
+      static const String signUpImage =
+      'assets/images/sign_up.png';
   static const String homeImage =
       'assets/images/home_image.png';
   static const String yourFavDoctorsImage =
@@ -51,4 +53,6 @@ abstract class AppImages {
       "assets/images/warning.svg";
   static const String warnImage =
       "assets/images/warn.svg";
+   static const String doctorImage=
+       "assets/images/doctor_image.png";
 }

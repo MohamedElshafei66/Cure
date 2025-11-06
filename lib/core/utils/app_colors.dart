@@ -19,6 +19,8 @@ abstract class AppColors {
   static const Color greyColor = Color(0xff4B5563);
   static const Color blackColor48 = Color(0xff33384B);
 
+  static const Color white = Colors.white;
+
   // Notification Icons
   static const Color backgroundUpcomming = Color(0xFFE8EFF8);
   static const Color backgroundComplete = Color(0xFFEDF7EE);
