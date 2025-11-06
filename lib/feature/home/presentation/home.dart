@@ -36,31 +36,20 @@ class _HomeState extends State<Home> {
       {'image': AppIcons.gastroenterologist, 'text': 'Gastroenterologist'},
     ];
 
-    final List<BottomNavigationBarItem> bottomNavBarItems = [
-      BottomNavigationBarItem(icon: Image.asset(AppIcons.home), label: 'Home'),
-      BottomNavigationBarItem(
-        icon: Image.asset(AppIcons.booking),
-        label: 'Booking',
-      ),
-      BottomNavigationBarItem(icon: Image.asset(AppIcons.chat), label: 'Chat'),
-      BottomNavigationBarItem(
-        icon: Image.asset(AppIcons.profile),
-        label: 'profile',
-      ),
-    ];
+    // final List<BottomNavigationBarItem> bottomNavBarItems = [
+    //   BottomNavigationBarItem(icon: Image.asset(AppIcons.home), label: 'Home'),
+    //   BottomNavigationBarItem(
+    //     icon: Image.asset(AppIcons.booking),
+    //     label: 'Booking',
+    //   ),
+    //   BottomNavigationBarItem(icon: Image.asset(AppIcons.chat), label: 'Chat'),
+    //   BottomNavigationBarItem(
+    //     icon: Image.asset(AppIcons.profile),
+    //     label: 'profile',
+    //   ),
+    // ];
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          showUnselectedLabels: true,
-          enableFeedback: true,
-          items: bottomNavBarItems,
-          currentIndex: 0,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: AppColors.grey,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-        ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
@@ -122,16 +111,21 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border(
-                            left: BorderSide(color: AppColors.grey, width: 1),
+                      InkWell(
+                        onTap: () {
+                          context.push(AppRoutes.notification_screen);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border(
+                              left: BorderSide(color: AppColors.grey, width: 1),
+                            ),
                           ),
+                          child: Image.asset(AppIcons.notification),
                         ),
-                        child: Image.asset(AppIcons.notification),
                       ),
                     ],
                   ),

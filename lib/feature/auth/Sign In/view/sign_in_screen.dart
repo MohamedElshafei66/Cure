@@ -62,7 +62,7 @@ class _SignInScreenState extends State<SignInScreen> {
             SliverToBoxAdapter(
               child: CustomButton(
                 text: AppStrings.signInWithPhone,
-                onPressed: () => context.go(AppRoutes.home),
+                onPressed: () => context.go(AppRoutes.mainLayout),
               ),
             ),
             SliverToBoxAdapter(child: SizedBox(height: 15)),

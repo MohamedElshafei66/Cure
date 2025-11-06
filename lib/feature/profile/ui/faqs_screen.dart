@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
@@ -51,14 +52,14 @@ class _FaqsScreenState extends State<FaqsScreen> {
       //app Bar
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: const Icon(Icons.arrow_back_ios_new),
-        title: Text(
-          AppStrings.fAQs,
-          style: AppStyle.styleRegular24(context),
+        leading: InkWell(
+          onTap: () => context.pop(),
+          child: const Icon(Icons.arrow_back_ios_new),
         ),
+        title: Text(AppStrings.fAQs, style: AppStyle.styleRegular24(context)),
         centerTitle: true,
       ),
-        //
+      //
       body: ListView.builder(
         itemCount: faqs.length,
         itemBuilder: (_, index) {
@@ -70,15 +71,8 @@ class _FaqsScreenState extends State<FaqsScreen> {
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                
-               
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.lightGrey,
-                   
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: AppColors.lightGrey)],
               ),
               child: ExpansionTile(
                 shape: RoundedRectangleBorder(
@@ -87,19 +81,19 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 collapsedShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                tilePadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                childrenPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                tilePadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                childrenPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 title: Text(
                   faq["question"]!,
-                  style: AppStyle.styleRegular20(context)
-                      
+                  style: AppStyle.styleRegular20(context),
                 ),
-                trailing: Icon(
-                  isExpanded ? Icons.remove : Icons.add,
-                  
-                ),
+                trailing: Icon(isExpanded ? Icons.remove : Icons.add),
                 onExpansionChanged: (value) {
                   setState(() {
                     expandedIndex = value ? index : null;
@@ -107,12 +101,8 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 },
                 children: [
                   Divider(color: AppColors.textHint),
-                  Text(
-                    faq["answer"]!,
-                    style: AppStyle.styleMedium16(context)
-                       
-                  ),
-                   SizedBox(height: 10),
+                  Text(faq["answer"]!, style: AppStyle.styleMedium16(context)),
+                  SizedBox(height: 10),
                 ],
               ),
             ),

@@ -69,7 +69,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     style: AppStyle.styleRegular16(context),
                   ),
                 ),
-                Flexible(
+                FittedBox(
+                  fit: BoxFit.fill,
                   child: TextButton(
                     onPressed: () {
                       context.push(AppRoutes.map);

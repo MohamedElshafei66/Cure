@@ -17,14 +17,17 @@ import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
 import 'package:round_7_mobile_cure_team3/feature/notifications/presentation/view/notification_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/faqs_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/ui/password_managment.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_second_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_third_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/privacy_policy_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_edit_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/setting_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/search_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/splash/splash_screen.dart';
+import 'package:round_7_mobile_cure_team3/main_layout.dart';
 
 abstract class AppRoutes {
   static String doctorDetailsScreen = "/doctorDetailsScreen";
@@ -52,9 +55,21 @@ abstract class AppRoutes {
   static String favourites = '/favourites';
   static String map = '/map';
   static String home = '/home';
+  static String mainLayout = '/main_layout';
+  static String passwordManagement = '/manage_password';
+  static String profileEdit = '/profile_edit';
 
   static final router = GoRouter(
     routes: [
+      GoRoute(
+        path: passwordManagement,
+        builder: (context, state) => PasswordManagment(),
+      ),
+      GoRoute(
+        path: profileEdit,
+        builder: (context, state) => ProfileEditScreen(),
+      ),
+      GoRoute(path: mainLayout, builder: (context, state) => MainLayout()),
       GoRoute(path: home, builder: (context, state) => Home()),
       GoRoute(path: search, builder: (context, state) => SearchScreen()),
       GoRoute(path: favourites, builder: (context, state) => Favourites()),
