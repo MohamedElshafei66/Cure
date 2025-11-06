@@ -108,6 +108,10 @@ abstract class AppStrings {
   static const String priceValue = "350\$";
 
   static const String bookAppointment = "Book Appointment";
+  static const String noBooking = "No bookings for this day";
+  static const String cancelBooking = "Cancellation must be made at least 24 hours in advance to receive a refund";
+  static const String areYouSure = "Are you sure?";
+  static const String yesCancel = "Yes,cancel";
 
   //  Appointment
 
@@ -116,11 +120,17 @@ abstract class AppStrings {
   static const String continuePay = "Continue to Pay";
   static const String pay = "Pay";
   static const String congratulations = "Congratulations!";
+  static const String warning = "Warning!";
   static const String congratulationsDescription =
       "Your appointment with Dr. David Patel is confirmed for June 30, 2023, at 10:00 AM.";
   static const String done="Done";
   static const String editAppointment="Edit your appointment";
   static const String reschedule = "Reschedule";
+  static const String booking = "My Booking";
+  static const String cancel = "Cancel";
+  static const String feedBack = "Feedback";
+  static const String support = "Support";
+  static const String bookAgain = "Book Again";
 
   // Review
   static const String review = "Review";
