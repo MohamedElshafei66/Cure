@@ -67,6 +67,7 @@ abstract class AppStrings {
       "You have successfully booked your appointment with Dr. Emily Walker.";
   static const String appointmentConcelled =
       "You have successfully cancelled your appointment with Dr. David Patel.";
+  static const String yourAppointment = "Your Appointment";
 
   //  Search
   static const String searchAppBar = "Search";
@@ -131,6 +132,7 @@ abstract class AppStrings {
   static const String feedBack = "Feedback";
   static const String support = "Support";
   static const String bookAgain = "Book Again";
+  static const String upComing = "Upcoming";
 
   // Review
   static const String review = "Review";

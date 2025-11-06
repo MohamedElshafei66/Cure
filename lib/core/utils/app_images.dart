@@ -49,4 +49,6 @@ abstract class AppImages {
       "assets/images/checkImage.svg";
   static const String warningImage =
       "assets/images/warning.svg";
+  static const String warnImage =
+      "assets/images/warn.svg";
 }

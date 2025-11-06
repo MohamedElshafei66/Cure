@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/widgets/cancel_booking.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_strings.dart';
@@ -34,7 +36,9 @@ Widget bookingButtons(String status,BuildContext context) {
           ),
           Expanded(
             child: MaterialButton(
-              onPressed:(){},
+              onPressed:(){
+                context.push(AppRoutes.rescheduleScreen);
+              },
               color:AppColors.primary,
               shape:OutlineInputBorder(
                   borderSide:BorderSide(

@@ -9,6 +9,7 @@ abstract class AppColors {
   static const Color red = Color(0xFFFC4B4E);
   static const Color yellow = Color(0xFFF9E000);
   static const Color orange = Color(0xffFFA726);
+  static const Color orangeE9 = Color(0xffFFF6E9);
   static const Color green = Color(0xFF4CAF50);
   static const Color chatRecieve = Color(0xFFBBC1C7);
   static const Color blackColor = Color(0xff000000);

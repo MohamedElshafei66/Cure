@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
+import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/reschedule_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
@@ -11,6 +12,8 @@ abstract class AppRoutes{
   static String payAfterScheduleScreen = "/payAfterScheduleScreen";
   static String addReviewScreen = "/addReviewScreen";
   static String bookingScreen = "/bookingScreen";
+  static String rescheduleScreen = "/rescheduleScreen";
+
   static final router = GoRouter(
     routes: [
       GoRoute(
@@ -32,6 +35,10 @@ abstract class AppRoutes{
       GoRoute(
         path:AppRoutes.bookingScreen,
         builder: (context, state) => BookingScreen(),
+      ),
+      GoRoute(
+        path:AppRoutes.rescheduleScreen,
+        builder: (context, state) => RescheduleView(),
       ),
 
     ],
