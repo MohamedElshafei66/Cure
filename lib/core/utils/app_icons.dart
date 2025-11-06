@@ -1,6 +1,7 @@
 abstract class AppIcons {
   //  General Icons
   static const String heart = 'assets/icons/Heart.svg';
+  static const String heartPng = 'assets/icons/Heart.png';
   static const String location = 'assets/icons/Location.png';
   static const String messages = 'assets/icons/messages.png';
   static const String patients = 'assets/icons/patients.png';
@@ -10,11 +11,15 @@ abstract class AppIcons {
   static const String search = 'assets/icons/search.png';
   static const String star = 'assets/icons/star.png';
   static const String notification = 'assets/icons/notification.png';
+  static const String clock = 'assets/icons/clock.png';
+  static const String favourite = 'assets/icons/Favorite.png';
+  static const String arrowBackPng = 'assets/icons/back_arrow.png';
 
   // Bottom Navigation Bar
   static const String chat = 'assets/icons/chat.png';
   static const String booking = 'assets/icons/booking.png';
   static const String home = 'assets/icons/Home.png';
+  static const String profile = 'assets/icons/Profile.png';
 
   //  Specialties Icons
   static const String cardiologist = 'assets/icons/cardiologist.png';
@@ -29,6 +34,8 @@ abstract class AppIcons {
   static const String orthopedic = 'assets/icons/Orthopedic.png';
   static const String psychiatrist = 'assets/icons/Psychiatrist.png';
   static const String pulmonologist = 'assets/icons/pulmonologist.png';
+  static const String generalPractitioner =
+      'assets/icons/general_practitioner.png';
 
   //  Chat & Communication Icons
   static const String recordVoice = 'assets/icons/record_voice.png';
