@@ -88,7 +88,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   text1: AppStrings.dontHaveAccount,
                   text2: AppStrings.signUp,
                   onTap: () {
-                    context.go(AppRoutes.sign_up_screen);
+                    context.push(AppRoutes.sign_up_screen);
                   },
                 ),
               ),
