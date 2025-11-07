@@ -16,6 +16,7 @@ import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
 import 'package:round_7_mobile_cure_team3/feature/notifications/presentation/view/notification_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/onboarding/presentation/view/onboarding_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/ui/add_card_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/faqs_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/password_managment.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_screen.dart';
@@ -58,6 +59,7 @@ abstract class AppRoutes {
   static String mainLayout = '/main_layout';
   static String passwordManagement = '/manage_password';
   static String profileEdit = '/profile_edit';
+  static String addCard = '/addCard';
 
   static final router = GoRouter(
     routes: [
@@ -110,11 +112,15 @@ abstract class AppRoutes {
       GoRoute(path: chatScreen, builder: (context, state) => ChatScreen()),
       GoRoute(
         path: paymentMethodSecondScreen,
-        builder: (context, state) => PaymentMethodSecondScreen(),
-      ),
-      GoRoute(
+        builder: (context, state) => PaymentMethodSecondScreen(),),
+        GoRoute(
         path: paymentMethodScreen,
         builder: (context, state) => PaymentMethodScreen(),
+      ),
+      
+      GoRoute(
+        path: addCard,
+        builder: (context, state) => AddCardScreen(),
       ),
       GoRoute(
         path: settingScreen,

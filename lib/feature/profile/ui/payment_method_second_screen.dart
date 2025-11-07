@@ -47,7 +47,7 @@ class PaymentMethodSecondScreen extends StatelessWidget {
             CustomButton(
               text: 'Add Card',
               onPressed: () {
-                context.push(AppRoutes.paymentMethodThirdScreen);
+                context.push(AppRoutes.addCard);
               },
             ),
             Gap(50),

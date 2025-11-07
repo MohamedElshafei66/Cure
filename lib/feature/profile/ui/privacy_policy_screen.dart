@@ -24,8 +24,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
+      body: 
+         Padding(
           padding: const EdgeInsets.all(20.0),
 
           child: Column(
@@ -89,7 +89,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      
     );
   }
 }

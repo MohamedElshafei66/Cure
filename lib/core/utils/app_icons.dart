@@ -14,6 +14,7 @@ abstract class AppIcons {
   static const String clock = 'assets/icons/clock.png';
   static const String favourite = 'assets/icons/Favorite.png';
   static const String arrowBackPng = 'assets/icons/back_arrow.png';
+ static const String eyelash = 'assets/images/eyelash.png';
 
   static const String backArrow = 'assets/icons/back_arrow.png';
   static const String arrowLeft = 'assets/icons/arrow_left.png';
