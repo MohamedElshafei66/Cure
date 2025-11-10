@@ -17,42 +17,37 @@ class ChatsListScreen extends StatefulWidget {
 
 class _ChatsListScreenState extends State<ChatsListScreen> {
   List<String> chatTypes = ["All", "Unread", "Favorite"];
-
   bool isSelectionMode = false;
+  int selectedTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
         title: isSelectionMode
             ? null
             : Text(
-                AppStrings.chatTitle,
-                style: AppStyle.styleRegular24(context),
-              ),
+          AppStrings.chatTitle,
+          style: AppStyle.styleRegular24(context),
+        ),
         actions: isSelectionMode
             ? [
-                IconButton(
-                  onPressed: () {},
-                  icon: Image.asset(AppIcons.trashBin),
-                ),
-                IconButton(onPressed: () {}, icon: Image.asset(AppIcons.pin)),
-                IconButton(onPressed: () {}, icon: Image.asset(AppIcons.mute)),
-                IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
-              ]
+          IconButton(onPressed: () {}, icon: Image.asset(AppIcons.trashBin)),
+          IconButton(onPressed: () {}, icon: Image.asset(AppIcons.pin)),
+          IconButton(onPressed: () {}, icon: Image.asset(AppIcons.mute)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+        ]
             : [Icon(Icons.more_vert)],
         leading: isSelectionMode
             ? GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isSelectionMode = false;
-                  });
-                },
-                child: Icon(Icons.close),
-              )
+          onTap: () {
+            setState(() {
+              isSelectionMode = false;
+            });
+          },
+          child: Icon(Icons.close),
+        )
             : null,
       ),
       body: Padding(
@@ -80,16 +75,38 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
               height: 60,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
+                itemCount: chatTypes.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(
-                      chatTypes[index],
-                      style: AppStyle.styleRegular16(context),
+                  bool isSelected = selectedTabIndex == index;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedTabIndex = index;
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.lightGrey,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Center(
+                        child: Text(
+                          chatTypes[index],
+                          style: AppStyle.styleRegular16(context).copyWith(
+                            color: isSelected ? Colors.white : Colors.black,
+                            fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 },
-                itemCount: 3,
               ),
             ),
             Expanded(
@@ -104,7 +121,6 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                     },
                     onTap: () {
                       GoRouter.of(context).push(AppRoutes.chatScreen);
-                      // context.go(AppRoutes.chatScreen);
                     },
                     child: ChatCard(
                       doctorName: AppStrings.doctorName,
@@ -113,7 +129,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                   );
                 },
               ),
-            ),
+            )
           ],
         ),
       ),
