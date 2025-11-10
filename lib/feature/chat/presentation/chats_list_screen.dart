@@ -9,43 +9,46 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/core/widgets/chat_card.dart';
 
 class ChatsListScreen extends StatefulWidget {
-   ChatsListScreen({super.key});
+  ChatsListScreen({super.key});
 
   @override
   State<ChatsListScreen> createState() => _ChatsListScreenState();
 }
 
 class _ChatsListScreenState extends State<ChatsListScreen> {
-  List<String> chatTypes=[
-    "All",
-    "Unread",
-    "Favorite"
-  ];
-
-  bool isSelectionMode =false;
+  List<String> chatTypes = ["All", "Unread", "Favorite"];
+  bool isSelectionMode = false;
+  int selectedTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),
-        title: isSelectionMode?null:Text(
+        title: isSelectionMode
+            ? null
+            : Text(
           AppStrings.chatTitle,
           style: AppStyle.styleRegular24(context),
         ),
-        actions:isSelectionMode?[
-          IconButton(onPressed: (){}, icon: Image.asset(AppIcons.trashBin)),
-          IconButton(onPressed: (){}, icon: Image.asset(AppIcons.pin)),
-          IconButton(onPressed: (){}, icon: Image.asset(AppIcons.mute)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.more_vert)),
-        ]: [Icon(Icons.more_vert)],
-        leading: isSelectionMode?GestureDetector(
-            onTap: () {
-              setState(() {
-                isSelectionMode=false;
-              });
-            },
-            child: Icon(Icons.close,)):null,
+        actions: isSelectionMode
+            ? [
+          IconButton(onPressed: () {}, icon: Image.asset(AppIcons.trashBin)),
+          IconButton(onPressed: () {}, icon: Image.asset(AppIcons.pin)),
+          IconButton(onPressed: () {}, icon: Image.asset(AppIcons.mute)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+        ]
+            : [Icon(Icons.more_vert)],
+        leading: isSelectionMode
+            ? GestureDetector(
+          onTap: () {
+            setState(() {
+              isSelectionMode = false;
+            });
+          },
+          child: Icon(Icons.close),
+        )
+            : null,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -66,40 +69,66 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                   borderRadius: BorderRadius.circular(24),
                   borderSide: BorderSide(color: Colors.transparent),
                 ),
-
               ),
             ),
             SizedBox(
               height: 60,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
+                itemCount: chatTypes.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(chatTypes[index],style: AppStyle.styleRegular16(context),),
+                  bool isSelected = selectedTabIndex == index;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedTabIndex = index;
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.lightGrey,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Center(
+                        child: Text(
+                          chatTypes[index],
+                          style: AppStyle.styleRegular16(context).copyWith(
+                            color: isSelected ? Colors.white : Colors.black,
+                            fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
                   );
                 },
-                itemCount: 3,
-
               ),
             ),
             Expanded(
               child: ListView.builder(
-
-                  itemCount: 3,
-                  itemBuilder:(context, index) {
-                    return GestureDetector(
-                        onLongPress: () {
-                          setState(() {
-                            isSelectionMode=true;
-                          });
-                        },
-                        onTap: () {
-                          GoRouter.of(context).push(AppRoutes.chatScreen);
-                        // context.go(AppRoutes.chatScreen);
-                        },
-                        child: ChatCard(doctorName: AppStrings.doctorName,doctorImage: AppImages.doctorImage,));
-                  }, ),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onLongPress: () {
+                      setState(() {
+                        isSelectionMode = true;
+                      });
+                    },
+                    onTap: () {
+                      GoRouter.of(context).push(AppRoutes.chatScreen);
+                    },
+                    child: ChatCard(
+                      doctorName: AppStrings.doctorName,
+                      doctorImage: AppImages.doctorImage,
+                    ),
+                  );
+                },
+              ),
             )
           ],
         ),
