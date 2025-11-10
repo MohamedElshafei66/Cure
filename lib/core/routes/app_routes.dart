@@ -4,6 +4,7 @@ import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_scre
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/sign_up_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/reschedule_view.dart';
+import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/widgets/doctor_details.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/chat_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/chats_list_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
@@ -78,7 +79,7 @@ abstract class AppRoutes {
       GoRoute(path: search, builder: (context, state) => SearchScreen()),
       GoRoute(path: favourites, builder: (context, state) => Favourites()),
       GoRoute(path: map, builder: (context, state) => MapScreen()),
-      GoRoute(path: '/', builder: (context, state) => SplashScreen()),
+      GoRoute(path: '/', builder: (context, state) => DoctorDetailsScreen()),
       GoRoute(
         path: doctorsNearby,
         builder: (context, state) => DoctorsNearby(),
