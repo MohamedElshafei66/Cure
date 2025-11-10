@@ -22,7 +22,9 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,67 +35,69 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Image.asset(
-                AppImages.signInImage,
-                width: 200,
-                height: 200,
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 25)),
-            SliverToBoxAdapter(
-              child: Text(
-                textAlign: TextAlign.left,
-                AppStrings.enterPhoneNumber,
-                style: AppStyle.styleRegular24(context),
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 25)),
-            SliverToBoxAdapter(
-              child: CustomPhoneField(
-                hintText: AppStrings.enterYourNumber,
-                controller: phoneController,
-                validator: (value) {
-
-                },
-
-              ),
-            ),
-
-            SliverToBoxAdapter(child: SizedBox(height: 15)),
-            SliverToBoxAdapter(
-              child: CustomButton(
-                text: AppStrings.signInWithPhone,
-                onPressed: () => context.go(AppRoutes.notification_screen),
-
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 15)),
-            SliverToBoxAdapter(child: CustomOr()),
-            SliverToBoxAdapter(child: SizedBox(height: 15)),
-            SliverToBoxAdapter(
-              child: CustomContainer(
-                iconPath: AppIcons.google,
-                text: AppStrings.signInWithGoogle,
-                onTap: () {},
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 25)),
-
-            SliverToBoxAdapter(
-              child: Center(
-                child: CustomTextSpan(
-                  text1: AppStrings.dontHaveAccount,
-                  text2: AppStrings.signUp,
-                  onTap: () {
-                    context.go(AppRoutes.sign_up_screen);
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Image.asset(
+                  AppImages.signInImage,
+                  width: 200,
+                  height: 200,
+                ),
+                SizedBox(height: 25),
+                Text(
+                  textAlign: TextAlign.left,
+                  AppStrings.enterPhoneNumber,
+                  style: AppStyle.styleRegular24(context),
+                ),
+                SizedBox(height: 25),
+                CustomPhoneField(
+                  hintText: AppStrings.enterYourNumber,
+                  controller: phoneController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your phone number';
+                    }
+                    if (!RegExp(r'^\d+$').hasMatch(value)) {
+                      return 'Only numbers are allowed';
+                    }
+                    if (value.length < 10) {
+                      return 'Phone number must be at least 10 digits';
+                    }
+                    return null;
                   },
                 ),
-              ),
+                SizedBox(height: 15),
+                CustomButton(
+                  text: AppStrings.signInWithPhone,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      context.go(AppRoutes.notification_screen);
+                    }
+                  },
+                ),
+                SizedBox(height: 15),
+                CustomOr(),
+                SizedBox(height: 15),
+                CustomContainer(
+                  iconPath: AppIcons.google,
+                  text: AppStrings.signInWithGoogle,
+                  onTap: () {},
+                ),
+                SizedBox(height: 25),
+                Center(
+                  child: CustomTextSpan(
+                    text1: AppStrings.dontHaveAccount,
+                    text2: AppStrings.signUp,
+                    onTap: () {
+                      context.go(AppRoutes.sign_up_screen);
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

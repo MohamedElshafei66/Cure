@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 
@@ -23,6 +24,11 @@ class CustomPhoneField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: TextFormField(
         controller: controller,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(11),
+        
+        ],
+
         keyboardType: TextInputType.phone,
         validator: validator,
         decoration: InputDecoration(

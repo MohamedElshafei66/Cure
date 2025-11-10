@@ -24,109 +24,105 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-   final TextEditingController phoneController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(preferredSize: Size.fromHeight(60),
-      child: CustomAppBar()),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: CustomAppBar(),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: SizedBox(height: 15)),
-
-            SliverToBoxAdapter(child: Image.asset(AppImages.signUpImage,height: 60,width: 60, )),
-            SliverToBoxAdapter(child: SizedBox(height: 15)),
-
-            SliverToBoxAdapter(
-              child: Text(
-                textAlign: TextAlign.center,
-                AppStrings.signUpTitle,
-                style: AppStyle.styleRegular32( context),
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 25)),
-
-            SliverToBoxAdapter(
-              child: CustomTextFormFeild(
-                iconpath: AppIcons.fullName,
-                hintText:AppStrings.fullName,
-                keyboardType: TextInputType.name,
-                validator: (value) {
-
-                },
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: CustomTextFormFeild(
-                iconpath: AppIcons.email,
-                hintText: AppStrings.email,
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-
-                },
-              ),
-            ),
-
-            SliverToBoxAdapter(
-              child: CustomPhoneField(
-                hintText: AppStrings.enterYourNumber,
-                controller: phoneController,
-                validator: (value) {
-
-                },
-              )
-              ),
-
-
-            // SliverToBoxAdapter(
-            //   child: CustomTextFormFeild(
-            //     iconpath: CupertinoIcons.lock,
-            //     hintText: "Password",
-            //     keyboardType: TextInputType.visiblePassword,
-            //     validator: (value) {
-            //       if (value == null || value.isEmpty) {
-            //         return "Email is required";
-            //       }
-            //       return null;
-            //     },
-            //   ),
-            // ),
-
-            SliverToBoxAdapter(child: Center(child: RemmberMe())),
-            SliverToBoxAdapter(child: SizedBox(height: 20)),
-            SliverToBoxAdapter(
-              child: CustomButton(
-                text:AppStrings.signUp,
-                onPressed: () => context.go(AppRoutes.otp_screen),
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-            SliverToBoxAdapter(child: CustomOr()),
-            SliverToBoxAdapter(child: SizedBox(height: 20)),
-             SliverToBoxAdapter(
-              child: CustomContainer(
-                iconPath: AppIcons.google,
-                text: AppStrings.signInWithGoogle,
-                onTap: () {
-
-                },
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 20)),
-            SliverToBoxAdapter(
-              child: Center(
-                child: CustomTextSpan(
-                  text1:AppStrings.alreadyHaveAccount,
-                  text2:  AppStrings.signIn,
-                  onTap: () => context.go(AppRoutes.sign_in_screen),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(height: 15),
+                Image.asset(AppImages.signUpImage, height: 60, width: 60),
+                SizedBox(height: 15),
+                Text(
+                  textAlign: TextAlign.center,
+                  AppStrings.signUpTitle,
+                  style: AppStyle.styleRegular32(context),
                 ),
-              ),
+                SizedBox(height: 25),
+                CustomTextFormFeild(
+                  iconpath: AppIcons.fullName,
+                  hintText: AppStrings.fullName,
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your full name';
+                    }
+                    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                      return 'Name can only contain letters';
+                    }
+                    return null;
+                  },
+                ),
+                CustomTextFormFeild(
+                  iconpath: AppIcons.email,
+                  hintText: AppStrings.email,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!RegExp(
+                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                    ).hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+                CustomPhoneField(
+                  hintText: AppStrings.enterYourNumber,
+                  controller: phoneController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your phone number';
+                    }
+                    if (!RegExp(r'^\d{10,11}$').hasMatch(value)) {
+                      return 'Please enter a valid phone number';
+                    }
+                    return null;
+                  },
+                ),
+                Center(child: RemmberMe()),
+                SizedBox(height: 20),
+                CustomButton(
+                  text: AppStrings.signUp,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      context.go(AppRoutes.otp_screen);
+                    }
+                  },
+                ),
+                SizedBox(height: 20),
+                CustomOr(),
+                SizedBox(height: 20),
+                CustomContainer(
+                  iconPath: AppIcons.google,
+                  text: AppStrings.signInWithGoogle,
+                  onTap: () {},
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: CustomTextSpan(
+                    text1: AppStrings.alreadyHaveAccount,
+                    text2: AppStrings.signIn,
+                    onTap: () => context.go(AppRoutes.sign_in_screen),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -31,7 +31,7 @@ abstract class AppRoutes {
   static String chatsListScreen = "/chats_list_screen";
   static String chatScreen = "/chatScreen";
   static final router = GoRouter(
-    initialLocation: profileScreen,
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: '/',
