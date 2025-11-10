@@ -52,7 +52,7 @@ class _MainLayoutState extends State<MainLayout> {
     ];
 
     return Scaffold(
-      body: screens[selectedIndex],
+      body: IndexedStack(index: selectedIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (value) {
           setState(() {
