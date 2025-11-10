@@ -1,6 +1,7 @@
 abstract class AppIcons {
   //  General Icons
   static const String heart = 'assets/icons/Heart.svg';
+  static const String heartPng = 'assets/icons/Heart.png';
   static const String location = 'assets/icons/Location.png';
   static const String messages = 'assets/icons/messages.png';
   static const String patients = 'assets/icons/patients.png';
@@ -10,6 +11,10 @@ abstract class AppIcons {
   static const String search = 'assets/icons/search.png';
   static const String star = 'assets/icons/star.png';
   static const String notification = 'assets/icons/notification.png';
+  static const String clock = 'assets/icons/clock.png';
+  static const String favourite = 'assets/icons/Favorite.png';
+  static const String arrowBackPng = 'assets/icons/back_arrow.png';
+ static const String eyelash = 'assets/images/eyelash.png';
 
   static const String backArrow = 'assets/icons/back_arrow.png';
   static const String arrowLeft = 'assets/icons/arrow_left.png';
@@ -22,7 +27,7 @@ abstract class AppIcons {
   static const String password = 'assets/icons/password.png';
   static const String person = 'assets/icons/person.png';
   static const String visa = 'assets/icons/visa.png';
-  static const String masterCaed  = 'assets/icons/mastercard.png';
+  static const String masterCaed = 'assets/icons/mastercard.png';
   static const String applePay = 'assets/icons/applepay.png';
   static const String payPal = 'assets/icons/paypal.png';
   static const String locke = 'assets/icons/Lock.png';
@@ -33,11 +38,18 @@ abstract class AppIcons {
   static const String circle = 'assets/icons/circle.png';
   static const String card = 'assets/icons/creditCard.png';
   static const String favorite = 'assets/icons/Heart.png';
+  static const String eye = 'assets/icons/eye (1).png';
+  static const String personf = 'assets/icons/personf.png';
+  static const String selectedHome = 'assets/icons/selected_home.png';
+  static const String selectedChat = 'assets/icons/selected_chat.png';
+  static const String selectedProfile = 'assets/icons/selected profile.png';
+  static const String selectedBooking = 'assets/icons/selected booking.png';
 
   // Bottom Navigation Bar
   static const String chat = 'assets/icons/chat.png';
   static const String booking = 'assets/icons/booking.png';
   static const String home = 'assets/icons/Home.png';
+  static const String profile = 'assets/icons/Profile.png';
 
   //  Specialties Icons
   static const String cardiologist = 'assets/icons/cardiologist.png';
@@ -52,6 +64,8 @@ abstract class AppIcons {
   static const String orthopedic = 'assets/icons/Orthopedic.png';
   static const String psychiatrist = 'assets/icons/Psychiatrist.png';
   static const String pulmonologist = 'assets/icons/pulmonologist.png';
+  static const String generalPractitioner =
+      'assets/icons/general_practitioner.png';
 
   //  Chat & Communication Icons
   static const String recordVoice = 'assets/icons/record_voice.png';
@@ -59,11 +73,10 @@ abstract class AppIcons {
   static const String sendDocumentChat = 'assets/icons/send_document_chat.png';
   static const String videoCamera = 'assets/icons/Videocamera.png';
 
-  static const String trashBin = 'assets/icons/trash bin.png';
+  static const String trashBin = 'assets/icons/trash_bin.png';
   static const String mute = 'assets/icons/mute.png';
   static const String delete = 'assets/icons/delete.png';
   static const String call = 'assets/icons/call.png';
   static const String camera = 'assets/icons/Camera.png';
   static const String microphone = 'assets/icons/microphone.png';
-
 }

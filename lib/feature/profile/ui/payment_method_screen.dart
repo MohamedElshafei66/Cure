@@ -16,7 +16,10 @@ class PaymentMethodScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+        leading: InkWell(
+          onTap: () => context.pop(),
+          child: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+        ),
 
         title: Text(
           AppStrings.paymentMethod,
@@ -39,26 +42,26 @@ class PaymentMethodScreen extends StatelessWidget {
               icon: AppIcons.visa,
               title: "VISA",
               onTap: () {
-                context.go(AppRoutes.paymentMethodSecondScreen);
+                context.push(AppRoutes.paymentMethodSecondScreen);
               },
             ),
             Gap(30),
             ProfileItem(
-              icon: AppIcons.masterCaed, 
+              icon: AppIcons.masterCaed,
               title: "MasterCard",
-               onTap: () {
-                context.go(AppRoutes.paymentMethodSecondScreen);
+              onTap: () {
+                context.push(AppRoutes.paymentMethodSecondScreen);
               },
-              ),
+            ),
             Gap(20),
-            Text
-            ("Mobile Wallets", style: AppStyle.styleRegular20(context)),
+            Text("Mobile Wallets", style: AppStyle.styleRegular20(context)),
             Gap(30),
             ProfileItem(
               icon: AppIcons.applePay,
               title: "Apple Pay",
-              icons: AppIcons.circle, onTap: () {
-                context.go(AppRoutes.paymentMethodSecondScreen);
+              icons: AppIcons.circle,
+              onTap: () {
+                context.push(AppRoutes.paymentMethodSecondScreen);
               },
             ),
             Gap(30),
@@ -66,8 +69,8 @@ class PaymentMethodScreen extends StatelessWidget {
               icon: AppIcons.payPal,
               title: "Pay Pla",
               icons: AppIcons.circle,
-               onTap: () {
-                context.go(AppRoutes.paymentMethodSecondScreen);
+              onTap: () {
+                context.push(AppRoutes.paymentMethodSecondScreen);
               },
             ),
           ],

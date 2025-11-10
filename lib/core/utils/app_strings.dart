@@ -67,6 +67,7 @@ abstract class AppStrings {
       "You have successfully booked your appointment with Dr. Emily Walker.";
   static const String appointmentConcelled =
       "You have successfully cancelled your appointment with Dr. David Patel.";
+  static const String yourAppointment = "Your Appointment";
 
   //  Search
   static const String searchAppBar = "Search";
@@ -89,6 +90,7 @@ abstract class AppStrings {
   static const String experienceLabel = "experience";
   static const String ratingLabel = "rating";
   static const String reviewsLabel = "reviews";
+  static const String addReview = "add review";
 
   static const String aboutMeTitle = "About me";
   static const String aboutMeDescription =
@@ -103,27 +105,43 @@ abstract class AppStrings {
   static const String reviewTime = "30 min ago";
 
   static const String priceLabel = "Price";
+  static const String hourLabel = r"\hour";
   static const String priceValue = "350\$";
 
   static const String bookAppointment = "Book Appointment";
+  static const String noBooking = "No bookings for this day";
+  static const String cancelBooking = "Cancellation must be made at least 24 hours in advance to receive a refund";
+  static const String areYouSure = "Are you sure?";
+  static const String yesCancel = "Yes,cancel";
 
   //  Appointment
 
-  static const String selectDay = "Select Date";
+  static const String selectDay = "Select a day";
   static const String selectTime = "Select Time";
   static const String continuePay = "Continue to Pay";
   static const String pay = "Pay";
   static const String congratulations = "Congratulations!";
+  static const String warning = "Warning!";
   static const String congratulationsDescription =
       "Your appointment with Dr. David Patel is confirmed for June 30, 2023, at 10:00 AM.";
   static const String done="Done";
   static const String editAppointment="Edit your appointment";
+  static const String reschedule = "Reschedule";
+  static const String booking = "My Booking";
+  static const String cancel = "Cancel";
+  static const String feedBack = "Feedback";
+  static const String support = "Support";
+  static const String bookAgain = "Book Again";
+  static const String upComing = "Upcoming";
 
   // Review
   static const String review = "Review";
   static const String yourRate = "Your Rate";
   static const String yourReview = "Your review";
   static const String writeYourReview = "Write your review";
+  static const String sendYourReview = "Send your review";
+  static const String thankForReview = "Thanks for your review";
+  static const String backToHome = "Back to Home";
 
   //profile
 
@@ -163,11 +181,14 @@ abstract class AppStrings {
   static const String creditDebitCard = "Credit / Debit Card";
   static const String mobileWallet = "Mobile Wallet";
   static const String paypal = "PayPal";
+  static const String creditCard = "Credit Cart";
+  static const String applePay = "Apple Pay";
 
   //  Empty Cards Screen
   static const String emptyCardsTitle = "Payment Method";
   static const String emptyCardsMessage = "Nothing to display here!";
   static const String addYourCard ="Add your cards to make payment easier";
+  static const String addNewCard = "Add new card";
   static const String addCardButton = "Add Card";
 
   //  Add New Card Screen

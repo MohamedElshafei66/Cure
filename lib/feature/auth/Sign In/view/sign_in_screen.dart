@@ -10,7 +10,6 @@ import 'package:round_7_mobile_cure_team3/core/widgets/custom_button.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_app_bar.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_container.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_or.dart';
-import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/custom_text_span.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/widgets/default_phone_field.dart';
 
@@ -66,6 +65,59 @@ class _SignInScreenState extends State<SignInScreen> {
                       return 'Phone number must be at least 10 digits';
                     }
                     return null;
+
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Image.asset(
+                AppImages.signInImage,
+                width: 200,
+                height: 200,
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 25)),
+            SliverToBoxAdapter(
+              child: Text(
+                textAlign: TextAlign.left,
+                AppStrings.enterPhoneNumber,
+                style: AppStyle.styleRegular24(context),
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 25)),
+            SliverToBoxAdapter(
+              child: CustomPhoneField(
+                hintText: AppStrings.enterYourNumber,
+                controller: phoneController,
+                validator: (value) {},
+              ),
+            ),
+
+            SliverToBoxAdapter(child: SizedBox(height: 15)),
+            SliverToBoxAdapter(
+              child: CustomButton(
+                text: AppStrings.signInWithPhone,
+                onPressed: () => context.go(AppRoutes.mainLayout),
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 15)),
+            SliverToBoxAdapter(child: CustomOr()),
+            SliverToBoxAdapter(child: SizedBox(height: 15)),
+            SliverToBoxAdapter(
+              child: CustomContainer(
+                iconPath: AppIcons.google,
+                text: AppStrings.signInWithGoogle,
+                onTap: () {},
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 25)),
+
+            SliverToBoxAdapter(
+              child: Center(
+                child: CustomTextSpan(
+                  text1: AppStrings.dontHaveAccount,
+                  text2: AppStrings.signUp,
+                  onTap: () {
+                    context.push(AppRoutes.sign_up_screen);
                   },
                 ),
                 SizedBox(height: 15),

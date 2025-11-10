@@ -52,7 +52,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      context.go(AppRoutes.sign_in_screen);
+      context.push(AppRoutes.sign_in_screen);
     }
   }
 
@@ -71,7 +71,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   top: r(context, 8),
                 ),
                 child: TextButton(
-                  onPressed: () => context.go(AppRoutes.sign_in_screen),
+                  onPressed: () => context.push(AppRoutes.sign_in_screen),
                   child: Text(
                     AppStrings.skip,
                     style: AppStyle.styleMedium16(context),
