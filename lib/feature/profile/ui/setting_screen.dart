@@ -5,6 +5,7 @@ import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/delete_and_logout_dialog.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/profile_item.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -18,20 +19,19 @@ class SettingScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: InkWell(
           onTap: () => context.pop(),
-          child: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+          child: const Icon(Icons.arrow_back_ios_new, color: Colors.grey),
         ),
-
         title: Text(
           AppStrings.settings,
           style: AppStyle.styleRegular24(context),
         ),
         centerTitle: true,
       ),
-
       body: Padding(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 40),
         child: Column(
           children: [
+            // إدارة كلمة المرور
             InkWell(
               onTap: () {
                 context.push(AppRoutes.passwordManagement);
@@ -41,12 +41,46 @@ class SettingScreen extends StatelessWidget {
                 title: "Password Management",
               ),
             ),
-            Gap(30),
-            ProfileItem(
-              icon: AppIcons.person,
-              title: "Delete Account",
-              showArrow: false,
-            ),
+
+            const Gap(30),
+
+              // Logout Bottom Sheet 
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.white,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+                    ),
+                    builder: (context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.35, 
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: DeleteAndLogoutDialog(
+                            title: "Delete account",
+                            message: "Are you sure you want to delete your account?",
+                            confirmText: "Yes, delete",
+                            onConfirm: () {
+                              Navigator.pop(context);
+                              context.push(AppRoutes.mainLayout);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: ProfileItem(
+                  icon: AppIcons.person,
+                  title: "Delete account",
+                  showArrow: false,
+                ),
+              ),
+             
+            
           ],
         ),
       ),

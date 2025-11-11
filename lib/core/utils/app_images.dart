@@ -8,7 +8,7 @@ abstract class AppImages {
   static const String yourFavDoctorsImage = 'assets/images/favourite.png';
   static const String notificationsEmptyImage =
       'assets/images/notification.png';
-  static const String profileImage = 'assets/images/profile.png';
+  static const String profileImage = 'assets/images/profile_image.png';
   static const String noCardImage = 'assets/images/no_credit-card_screen.png';
   static const String addCardImage = 'assets/images/add_card.png';
   static const String doctorImage = "assets/images/doctor_image.png";

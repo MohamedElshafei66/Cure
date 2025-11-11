@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 
 class CardTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
+  final String? Function(String?) validator;
 
-  const CardTextField({
-    Key? key,
+  CardTextField({
     required this.controller,
     required this.hintText,
-  }) : super(key: key);
+    required this.validator,
+  });
 
   @override
   State<CardTextField> createState() => _CardTextFieldState();
@@ -25,7 +27,13 @@ class _CardTextFieldState extends State<CardTextField> {
       controller: widget.controller,
       keyboardType: TextInputType.number,
       obscureText: !isVisible,
+       maxLength: 16, 
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@._\-]')),
+      ],
+
       decoration: InputDecoration(
+        
         filled: true,
         fillColor: AppColors.lightGrey,
         hintText: widget.hintText,
