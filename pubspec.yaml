@@ -57,10 +57,10 @@ dependencies:
 
 
   get_it: ^9.0.5
-  dartz: ^0.10.1
   flutter_bloc: ^8.1.6
   url_launcher: ^6.2.5
   webview_flutter: ^4.9.0
+  dartz: 0.10.1
 
 
 

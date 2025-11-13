@@ -3,7 +3,7 @@ import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
 
-void successAddingReview(BuildContext context) {
+void successAddingReview(BuildContext context, {VoidCallback? onDone}) {
   showDialog(
     context: context,
     barrierDismissible: true,
@@ -62,7 +62,10 @@ void successAddingReview(BuildContext context) {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed:() => Navigator.pop(context),
+                  onPressed:() {
+                    Navigator.pop(context);
+                    onDone?.call();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:AppColors.textPrimary,
                     padding: EdgeInsets.symmetric(

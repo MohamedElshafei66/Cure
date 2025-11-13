@@ -105,7 +105,7 @@ void successAppointment(
               if (finalDoctorName.isNotEmpty || formattedDate.isNotEmpty || formattedTime.isNotEmpty) ...[
               Text(
                 textAlign:TextAlign.center,
-                "Your appointment with $finalDoctorName is confirmed for $formattedDate - $formattedTime}",
+                "Your appointment with $finalDoctorName is confirmed for $formattedDate - $formattedTime",
                 style:AppStyle.styleRegular14(context).copyWith(
                   color:AppColors.textSecondary
                 ),

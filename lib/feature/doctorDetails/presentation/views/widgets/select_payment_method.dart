@@ -16,7 +16,7 @@ class SelectPaymentMethod extends StatelessWidget {
       'image': AppImages.visaImage,
     },
     {
-      'name': AppStrings.cash,
+      'name': AppStrings.cach,
       'image': AppImages.cashImage,
     },
     {

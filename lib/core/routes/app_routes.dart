@@ -188,7 +188,10 @@ abstract class AppRoutes {
       ),
       GoRoute(
         path: AppRoutes.addReviewScreen,
-        builder: (context, state) => AddReviewScreen(),
+        builder: (context, state) {
+          final doctorId = state.extra as int? ?? 2;
+          return AddReviewScreen(doctorId: doctorId);
+        },
       ),
       GoRoute(
         path: AppRoutes.bookingScreen,

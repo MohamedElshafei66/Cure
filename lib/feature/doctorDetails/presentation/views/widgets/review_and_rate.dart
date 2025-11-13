@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:svg_image/svg_image.dart';
@@ -7,6 +8,7 @@ import '../../../../../core/utils/app_images.dart';
 import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
 import '../../../domain/entites/doctor_details_entity.dart';
+import '../../cubit/doctor_details_cubit.dart';
 
 class ReviewAndRate extends StatelessWidget {
   final DoctorDetailsEntity doctorDetails;
@@ -30,8 +32,16 @@ class ReviewAndRate extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () {
-                  context.push(AppRoutes.addReviewScreen);
+                onTap: () async {
+                  final result = await context.push<bool>(
+                    AppRoutes.addReviewScreen,
+                    extra: doctorDetails.doctorId,
+                  );
+                  // Refresh doctor details if review was added successfully
+                  if (result == true) {
+                    final doctorDetailsCubit = context.read<DoctorDetailsCubit>();
+                    doctorDetailsCubit.fetchDoctorDetails(doctorDetails.doctorId);
+                  }
                 },
                 child: Row(
                   children: [

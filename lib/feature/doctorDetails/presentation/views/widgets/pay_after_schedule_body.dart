@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/widgets/custom_button.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/dependincy_injection.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/appointment_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/booking_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/doctor_details_cubit.dart';
@@ -208,9 +207,9 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
     }
 
     // Map payment method to payment code
-    // 1 = Credit Card (Stripe), 2 = PayPal, 3 = Apple Pay
+    // 1 = Credit Card (Stripe), 2 = Cash, 3 = Apple Pay
     int paymentCode = 1; // Default to Credit Card
-    if (appointmentState.paymentMethod == AppStrings.paypal) {
+    if (appointmentState.paymentMethod == AppStrings.cach) {
       paymentCode = 2;
     } else if (appointmentState.paymentMethod == AppStrings.applePay) {
       paymentCode = 3;

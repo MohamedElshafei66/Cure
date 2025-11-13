@@ -6,6 +6,7 @@ import '../../../../../core/utils/app_images.dart';
 import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
 import '../../../domain/entites/doctor_details_entity.dart';
+import '../../../data/models/doctor_detail_model.dart';
 
 class ReviewCard extends StatelessWidget {
   final DoctorDetailsEntity doctorDetails;
@@ -13,80 +14,170 @@ class ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // For now, show a placeholder review. You can extend this to show actual reviews from the API
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white70,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    // Check if doctorDetails is DoctorDetailsModel to access reviewsList
+    final isModel = doctorDetails is DoctorDetailsModel;
+    final reviewsList = isModel ? (doctorDetails as DoctorDetailsModel).reviewsList : null;
+    
+    // Check if reviews exist and are not empty
+    final hasReviews = reviewsList != null && reviewsList.isNotEmpty;
+    
+    // If reviews are null or empty, show placeholder
+    if (!hasReviews) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white70,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CircleAvatar(
+                  radius: 30,
+                  backgroundImage: CachedNetworkImageProvider(
+                    'https://images.unsplash.com/photo-1550831107-1553da8c8464',
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nabila Reyna",
+                        style: AppStyle.styleRegular16(context).copyWith(
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "30 min ago",
+                        style: AppStyle.styleMedium14(context).copyWith(
+                          color: AppColors.textHint,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.yellow.shade50,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    children: [
+                      SvgImage(
+                        AppImages.ratingStarImage,
+                        type: PathType.assets,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        doctorDetails.rating.toStringAsFixed(1),
+                        style: AppStyle.styleMedium14(context).copyWith(
+                          color: AppColors.yellow,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 9),
+            Text(
+              AppStrings.reviewText,
+              style: AppStyle.styleMedium14(context).copyWith(
+                color: AppColors.whiteColor79,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    // If reviews exist, display them
+    return Column(
+      children: reviewsList!.map((review) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white70,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
             children: [
-              const CircleAvatar(
-                radius: 30,
-                backgroundImage: CachedNetworkImageProvider(
-                  'https://images.unsplash.com/photo-1550831107-1553da8c8464',
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CircleAvatar(
+                    radius: 30,
+                    backgroundImage: CachedNetworkImageProvider(
+                      'https://images.unsplash.com/photo-1550831107-1553da8c8464',
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "User",
+                          style: AppStyle.styleRegular16(context).copyWith(
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Recently",
+                          style: AppStyle.styleMedium14(context).copyWith(
+                            color: AppColors.textHint,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Colors.yellow.shade50,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Row(
+                      children: [
+                        SvgImage(
+                          AppImages.ratingStarImage,
+                          type: PathType.assets,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          doctorDetails.rating.toStringAsFixed(1),
+                          style: AppStyle.styleMedium14(context).copyWith(
+                            color: AppColors.yellow,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Nabila Reyna",
-                      style: AppStyle.styleRegular16(context).copyWith(
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "30 min ago",
-                      style: AppStyle.styleMedium14(context).copyWith(
-                        color: AppColors.textHint,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Colors.yellow.shade50,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  children: [
-                    SvgImage(
-                      AppImages.ratingStarImage,
-                      type: PathType.assets,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      doctorDetails.rating.toStringAsFixed(1),
-                      style: AppStyle.styleMedium14(context).copyWith(
-                        color: AppColors.yellow,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 9),
+              Text(
+                review,
+                style: AppStyle.styleMedium14(context).copyWith(
+                  color: AppColors.whiteColor79,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 9),
-          Text(
-            AppStrings.reviewText,
-            style: AppStyle.styleMedium14(context).copyWith(
-              color: AppColors.whiteColor79,
-            ),
-          ),
-        ],
-      ),
+        );
+      }).toList(),
     );
   }
 }
