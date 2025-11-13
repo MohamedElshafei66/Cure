@@ -41,35 +41,10 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
         'AppointmentAt': appointmentAt.toIso8601String(),
       };
 
-      print('========================================');
-      print('BOOKING API REQUEST - DATA SOURCE');
-      print('========================================');
-      print('Endpoint: $endpoint');
-      print('Full Endpoint Path: Customer/Booking/CreateBooking');
-      print('Request Body (Map):');
-      print('  - DoctorId: ${body['DoctorId']} (${body['DoctorId'].runtimeType})');
-      print('  - SlotId: ${body['SlotId']} (${body['SlotId'].runtimeType})');
-      print('  - Amount: ${body['Amount']} (${body['Amount'].runtimeType})');
-      print('  - Payment: ${body['Payment']} (${body['Payment'].runtimeType})');
-      print('  - Status: ${body['Status']} (${body['Status'].runtimeType})');
-      print('  - AppointmentAt: ${body['AppointmentAt']} (${body['AppointmentAt'].runtimeType})');
-      print('Full Body JSON: $body');
-      print('========================================');
-      print('CALLING API SERVICES.POST...');
-      print('========================================');
+
       
       final response = await apiServices.post(endPoint: endpoint, body: body);
-      
-      print('========================================');
-      print('API SERVICES.POST RETURNED');
-      print('========================================');
-      
-      print('========================================');
-      print('BOOKING API RESPONSE');
-      print('========================================');
-      print('Full Response: $response');
-      print('Response Type: ${response.runtimeType}');
-      print('========================================');
+
 
       Map<String, dynamic> jsonData;
       if (response is Map<String, dynamic>) {

@@ -16,6 +16,7 @@ import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/vie
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/pay_after_schedule.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/payment_webview_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctors_nearby/presentation/doctors_nearby.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/favourites.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
@@ -66,6 +67,7 @@ abstract class AppRoutes {
   static String passwordManagement = '/manage_password';
   static String profileEdit = '/profile_edit';
   static String addCard = '/addCard';
+  static String paymentWebView = '/paymentWebView';
 
   static final router = GoRouter(
 
@@ -195,6 +197,31 @@ abstract class AppRoutes {
       GoRoute(
         path: AppRoutes.rescheduleScreen,
         builder: (context, state) => RescheduleView(),
+      ),
+      GoRoute(
+        path: AppRoutes.paymentWebView,
+        builder: (context, state) {
+          final paymentUrl = state.uri.queryParameters['url'] ?? '';
+          final doctorName = state.uri.queryParameters['doctorName'];
+          final dateStr = state.uri.queryParameters['date'];
+          final time = state.uri.queryParameters['time'];
+          
+          DateTime? selectedDate;
+          if (dateStr != null && dateStr.isNotEmpty) {
+            try {
+              selectedDate = DateTime.parse(dateStr);
+            } catch (e) {
+              print('Error parsing date: $e');
+            }
+          }
+          
+          return PaymentWebViewScreen(
+            paymentUrl: paymentUrl,
+            doctorName: doctorName,
+            selectedDate: selectedDate,
+            selectedTime: time,
+          );
+        },
       ),
     ],
   );

@@ -1,17 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:svg_image/svg_image.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
+import '../../cubit/appointment_cubit.dart';
 
-void successAppointment(BuildContext context) {
+void successAppointment(
+  BuildContext context, {
+  String? doctorName,
+  DateTime? selectedDate,
+  String? selectedTime,
+}) {
   showDialog(
     context: context,
     barrierDismissible: true,
     builder: (BuildContext context) {
       final size = MediaQuery.of(context).size;
       final isSmallScreen = size.width < 400;
+      
+      // Try to get appointment data from AppointmentCubit if not provided
+      String? finalDoctorName = doctorName;
+      DateTime? finalSelectedDate = selectedDate;
+      String? finalSelectedTime = selectedTime;
+      
+      try {
+        final appointmentCubit = context.read<AppointmentCubit>();
+        final appointmentState = appointmentCubit.state;
+        
+        // Use AppointmentCubit data if parameters are not provided
+        finalDoctorName ??= appointmentState.doctorDetails?.doctorName;
+        finalSelectedDate ??= appointmentState.selectedDate;
+        finalSelectedTime ??= appointmentState.selectedTime;
+      } catch (e) {
+        // AppointmentCubit not available in context, use provided parameters or defaults
+        print('AppointmentCubit not available: $e');
+      }
+      
+      // Set defaults if still null
+      finalDoctorName ??= 'Doctor';
+      
+      // Format date
+      String formattedDate = '';
+      if (finalSelectedDate != null) {
+        final weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        final months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+        final weekday = weekdays[finalSelectedDate.weekday - 1];
+        final month = months[finalSelectedDate.month - 1];
+        formattedDate = '$weekday, $month ${finalSelectedDate.day}';
+      }
+      
+      // Format time (already in 12-hour format like "10:00 AM")
+      String formattedTime = finalSelectedTime ?? '';
 
       return Dialog(
         backgroundColor: Colors.transparent,
@@ -60,13 +102,15 @@ void successAppointment(BuildContext context) {
               SizedBox(
                   height:8
               ),
+              if (finalDoctorName.isNotEmpty || formattedDate.isNotEmpty || formattedTime.isNotEmpty) ...[
               Text(
                 textAlign:TextAlign.center,
-                AppStrings.congratulationsDescription,
+                "Your appointment with $finalDoctorName is confirmed for $formattedDate - $formattedTime}",
                 style:AppStyle.styleRegular14(context).copyWith(
                   color:AppColors.textSecondary
                 ),
               ),
+              ],
               SizedBox(
                   height:15
               ),

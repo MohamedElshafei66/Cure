@@ -19,7 +19,7 @@ class DependincyInjection {
   static Future<void> init() async {
     // Network
     getIt.registerLazySingleton<ApiServices>(
-      () => ApiServices(token: SharedData.token),
+      () => ApiServices(),
     );
 
     // Data Sources

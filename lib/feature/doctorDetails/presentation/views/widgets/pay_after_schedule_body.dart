@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/widgets/custom_button.dart';
+import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/dependincy_injection.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/appointment_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/booking_cubit.dart';
@@ -59,7 +60,13 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
                 _launchPaymentUrl(context, state.booking.paymentUrl!);
               } else {
                 // Show success dialog if no payment URL
-                successAppointment(context);
+                final appointmentState = context.read<AppointmentCubit>().state;
+                successAppointment(
+                  context,
+                  doctorName: appointmentState.doctorDetails?.doctorName,
+                  selectedDate: appointmentState.selectedDate,
+                  selectedTime: appointmentState.selectedTime,
+                );
               }
             } else if (state is BookingError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -212,46 +219,34 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
     // Create booking based on payment method
     final bookingCubit = context.read<BookingCubit>();
     
+    // Create appointment date time from selected date and time
+    final selectedDate = appointmentState.selectedDate!;
+    final selectedTime = appointmentState.selectedTime!;
+    final appointmentDateTime = _createAppointmentDateTime(selectedDate, selectedTime);
+    
     // Different request bodies based on payment method
     if (paymentCode == 1) {
-      // Visa (Credit Card) - Payment: 1
-      print('========================================');
-      print('PAYMENT METHOD: VISA (Credit Card)');
-      print('Using test data for Visa payment');
-      print('========================================');
       bookingCubit.createBooking(
-        doctorId: 2,
-        slotId: 23,
-        amount: 100.00,
-        payment: 1,
+        doctorId:appointmentState.doctorDetails!.doctorId,
+        slotId:slotId,
+        amount:appointmentState.doctorDetails!.doctorPrice.toDouble(),
+        payment:1,
         status: 0,
-        appointmentAt: DateTime.parse('2025-11-15T18:00:00'),
+        appointmentAt:appointmentDateTime,
       );
     } else if (paymentCode == 2) {
       // PayPal - Payment: 2
-      print('========================================');
-      print('PAYMENT METHOD: PAYPAL');
-      print('Using test data for PayPal payment');
-      print('========================================');
       bookingCubit.createBooking(
-        doctorId: 2,
-        slotId: 24,
-        amount: 100.00,
-        payment: 2,
+        doctorId:appointmentState.doctorDetails!.doctorId,
+        slotId:slotId,
+        amount:appointmentState.doctorDetails!.doctorPrice.toDouble(),
+        payment:2,
         status: 0,
-        appointmentAt: DateTime.parse('2025-11-11T18:00:00'),
+        appointmentAt:appointmentDateTime,
       );
     } else {
       // Apple Pay or other - use original logic
-      final selectedDate = appointmentState.selectedDate!;
-      final selectedTime = appointmentState.selectedTime!;
-      final appointmentDateTime = _createAppointmentDateTime(selectedDate, selectedTime);
-      
-      print('========================================');
-      print('PAYMENT METHOD: OTHER (Apple Pay)');
-      print('Using selected date/time');
-      print('========================================');
-      bookingCubit.createBooking(
+            bookingCubit.createBooking(
         doctorId: appointmentState.doctorDetails!.doctorId,
         slotId: slotId,
         amount: appointmentState.doctorDetails!.doctorPrice.toDouble(),
@@ -259,6 +254,11 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
         status: 0,
         appointmentAt: appointmentDateTime,
       );
+      
+      print('========================================');
+      print('PAYMENT METHOD: OTHER (Apple Pay)');
+      print('Using selected date/time');
+      print('========================================');
     }
     
     print('Booking cubit called, waiting for response...');
@@ -294,32 +294,35 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
 
   Future<void> _launchPaymentUrl(BuildContext context, String url) async {
     try {
-      final uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(
-          uri,
-          mode: LaunchMode.externalApplication,
-        );
-        
-        // Show success dialog after payment (you might want to add a callback here)
-        // For now, we'll show it immediately. In production, you'd wait for Stripe callback
-        Future.delayed(const Duration(seconds: 2), () {
-          if (context.mounted) {
-            successAppointment(context);
+      print('Opening payment URL in WebView: $url');
+      
+      // Get appointment data before navigation
+      final appointmentState = context.read<AppointmentCubit>().state;
+      final doctorName = appointmentState.doctorDetails?.doctorName;
+      final selectedDate = appointmentState.selectedDate;
+      final selectedTime = appointmentState.selectedTime;
+      
+      // Navigate to WebView screen with payment URL and appointment data
+      if (context.mounted) {
+        context.push(
+          '${AppRoutes.paymentWebView}?url=${Uri.encodeComponent(url)}'
+          '${doctorName != null ? '&doctorName=${Uri.encodeComponent(doctorName)}' : ''}'
+          '${selectedDate != null ? '&date=${selectedDate.toIso8601String()}' : ''}'
+          '${selectedTime != null ? '&time=${Uri.encodeComponent(selectedTime)}' : ''}',
+        ).then((result) {
+          // If payment was completed, show success dialog
+          if (result == true && context.mounted) {
+            successAppointment(
+              context,
+              doctorName: doctorName,
+              selectedDate: selectedDate,
+              selectedTime: selectedTime,
+            );
           }
         });
-      } else {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Could not launch payment URL'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
       }
     } catch (e) {
-      print('Error launching payment URL: $e');
+      print('Error opening payment URL: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
