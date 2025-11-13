@@ -1,4 +1,9 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/dependincy_injection.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/appointment_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/booking_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/doctor_details_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/view/sign_in_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/sign_up_screen.dart';
@@ -64,7 +69,7 @@ abstract class AppRoutes {
 
   static final router = GoRouter(
 
-    initialLocation: '/',
+    initialLocation:"/",
     routes: [
       GoRoute(
         path: passwordManagement,
@@ -79,7 +84,7 @@ abstract class AppRoutes {
       GoRoute(path: search, builder: (context, state) => SearchScreen()),
       GoRoute(path: favourites, builder: (context, state) => Favourites()),
       GoRoute(path: map, builder: (context, state) => MapScreen()),
-      GoRoute(path: '/', builder: (context, state) => BookingScreen()),
+      GoRoute(path: '/', builder: (context, state) => DoctorDetailsScreen()),
       GoRoute(
         path: doctorsNearby,
         builder: (context, state) => DoctorsNearby(),
@@ -144,11 +149,40 @@ abstract class AppRoutes {
       ),
       GoRoute(
         path: AppRoutes.confirmAppointmentScreen,
-        builder: (context, state) => ConfirmAppointmentScreen(),
+        builder: (context, state) {
+          // Get AppointmentCubit from extra parameter or create new one
+          final appointmentCubit = state.extra as AppointmentCubit?;
+          if (appointmentCubit != null) {
+            return BlocProvider.value(
+              value: appointmentCubit,
+              child: const ConfirmAppointmentScreen(),
+            );
+          } else {
+            // Fallback: create new one if not passed
+            return BlocProvider(
+              create: (context) => getIt<AppointmentCubit>(),
+              child: const ConfirmAppointmentScreen(),
+            );
+          }
+        },
       ),
       GoRoute(
         path: AppRoutes.payAfterScheduleScreen,
-        builder: (context, state) => PayAfterScheduleScreen(),
+        builder: (context, state) {
+          // Get AppointmentCubit from extra parameter or create new one
+          final appointmentCubit = state.extra as AppointmentCubit?;
+          return MultiBlocProvider(
+            providers: [
+              if (appointmentCubit != null)
+                BlocProvider.value(value: appointmentCubit)
+              else
+                BlocProvider(create: (context) => getIt<AppointmentCubit>()),
+              BlocProvider(create: (context) => getIt<BookingCubit>()),
+              BlocProvider(create: (context) => getIt<DoctorDetailsCubit>()),
+            ],
+            child: const PayAfterScheduleScreen(),
+          );
+        },
       ),
       GoRoute(
         path: AppRoutes.addReviewScreen,

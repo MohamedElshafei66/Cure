@@ -6,91 +6,76 @@ import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_images.dart';
 import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
+import '../../../domain/entites/doctor_details_entity.dart';
+
 class ReviewAndRate extends StatelessWidget {
-  const ReviewAndRate({super.key});
+  final DoctorDetailsEntity doctorDetails;
+  const ReviewAndRate({super.key, required this.doctorDetails});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left:8),
+      padding: const EdgeInsets.only(left: 8),
       child: Column(
-        crossAxisAlignment:CrossAxisAlignment.start,
-        children:[
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Row(
-            mainAxisAlignment:MainAxisAlignment.spaceBetween,
-            children:[
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               Text(
-                  AppStrings.reviewsAndRatingTitle,
-                  style:AppStyle.styleRegular20(context).copyWith(
-                      fontWeight:FontWeight.w500,
-                      color:AppColors.blackColor
-                  )
+                AppStrings.reviewsAndRatingTitle,
+                style: AppStyle.styleRegular20(context).copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.blackColor,
+                ),
               ),
               InkWell(
-                onTap:(){
+                onTap: () {
                   context.push(AppRoutes.addReviewScreen);
                 },
                 child: Row(
-                  children:[
+                  children: [
                     SvgImage(
-                        AppImages.penImage,
-                        type:PathType.assets
+                      AppImages.penImage,
+                      type: PathType.assets,
                     ),
-                    SizedBox(
-                      width:5,
-                    ),
+                    const SizedBox(width: 5),
                     Text(
-                        AppStrings.addReview,
-                        style:AppStyle.styleRegular14(context).copyWith(
-                            fontWeight:FontWeight.w500,
-                            color:AppColors.primary
-                        )
+                      AppStrings.addReview,
+                      style: AppStyle.styleRegular14(context).copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.primary,
+                      ),
                     ),
                   ],
                 ),
               )
             ],
           ),
-          const SizedBox(
-              height: 8
-          ),
+          const SizedBox(height: 8),
           Row(
-            mainAxisAlignment:MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                  AppStrings.averageRatingLabel,
-                  style:AppStyle.styleRegular40(context)
+                doctorDetails.rating.toStringAsFixed(1),
+                style: AppStyle.styleRegular40(context),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:  [
+                children: [
                   Row(
-                    children: [
-                      SvgImage(
-                          AppImages.ratingStarImage,
-                          type:PathType.assets
+                    children: List.generate(
+                      5,
+                      (index) => SvgImage(
+                        AppImages.ratingStarImage,
+                        type: PathType.assets,
                       ),
-                      SvgImage(
-                          AppImages.ratingStarImage,
-                          type:PathType.assets
-                      ),
-                      SvgImage(
-                          AppImages.ratingStarImage,
-                          type:PathType.assets
-                      ),
-                      SvgImage(
-                          AppImages.ratingStarImage,
-                          type:PathType.assets
-                      ),
-                      SvgImage(
-                          AppImages.ratingStarImage,
-                          type:PathType.assets
-                      )
-                    ],
+                    ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
-                    "1250+ Reviews",
-                    style: TextStyle(color: Colors.grey),
+                    "${doctorDetails.reviews.toInt()}+ Reviews",
+                    style: const TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
