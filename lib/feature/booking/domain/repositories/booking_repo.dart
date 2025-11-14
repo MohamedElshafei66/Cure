@@ -4,7 +4,7 @@ import 'package:round_7_mobile_cure_team3/feature/booking/domain/entities/bookin
 import 'package:round_7_mobile_cure_team3/feature/booking/domain/entities/reschedule_entity.dart';
 
 abstract class BookingRepo{
-  Future<Either<Failure,List<BookingEntity>>> getBookings();
+  Future<Either<Failure,List<BookingEntity>>> getBookings({String? fromDate});
   Future<Either<Failure, Unit>> cancelBooking(String bookingId);
   Future<Either<Failure, RescheduleEntity>> rescheduleBooking(RescheduleEntity rescheduleEntity);
   Future<Either<Failure, Unit>> feedbackBooking(String bookingId);

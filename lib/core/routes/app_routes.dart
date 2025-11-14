@@ -86,7 +86,7 @@ abstract class AppRoutes {
       GoRoute(path: search, builder: (context, state) => SearchScreen()),
       GoRoute(path: favourites, builder: (context, state) => Favourites()),
       GoRoute(path: map, builder: (context, state) => MapScreen()),
-      GoRoute(path: '/', builder: (context, state) => DoctorDetailsScreen()),
+      GoRoute(path: '/', builder: (context, state) => BookingScreen()),
       GoRoute(
         path: doctorsNearby,
         builder: (context, state) => DoctorsNearby(),
@@ -199,7 +199,10 @@ abstract class AppRoutes {
       ),
       GoRoute(
         path: AppRoutes.rescheduleScreen,
-        builder: (context, state) => RescheduleView(),
+        builder: (context, state) {
+          final bookingId = state.extra as String?;
+          return RescheduleView(bookingId: bookingId);
+        },
       ),
       GoRoute(
         path: AppRoutes.paymentWebView,

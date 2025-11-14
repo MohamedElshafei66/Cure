@@ -114,5 +114,67 @@ class ApiServices {
         'POST $endPoint failed: ${e.response?.data ?? e.message}',
       );
     }
-}
+  }
+
+  Future<dynamic> put({
+    required String endPoint,
+    dynamic body,
+  }) async {
+    try {
+      final headers = _getHeaders();
+      print('========================================');
+      print('API SERVICES: PUT REQUEST');
+      print('========================================');
+      print('Full URL: ${dio.options.baseUrl}$endPoint');
+      print('Headers: $headers');
+      if (body != null) {
+        print('Request Body:');
+        if (body is Map) {
+          body.forEach((key, value) {
+            print('  $key: $value (${value.runtimeType})');
+          });
+        } else {
+          print('  $body (${body.runtimeType})');
+        }
+      }
+      print('========================================');
+      
+      final response = await dio.put(
+        endPoint,
+        data: body,
+        options: Options(headers: headers),
+      );
+      
+      print('========================================');
+      print('API SERVICES: PUT RESPONSE');
+      print('========================================');
+      print('Status Code: ${response.statusCode}');
+      print('Response Data: ${response.data}');
+      print('Response Type: ${response.data.runtimeType}');
+      print('========================================');
+      
+      return response.data;
+    } on DioException catch (e) {
+      print('========================================');
+      print('API SERVICES: PUT ERROR');
+      print('========================================');
+      print('Error Type: ${e.type}');
+      print('Error Message: ${e.message}');
+      print('Status Code: ${e.response?.statusCode}');
+      print('Response Data: ${e.response?.data}');
+      print('Request Headers: ${e.requestOptions.headers}');
+      print('========================================');
+      
+      // Provide more specific error message for 401
+      if (e.response?.statusCode == 401) {
+        throw Exception(
+          'Authentication failed. Please check if your token is valid and not expired. PUT $endPoint failed: ${e.response?.data ?? e.message}',
+        );
+      }
+      
+      throw Exception(
+        'PUT $endPoint failed: ${e.response?.data ?? e.message}',
+      );
+    }
+  }
 }
