@@ -11,12 +11,10 @@ import 'package:round_7_mobile_cure_team3/feature/booking/domain/entities/doctor
 import 'package:round_7_mobile_cure_team3/feature/booking/domain/entities/reschedule_entity.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/cubit/booking_search_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/widgets/cancellation_message.dart';
-import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/widgets/doctor_details.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/calender_date.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/time_date.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/appointment_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/doctor_details_cubit.dart';
-import 'package:round_7_mobile_cure_team3/feature/doctorDetails/data/models/doctor_detail_model.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:svg_image/svg_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -107,11 +105,8 @@ class _RescheduleViewBodyState extends State<RescheduleViewBody> {
         return BlocListener<DoctorDetailsCubit, DoctorDetailsState>(
           listener: (context, doctorState) {
             if (doctorState is DoctorDetailsLoaded) {
-              print('RescheduleViewBody: Setting doctor details to AppointmentCubit');
-              print('DoctorDetails type: ${doctorState.doctorDetails.runtimeType}');
               appointmentCubit.setDoctorDetails(doctorState.doctorDetails);
-              
-              // Set initial date if not already set
+
               if (appointmentCubit.state.selectedDate == null) {
                 final tomorrow = DateTime.now().add(const Duration(days: 1));
                 appointmentCubit.selectDate(tomorrow);
@@ -145,7 +140,6 @@ class _RescheduleViewBodyState extends State<RescheduleViewBody> {
                       const SizedBox(height: 15),
                       const CancellationMessage(),
                       const SizedBox(height: 24),
-                      // Use the original DoctorDetails widget but pass booking data
                       _DoctorDetailsWidget(
                         booking: booking,
                         doctorInfo: doctorInfo,
@@ -208,10 +202,10 @@ class _RescheduleViewBodyState extends State<RescheduleViewBody> {
       isLoading = true;
     });
 
-    // Parse time string (format: "HH:MM" or "H:MM AM/PM")
+
     String timeString = state.selectedTime!;
     
-    // Convert to 24-hour format if needed
+
     if (timeString.contains('AM') || timeString.contains('PM')) {
       final parts = timeString.split(' ');
       final timeParts = parts[0].split(':');
@@ -243,7 +237,7 @@ class _RescheduleViewBodyState extends State<RescheduleViewBody> {
       isLoading = false;
     });
     
-    // Check if there's an error
+
     if (bookingCubit.state is BookingSearchError) {
       final errorState = bookingCubit.state as BookingSearchError;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -253,7 +247,7 @@ class _RescheduleViewBodyState extends State<RescheduleViewBody> {
         ),
       );
     } else {
-      // Success - show message and navigate back
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Booking rescheduled successfully'),

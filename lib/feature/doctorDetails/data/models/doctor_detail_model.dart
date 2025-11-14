@@ -82,8 +82,6 @@ class DoctorDetailsModel extends DoctorDetailsEntity {
         reviewsList: _parseStringList(json['reviews']),
       );
     } catch (e, stackTrace) {
-      print('Model: Error parsing JSON - $e');
-      print('Stack trace: $stackTrace');
       rethrow;
     }
   }
@@ -126,7 +124,6 @@ class DoctorDetailsModel extends DoctorDetailsEntity {
           try {
             return AvailableSlotModel.fromJson(item);
           } catch (e) {
-            print('Error parsing slot: $e');
             return null;
           }
         }

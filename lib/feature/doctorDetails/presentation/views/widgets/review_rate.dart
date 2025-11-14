@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:svg_image/svg_image.dart';
-import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_images.dart';
 import '../../../../../core/utils/app_styles.dart';
 import '../../cubit/add_review_cubit.dart';
@@ -34,14 +33,14 @@ class ReviewRate extends StatelessWidget {
                     width: 30,
                     child: Stack(
                       children: [
-                        // Empty star (always shown as background)
+
                         SvgImage(
                           AppImages.ratingStarImage,
                           type: PathType.assets,
                           height: 30,
                           width: 30,
                         ),
-                        // Filled star overlay
+
                         if (isFullStar)
                           SvgImage(
                             AppImages.ratingStarImage,
@@ -50,7 +49,7 @@ class ReviewRate extends StatelessWidget {
                             width: 30,
                           )
                         else if (isHalfStar)
-                          // Half star using clip
+
                           ClipRect(
                             child: Align(
                               alignment: Alignment.centerLeft,

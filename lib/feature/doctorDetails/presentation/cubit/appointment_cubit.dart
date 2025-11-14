@@ -10,7 +10,7 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   AppointmentCubit() : super(AppointmentInitial());
 
   void selectDate(DateTime date) {
-    emit(state.copyWith(selectedDate: date, selectedTime: null)); // Reset time when date changes
+    emit(state.copyWith(selectedDate: date, selectedTime: null));
   }
 
   void selectTime(String time) {
@@ -24,10 +24,9 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   void setDoctorDetails(DoctorDetailsEntity doctorDetails) {
     List<AvailableSlotModel> availableSlots = [];
     
-    // Extract available slots if doctorDetails is a DoctorDetailsModel
+
     if (doctorDetails is DoctorDetailsModel) {
       availableSlots = doctorDetails.availableSlots;
-      print('AppointmentCubit: Setting ${availableSlots.length} available slots');
       for (var slot in availableSlots) {
         print('Slot: ${slot.dateTime} - ${slot.startTime} to ${slot.endTime}, booked: ${slot.isBooked}');
       }
@@ -69,13 +68,10 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   // Get available times for a specific date
   List<String> getAvailableTimesForDate(DateTime date) {
     if (state.availableSlots.isEmpty) {
-      print('No available slots in state');
       return [];
     }
     
     final dateOnly = DateTime(date.year, date.month, date.day);
-    print('Looking for slots on: $dateOnly');
-    print('Total slots: ${state.availableSlots.length}');
     
     final slotsForDate = state.availableSlots.where((slot) {
       final slotDate = DateTime(slot.dateTime.year, slot.dateTime.month, slot.dateTime.day);

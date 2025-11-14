@@ -20,20 +20,6 @@ class BookingCubit extends Cubit<BookingState> {
   }) async {
     try {
       emit(BookingLoading());
-      print('========================================');
-      print('BOOKING CUBIT: Starting createBooking');
-      print('========================================');
-      print('Parameters received:');
-      print('  - doctorId: $doctorId (${doctorId.runtimeType})');
-      print('  - slotId: $slotId (${slotId.runtimeType})');
-      print('  - amount: $amount (${amount.runtimeType})');
-      print('  - payment: $payment (${payment.runtimeType})');
-      print('  - status: $status (${status.runtimeType})');
-      print('  - appointmentAt: $appointmentAt (${appointmentAt.runtimeType})');
-      print('========================================');
-      print('Calling createBookingUseCase...');
-      print('========================================');
-      
       final result = await createBookingUseCase(
         CreateBookingParams(
           doctorId: doctorId,
@@ -44,40 +30,18 @@ class BookingCubit extends Cubit<BookingState> {
           appointmentAt: appointmentAt,
         ),
       );
-      
-      print('========================================');
-      print('USE CASE RETURNED RESULT');
-      print('========================================');
 
       result.fold(
         (failure) {
-          print('========================================');
-          print('BOOKING CUBIT: ERROR');
-          print('========================================');
-          print('Error Message: ${failure.message}');
-          print('========================================');
+
           emit(BookingError(failure.message));
         },
         (booking) {
-          print('========================================');
-          print('BOOKING CUBIT: SUCCESS');
-          print('========================================');
-          print('Booking received in cubit:');
-          print('  - ID: ${booking.id}');
-          print('  - Doctor: ${booking.doctorName}');
-          print('  - Payment: ${booking.payment}');
-          print('  - Status: ${booking.status}');
-          print('  - Payment URL: ${booking.paymentUrl ?? "N/A"}');
-          print('  - Appointment: ${booking.appointmentAt}');
-          print('========================================');
-          print('Emitting BookingSuccess state...');
-          print('========================================');
+
           emit(BookingSuccess(booking));
         },
       );
     } catch (e, stackTrace) {
-      print('BookingCubit: Exception - $e');
-      print('Stack trace: $stackTrace');
       emit(BookingError('Failed to create booking: ${e.toString()}'));
     }
   }

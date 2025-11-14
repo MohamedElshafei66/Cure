@@ -23,17 +23,12 @@ class BookingRepoImpl implements BookingRepo {
         // Format date as YYYY-M-D (e.g., 2024-1-15) - without leading zeros
         formattedDate = '${now.year}-${now.month}-${now.day}';
       }
-      
-      print('Repository: Fetching bookings for date: $formattedDate');
+
       final result = await remoteDataSource.searchBookings(formattedDate);
-      print('Repository: Success - Got ${result.length} bookings');
       return Right(result);
     } on ServerException catch (e) {
-      print('Repository: ServerException - ${e.message}');
       return Left(ServerFailure(e.message));
     } catch (e, stackTrace) {
-      print('Repository: Unexpected error - $e');
-      print('Stack trace: $stackTrace');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
@@ -41,18 +36,11 @@ class BookingRepoImpl implements BookingRepo {
   @override
   Future<Either<Failure, Unit>> cancelBooking(String bookingId) async {
     try {
-      print('Repository: Cancelling booking with ID: $bookingId');
       final result = await remoteDataSource.cancelBooking(bookingId);
-      print('Repository: Success - Booking cancelled');
-      print('  - Booking ID: ${result.bookingId}');
-      print('  - Status: ${result.bookingStatus}');
       return const Right(unit);
     } on ServerException catch (e) {
-      print('Repository: ServerException - ${e.message}');
       return Left(ServerFailure(e.message));
     } catch (e, stackTrace) {
-      print('Repository: Unexpected error - $e');
-      print('Stack trace: $stackTrace');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
@@ -101,20 +89,11 @@ class BookingRepoImpl implements BookingRepo {
           '${appointmentDateTime.minute.toString().padLeft(2, '0')}:'
           '${appointmentDateTime.second.toString().padLeft(2, '0')}';
       
-      print('Repository: Rescheduling booking with ID: ${rescheduleEntity.bookingId}');
-      print('  - New date: ${rescheduleEntity.availableDate}');
-      print('  - New time: ${rescheduleEntity.availableTime}');
-      print('  - Formatted DateTime: $dateTimeString');
-      
       final result = await remoteDataSource.rescheduleBooking(
         rescheduleEntity.bookingId,
         dateTimeString,
       );
-      
-      print('Repository: Success - Booking rescheduled');
-      print('  - Booking ID: ${result.bookingId}');
-      print('  - Status: ${result.bookingStatus}');
-      print('  - New Appointment: ${result.dateTimeBooking}');
+
       
       // Create updated RescheduleEntity from result
       final updatedRescheduleEntity = RescheduleEntity(
@@ -127,11 +106,8 @@ class BookingRepoImpl implements BookingRepo {
       
       return Right(updatedRescheduleEntity);
     } on ServerException catch (e) {
-      print('Repository: ServerException - ${e.message}');
       return Left(ServerFailure(e.message));
     } catch (e, stackTrace) {
-      print('Repository: Unexpected error - $e');
-      print('Stack trace: $stackTrace');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }

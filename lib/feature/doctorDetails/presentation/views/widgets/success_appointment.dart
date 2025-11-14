@@ -34,11 +34,11 @@ void successAppointment(
         finalSelectedDate ??= appointmentState.selectedDate;
         finalSelectedTime ??= appointmentState.selectedTime;
       } catch (e) {
-        // AppointmentCubit not available in context, use provided parameters or defaults
+
         print('AppointmentCubit not available: $e');
       }
       
-      // Set defaults if still null
+
       finalDoctorName ??= 'Doctor';
       
       // Format date

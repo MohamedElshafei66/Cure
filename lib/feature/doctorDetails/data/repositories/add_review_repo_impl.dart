@@ -16,27 +16,15 @@ class AddReviewRepoImpl implements AddReviewRepo {
     required String comment,
   }) async {
     try {
-      print('========================================');
-      print('ADD REVIEW REPOSITORY: Adding review');
-      print('========================================');
-      print('Repository: Calling remote data source...');
       final result = await remoteDataSource.addReview(
         doctorId: doctorId,
         rating: rating,
         comment: comment,
       );
-      print('========================================');
-      print('ADD REVIEW REPOSITORY: Success');
-      print('========================================');
-      print('Repository: Review added successfully');
-      print('========================================');
       return Right(result);
     } on ServerException catch (e) {
-      print('Repository: ServerException - ${e.message}');
       return Left(ServerFailure(e.message));
     } catch (e, stackTrace) {
-      print('Repository: Unexpected error - $e');
-      print('Stack trace: $stackTrace');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }

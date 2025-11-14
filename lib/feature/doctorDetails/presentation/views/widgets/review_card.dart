@@ -14,14 +14,14 @@ class ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check if doctorDetails is DoctorDetailsModel to access reviewsList
+
     final isModel = doctorDetails is DoctorDetailsModel;
     final reviewsList = isModel ? (doctorDetails as DoctorDetailsModel).reviewsList : null;
     
-    // Check if reviews exist and are not empty
+
     final hasReviews = reviewsList != null && reviewsList.isNotEmpty;
     
-    // If reviews are null or empty, show placeholder
+
     if (!hasReviews) {
       return Container(
         padding: const EdgeInsets.all(12),

@@ -11,7 +11,7 @@ class TimeDate extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AppointmentCubit, AppointmentState>(
       builder: (context, state) {
-        // Get available times for selected date
+
         final availableTimes = state.selectedDate != null
             ? context.read<AppointmentCubit>().getAvailableTimesForDate(state.selectedDate!)
             : <String>[];

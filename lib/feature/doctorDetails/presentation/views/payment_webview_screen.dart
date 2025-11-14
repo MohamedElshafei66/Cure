@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/success_appointment.dart' show successAppointment;
-import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/appointment_cubit.dart';
 
 class PaymentWebViewScreen extends StatefulWidget {
   final String paymentUrl;
@@ -114,8 +111,7 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
 
   void _checkPaymentSuccess(String url) {
     final urlLower = url.toLowerCase();
-    
-    // List of success indicators in URL
+
     final successIndicators = [
       'success',
       'payment_success',

@@ -30,20 +30,9 @@ class AddReviewRemoteDataSourceImpl implements AddReviewRemoteDataSource {
         'comment': comment,
       };
 
-      print('========================================');
-      print('ADD REVIEW DATA SOURCE: POST REQUEST');
-      print('========================================');
-      print('Endpoint: $endpoint');
-      print('Body: $body');
-      print('========================================');
       
       final response = await apiServices.post(endPoint: endpoint, body: body);
 
-      print('========================================');
-      print('ADD REVIEW DATA SOURCE: RESPONSE');
-      print('========================================');
-      print('Response: $response');
-      print('========================================');
 
       // Check if response indicates success
       if (response is Map<String, dynamic>) {
@@ -58,16 +47,12 @@ class AddReviewRemoteDataSourceImpl implements AddReviewRemoteDataSource {
       
       return true;
     } on DioException catch (e) {
-      print('DioException: ${e.message}');
-      print('Response: ${e.response?.data}');
-      print('Status Code: ${e.response?.statusCode}');
+
       throw ServerException.fromDioError(e);
     } on ServerException catch (e) {
-      print('ServerException: ${e.message}');
       rethrow;
     } catch (e, stackTrace) {
-      print('Unexpected error: $e');
-      print('Stack trace: $stackTrace');
+
       throw ServerException('Unexpected error: ${e.toString()}');
     }
   }

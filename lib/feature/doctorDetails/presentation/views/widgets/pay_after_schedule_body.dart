@@ -46,7 +46,6 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
         BlocListener<DoctorDetailsCubit, DoctorDetailsState>(
           listener: (context, state) {
             if (state is DoctorDetailsLoaded) {
-              print('Doctor details loaded, setting to AppointmentCubit');
               context.read<AppointmentCubit>().setDoctorDetails(state.doctorDetails);
             }
           },
@@ -54,11 +53,9 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
         BlocListener<BookingCubit, BookingState>(
           listener: (context, state) {
             if (state is BookingSuccess) {
-              // If payment method is Stripe (Credit Card), open payment URL
               if (state.booking.paymentUrl != null && state.booking.paymentUrl!.isNotEmpty) {
                 _launchPaymentUrl(context, state.booking.paymentUrl!);
               } else {
-                // Show success dialog if no payment URL
                 final appointmentState = context.read<AppointmentCubit>().state;
                 successAppointment(
                   context,
@@ -153,13 +150,11 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
   }
 
   void _handlePayButton(BuildContext context, AppointmentState appointmentState) {
-    print('========================================');
-    print('PAY BUTTON PRESSED - Starting Booking Process');
-    print('========================================');
+
     
     // Validate required fields
     if (appointmentState.doctorDetails == null) {
-      print('ERROR: Doctor details not available');
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Doctor details not available'),
@@ -170,7 +165,7 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
     }
 
     if (appointmentState.selectedDate == null || appointmentState.selectedTime == null) {
-      print('ERROR: Date or time not selected');
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select date and time'),
@@ -181,7 +176,7 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
     }
 
     if (appointmentState.paymentMethod == null) {
-      print('ERROR: Payment method not selected');
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select a payment method'),
@@ -191,12 +186,12 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
       return;
     }
 
-    // Get slot ID
+
     final appointmentCubit = context.read<AppointmentCubit>();
     final slotId = appointmentCubit.getSelectedSlotId();
     
     if (slotId == null) {
-      print('ERROR: Could not find selected slot');
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Could not find selected slot'),
@@ -206,8 +201,8 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
       return;
     }
 
-    // Map payment method to payment code
-    // 1 = Credit Card (Stripe), 2 = Cash, 3 = Apple Pay
+
+
     int paymentCode = 1; // Default to Credit Card
     if (appointmentState.paymentMethod == AppStrings.cach) {
       paymentCode = 2;
@@ -215,15 +210,15 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
       paymentCode = 3;
     }
 
-    // Create booking based on payment method
+
     final bookingCubit = context.read<BookingCubit>();
     
-    // Create appointment date time from selected date and time
+
     final selectedDate = appointmentState.selectedDate!;
     final selectedTime = appointmentState.selectedTime!;
     final appointmentDateTime = _createAppointmentDateTime(selectedDate, selectedTime);
     
-    // Different request bodies based on payment method
+
     if (paymentCode == 1) {
       bookingCubit.createBooking(
         doctorId:appointmentState.doctorDetails!.doctorId,
@@ -234,7 +229,7 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
         appointmentAt:appointmentDateTime,
       );
     } else if (paymentCode == 2) {
-      // PayPal - Payment: 2
+
       bookingCubit.createBooking(
         doctorId:appointmentState.doctorDetails!.doctorId,
         slotId:slotId,
@@ -244,7 +239,7 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
         appointmentAt:appointmentDateTime,
       );
     } else {
-      // Apple Pay or other - use original logic
+
             bookingCubit.createBooking(
         doctorId: appointmentState.doctorDetails!.doctorId,
         slotId: slotId,
@@ -254,14 +249,10 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
         appointmentAt: appointmentDateTime,
       );
       
-      print('========================================');
-      print('PAYMENT METHOD: OTHER (Apple Pay)');
-      print('Using selected date/time');
-      print('========================================');
+
     }
     
-    print('Booking cubit called, waiting for response...');
-    print('========================================');
+
   }
 
   DateTime _createAppointmentDateTime(DateTime date, String time12Hour) {

@@ -14,12 +14,8 @@ class DoctorDetailsRepoImpl implements DoctorDetailsRepo {
   @override
   Future<Either<Failure, DoctorDetailsEntity>> fetchDoctorDetails(int doctorId) async {
     try {
-      print('Repository: Fetching doctor details for ID: $doctorId');
       final result = await remoteDataSource.fetchDoctorDetails(doctorId);
-      print('Repository: Success - Got doctor: ${result.doctorName}');
-      print('Repository: Result type: ${result.runtimeType}');
       if (result is DoctorDetailsModel) {
-        print('Repository: Available slots count: ${result.availableSlots.length}');
         for (var slot in result.availableSlots) {
           print('Repository: Slot - Date: ${slot.dateTime}, Time: ${slot.startTime}-${slot.endTime}, Booked: ${slot.isBooked}');
         }
@@ -31,8 +27,6 @@ class DoctorDetailsRepoImpl implements DoctorDetailsRepo {
       print('Repository: ServerException - ${e.message}');
       return Left(ServerFailure(e.message));
     } catch (e, stackTrace) {
-      print('Repository: Unexpected error - $e');
-      print('Stack trace: $stackTrace');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }

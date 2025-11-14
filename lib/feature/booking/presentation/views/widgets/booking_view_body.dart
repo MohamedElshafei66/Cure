@@ -48,8 +48,6 @@ class _BookingViewBodyState extends State<BookingViewBody> {
     if (imagePath.startsWith('http')) {
       return imagePath;
     }
-    // Construct full URL - API returns paths like "images/users/doctor2.jpg"
-    // Base URL is https://cure-doctor-booking.runasp.net
     if (imagePath.startsWith('/')) {
       return 'https://cure-doctor-booking.runasp.net$imagePath';
     }

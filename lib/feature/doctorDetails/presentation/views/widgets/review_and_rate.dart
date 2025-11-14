@@ -37,7 +37,7 @@ class ReviewAndRate extends StatelessWidget {
                     AppRoutes.addReviewScreen,
                     extra: doctorDetails.doctorId,
                   );
-                  // Refresh doctor details if review was added successfully
+
                   if (result == true) {
                     final doctorDetailsCubit = context.read<DoctorDetailsCubit>();
                     doctorDetailsCubit.fetchDoctorDetails(doctorDetails.doctorId);

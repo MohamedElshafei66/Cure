@@ -21,20 +21,16 @@ class DoctorDetailsBody extends StatelessWidget {
     return BlocConsumer<DoctorDetailsCubit, DoctorDetailsState>(
       listener: (context, state) {
         if (state is DoctorDetailsLoaded) {
-          print('DoctorDetailsBody: Setting doctor details to AppointmentCubit');
-          print('DoctorDetails type: ${state.doctorDetails.runtimeType}');
           context.read<AppointmentCubit>().setDoctorDetails(state.doctorDetails);
         }
       },
       builder: (context, state) {
-        print('UI: Current state: ${state.runtimeType}');
         
         if (state is DoctorDetailsLoading) {
-          print('UI: Showing loading');
           return const Center(child: CircularProgressIndicator());
         }
         if (state is DoctorDetailsError) {
-          print('UI: Showing error: ${state.message}');
+
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -52,7 +48,6 @@ class DoctorDetailsBody extends StatelessWidget {
           );
         }
         if (state is DoctorDetailsLoaded) {
-          print('UI: Showing loaded data - Doctor: ${state.doctorDetails.doctorName}');
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(

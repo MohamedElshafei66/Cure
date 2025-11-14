@@ -8,7 +8,7 @@ import '../../../../../core/utils/app_styles.dart';
 import '../../cubit/booking_search_cubit.dart';
 
 void cancelBooking(BuildContext context, String bookingId) {
-  // Get the cubit from the original context before showing dialog
+
   final cubit = context.read<BookingSearchCubit>();
   
   showDialog(

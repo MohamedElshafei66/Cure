@@ -161,20 +161,20 @@ class _CalenderDateState extends State<CalenderDate> {
     );
   }
   
-  // Get blackout dates (dates that are NOT available)
+
   List<DateTime> _getBlackoutDates(List<DateTime> availableDates) {
     if (availableDates.isEmpty) return [];
     
     final blackoutDates = <DateTime>[];
     final now = DateTime.now();
-    final endDate = now.add(const Duration(days: 365)); // Check next year
+    final endDate = now.add(const Duration(days: 365));
     
-    // Get all available dates as a set for quick lookup
+
     final availableSet = availableDates.map((date) {
       return DateTime(date.year, date.month, date.day);
     }).toSet();
     
-    // Iterate through all dates and add non-available ones to blackout
+
     var current = DateTime(now.year, now.month, now.day);
     while (current.isBefore(endDate)) {
       if (!availableSet.contains(current)) {

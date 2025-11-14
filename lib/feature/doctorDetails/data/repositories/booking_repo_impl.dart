@@ -20,10 +20,6 @@ class BookingRepoImpl implements BookingRepo {
     required DateTime appointmentAt,
   }) async {
     try {
-      print('========================================');
-      print('REPOSITORY: Creating booking');
-      print('========================================');
-      print('Repository: Calling remote data source...');
       final result = await remoteDataSource.createBooking(
         doctorId: doctorId,
         slotId: slotId,
@@ -32,27 +28,11 @@ class BookingRepoImpl implements BookingRepo {
         status: status,
         appointmentAt: appointmentAt,
       );
-      print('========================================');
-      print('REPOSITORY: Success');
-      print('========================================');
-      print('Repository: Booking created successfully');
-      print('  - Booking ID: ${result.id}');
-      print('  - Doctor ID: ${result.doctorId}');
-      print('  - Doctor Name: ${result.doctorName}');
-      print('  - Patient ID: ${result.patientId}');
-      print('  - Patient Name: ${result.patientName}');
-      print('  - Payment: ${result.payment}');
-      print('  - Status: ${result.status}');
-      print('  - Payment URL: ${result.paymentUrl ?? "N/A"}');
-      print('  - Appointment At: ${result.appointmentAt}');
-      print('========================================');
+
       return Right(result);
     } on ServerException catch (e) {
-      print('Repository: ServerException - ${e.message}');
       return Left(ServerFailure(e.message));
     } catch (e, stackTrace) {
-      print('Repository: Unexpected error - $e');
-      print('Stack trace: $stackTrace');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
