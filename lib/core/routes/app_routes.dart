@@ -10,7 +10,7 @@ import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/vie
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/pay_after_schedule.dart';
-import 'package:round_7_mobile_cure_team3/feature/doctors_nearby/presentation/doctors_nearby.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctors/presentation/all_doctors.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/favourites.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
@@ -51,7 +51,7 @@ abstract class AppRoutes {
   static String paymentMethodThirdScreen = "/paymentMethodThirdScreen";
   static String chatsListScreen = "/chats_list_screen";
   static String chatScreen = "/chatScreen";
-  static String doctorsNearby = '/doctors_nearby';
+  static String allDoctorsScreen = '/doctors';
   static String search = '/search';
   static String favourites = '/favourites';
   static String map = '/map';
@@ -78,8 +78,8 @@ abstract class AppRoutes {
       GoRoute(path: map, builder: (context, state) => MapScreen()),
       GoRoute(path: '/', builder: (context, state) => SplashScreen()),
       GoRoute(
-        path: doctorsNearby,
-        builder: (context, state) => DoctorsNearby(),
+        path: allDoctorsScreen,
+        builder: (context, state) => AllDoctorsScreen(),
       ),
       GoRoute(
         path: onBoarding_screen,
@@ -112,16 +112,14 @@ abstract class AppRoutes {
       GoRoute(path: chatScreen, builder: (context, state) => ChatScreen()),
       GoRoute(
         path: paymentMethodSecondScreen,
-        builder: (context, state) => PaymentMethodSecondScreen(),),
-        GoRoute(
+        builder: (context, state) => PaymentMethodSecondScreen(),
+      ),
+      GoRoute(
         path: paymentMethodScreen,
         builder: (context, state) => PaymentMethodScreen(),
       ),
-      
-      GoRoute(
-        path: addCard,
-        builder: (context, state) => AddCardScreen(),
-      ),
+
+      GoRoute(path: addCard, builder: (context, state) => AddCardScreen()),
       GoRoute(
         path: settingScreen,
         builder: (context, state) => SettingScreen(),

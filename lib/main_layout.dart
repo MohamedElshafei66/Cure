@@ -54,6 +54,7 @@ class _MainLayoutState extends State<MainLayout> {
     return Scaffold(
       body: IndexedStack(index: selectedIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         onTap: (value) {
           setState(() {
             selectedIndex = value;

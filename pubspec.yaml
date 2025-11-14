@@ -57,6 +57,9 @@ dependencies:
 
 
   get_it: ^9.0.5
+  flutter_bloc: ^9.1.1
+  location: ^8.0.1
+  http: ^1.6.0
 
 
 
