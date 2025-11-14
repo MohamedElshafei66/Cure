@@ -1,7 +1,8 @@
 import 'package:go_router/go_router.dart';
-import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/view/sign_in_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/auth/app_startup_logic.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_screen.dart';
-import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/sign_up_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/presentation/view/sign_up_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/reschedule_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chat_screen.dart';
@@ -62,7 +63,6 @@ abstract class AppRoutes {
   static String addCard = '/addCard';
 
   static final router = GoRouter(
-
     initialLocation: '/',
     routes: [
       GoRoute(
@@ -78,7 +78,7 @@ abstract class AppRoutes {
       GoRoute(path: search, builder: (context, state) => SearchScreen()),
       GoRoute(path: favourites, builder: (context, state) => Favourites()),
       GoRoute(path: map, builder: (context, state) => MapScreen()),
-      GoRoute(path: '/', builder: (context, state) => SplashScreen()),
+      GoRoute(path: '/', builder: (context, state) => AppStartupLogic()),
       GoRoute(
         path: doctorsNearby,
         builder: (context, state) => DoctorsNearby(),
@@ -97,7 +97,11 @@ abstract class AppRoutes {
       ),
       GoRoute(
         path: otp_screen,
-        builder: (context, state) => OTPVerificationScreen(),
+        builder: (context, state) {
+          final phoneNumber =
+              state.extra as String;
+          return OTPVerificationScreen(phoneNumber: phoneNumber);
+        },
       ),
       GoRoute(
         path: notification_screen,
@@ -114,16 +118,14 @@ abstract class AppRoutes {
       GoRoute(path: chatScreen, builder: (context, state) => ChatScreen()),
       GoRoute(
         path: paymentMethodSecondScreen,
-        builder: (context, state) => PaymentMethodSecondScreen(),),
-        GoRoute(
+        builder: (context, state) => PaymentMethodSecondScreen(),
+      ),
+      GoRoute(
         path: paymentMethodScreen,
         builder: (context, state) => PaymentMethodScreen(),
       ),
-      
-      GoRoute(
-        path: addCard,
-        builder: (context, state) => AddCardScreen(),
-      ),
+
+      GoRoute(path: addCard, builder: (context, state) => AddCardScreen()),
       GoRoute(
         path: settingScreen,
         builder: (context, state) => SettingScreen(),

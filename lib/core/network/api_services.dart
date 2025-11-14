@@ -45,4 +45,18 @@ class ApiServices {
       );
     }
   }
+  Future<dynamic> put({
+    required String endPoint,
+    Map<String, dynamic>? body,
+  }) async {
+    try {
+      final response = await dio.put(endPoint, data: body);
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(
+        'PUT $endPoint failed: ${e.response?.data ?? e.message}',
+      );
+    }
+  }
+
 }

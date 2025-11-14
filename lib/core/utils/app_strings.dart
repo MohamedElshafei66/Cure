@@ -34,7 +34,9 @@ abstract class AppStrings {
 
   //  OTP Verification Screen
   static const String otpTitle = "OTP Code Verification";
-  static const String otpDescription = "Code has been send to +02 010 *** **88";
+  static String otpDescription(String phoneNumber) {
+    return "Code has been sent to $phoneNumber";
+  }
   static const String resendCode = "Resend code in 55 s";
   static const String verify = "Verify";
   static const String wrongCode = "Wrong code";
@@ -151,7 +153,7 @@ abstract class AppStrings {
   static const String settings = "Settings";
   static const String privacyPolicy = "Privacy Policy";
   static const String fAQs = "FAQs";
-  
+
 
   static const String logout = "Logout";
 

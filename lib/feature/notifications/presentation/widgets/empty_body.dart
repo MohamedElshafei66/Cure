@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 
 class EmptyBodyWidget extends StatelessWidget {
@@ -13,6 +14,7 @@ class EmptyBodyWidget extends StatelessWidget {
   final String subTitle;
   @override
   Widget build(BuildContext context) {
+    
     final size = MediaQuery.sizeOf(context);
     return Align(
       child: Column(

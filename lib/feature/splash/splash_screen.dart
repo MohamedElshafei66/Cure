@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
@@ -17,6 +18,8 @@ class _SplashScreenState extends State<SplashScreen> {
   int activeIndex = 0;
   Timer? _timer;
 
+  final SecureStorageService _storage = SecureStorageService();
+
   @override
   void initState() {
     super.initState();
@@ -27,9 +30,17 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     });
 
-    Future.delayed(const Duration(seconds: 2), () {
+
+    Future.delayed(const Duration(seconds: 2), () async {
       if (!mounted) return;
-      context.go(AppRoutes.onBoarding_screen);
+
+      final token = await _storage.read(key: 'accessToken');
+
+      if (token != null && token.isNotEmpty) {
+        context.go(AppRoutes.home);
+      } else {
+        context.go(AppRoutes.onBoarding_screen); 
+      }
     });
   }
 

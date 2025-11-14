@@ -5,7 +5,9 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 
 class ResendCodeText extends StatefulWidget {
-  const ResendCodeText({super.key});
+  final VoidCallback? onTap;
+
+  const ResendCodeText({super.key, this.onTap});
 
   @override
   State<ResendCodeText> createState() => _ResendCodeTextState();
@@ -41,19 +43,23 @@ class _ResendCodeTextState extends State<ResendCodeText> {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: AppStyle.styleMedium14(context).copyWith(color: AppColors.textPrimary),
-        children: [
-          const TextSpan(text: AppStrings.resendCode),
-          TextSpan(
-            text: " $secondsRemaining s",
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: RichText(
+        text: TextSpan(
+          style: AppStyle.styleMedium14(context)
+              .copyWith(color: AppColors.textPrimary),
+          children: [
+            const TextSpan(text: AppStrings.resendCode),
+            TextSpan(
+              text: " $secondsRemaining s",
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
