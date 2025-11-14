@@ -1,19 +1,48 @@
 import 'package:dio/dio.dart';
 
 class ApiServices {
-  Dio dio = Dio();
-  final baseUrl = 'https://cure-doctor-booking.runasp.net/api/';
+  final Dio dio;
 
-  Future<Map<String, dynamic>> get({required String endPoint}) async {
-    var response = await dio.get('$baseUrl$endPoint');
-    return response.data;
+  final String baseUrl = 'https://cure-doctor-booking.runasp.net/api/';
+
+  final String? token;
+
+  ApiServices({this.token})
+    : dio = Dio(
+        BaseOptions(
+          baseUrl: 'https://cure-doctor-booking.runasp.net/api/',
+
+          headers: {
+            'Accept': 'application/json',
+
+            if (token != null) 'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+  Future<dynamic> get({required String endPoint}) async {
+    try {
+      final response = await dio.get(endPoint);
+
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception('GET $endPoint failed: ${e.response?.data ?? e.message}');
+    }
   }
 
-  Future<Map<String, dynamic>> post({
+  Future<dynamic> post({
     required String endPoint,
+
     required Map<String, dynamic> body,
   }) async {
-    var response = await dio.post('$baseUrl$endPoint', data: body);
-    return response.data;
+    try {
+      final response = await dio.post(endPoint, data: body);
+
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(
+        'POST $endPoint failed: ${e.response?.data ?? e.message}',
+      );
+    }
   }
 }

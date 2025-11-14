@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
-import 'package:round_7_mobile_cure_team3/feature/chat/presentation/chats_list_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chats_list_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_screen.dart';
 

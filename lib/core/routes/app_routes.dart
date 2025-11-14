@@ -4,8 +4,8 @@ import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_scre
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/sign_up_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/reschedule_view.dart';
-import 'package:round_7_mobile_cure_team3/feature/chat/presentation/chat_screen.dart';
-import 'package:round_7_mobile_cure_team3/feature/chat/presentation/chats_list_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chat_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chats_list_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
