@@ -1,11 +1,9 @@
-import 'package:dio/dio.dart';
-import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
+import 'package:round_7_mobile_cure_team3/core/network/network_info.dart';
 
 class PaymentMethodRemoteDataSource {
   final ApiServices api;
 
   PaymentMethodRemoteDataSource(this.api);
-
 
   Future<String> addPaymentMethod({
     required String methodName,
@@ -14,7 +12,7 @@ class PaymentMethodRemoteDataSource {
     required int expYear,
     required String cvv,
   }) async {
-    final token = await api.getToken();
+    // final token = await api.getToken();
 
     final last3 = cardNumber.substring(cardNumber.length - 3);
 
@@ -23,19 +21,13 @@ class PaymentMethodRemoteDataSource {
       "last3": last3,
       "brand": "Visa",
       "expMonth": expMonth,
-      "expYear": 2000 + expYear, 
+      "expYear": 2000 + expYear,
       "isEnabled": true,
     };
 
     final response = await api.dio.post(
       '${api.baseUrl}profile/paymentmethods/add',
       data: data,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Accept': 'application/json',
-        },
-      ),
     );
 
     return response.data["message"] ?? "Your card successfully added 🎉";
