@@ -1,14 +1,15 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/helpers/location_helper.dart';
+import 'package:round_7_mobile_cure_team3/feature/map/presentation/widgets/confirm_location_button.dart';
+import 'package:round_7_mobile_cure_team3/feature/map/presentation/widgets/current_location_button.dart';
+import 'package:round_7_mobile_cure_team3/feature/map/presentation/widgets/loading_indicator.dart';
+import 'package:round_7_mobile_cure_team3/feature/map/presentation/widgets/map_search_bar.dart';
+import 'package:round_7_mobile_cure_team3/feature/map/presentation/widgets/map_widget.dart';
+import 'package:round_7_mobile_cure_team3/feature/map/presentation/widgets/search_results_list.dart';
+import 'package:round_7_mobile_cure_team3/feature/map/services/location_search_service.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -19,18 +20,132 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   Position? position;
-  final Completer<GoogleMapController> _mapController = Completer();
+  LatLng? selectedLatLng;
+
+  final MapController _mapController = MapController();
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
+  List<LocationSearchResult> _searchResults = [];
+  bool _isLoadingSearch = false;
+  String? _lastSearchQuery;
+  String _currentAddress = 'Loading address...';
+  bool _isLoadingAddress = false;
 
   @override
   void initState() {
     super.initState();
     getCurrentLocation();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text;
+
+    if (query.isEmpty) {
+      setState(() {
+        _searchResults = [];
+        _lastSearchQuery = null;
+      });
+      return;
+    }
+
+    if (query != _lastSearchQuery) {
+      _lastSearchQuery = query;
+      _performSearch(query);
+    }
+  }
+
+  Future<void> _performSearch(String query) async {
+    if (query.trim().isEmpty) {
+      setState(() {
+        _searchResults = [];
+      });
+      return;
+    }
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (query != _searchController.text) {
+      return;
+    }
+
+    setState(() {
+      _isLoadingSearch = true;
+    });
+
+    final results = await LocationSearchService.searchLocation(query);
+
+    if (mounted && query == _searchController.text) {
+      setState(() {
+        _searchResults = results;
+        _isLoadingSearch = false;
+      });
+    }
+  }
+
+  void _selectLocation(LocationSearchResult result) {
+    setState(() {
+      selectedLatLng = result.coordinates;
+      _isSearching = false;
+      _searchController.clear();
+      _searchResults = [];
+    });
+
+    position = Position(
+      latitude: result.coordinates.latitude,
+      longitude: result.coordinates.longitude,
+      timestamp: DateTime.now(),
+      accuracy: 0,
+      altitude: 0,
+      heading: 0,
+      speed: 0,
+      speedAccuracy: 0,
+      altitudeAccuracy: 0,
+      headingAccuracy: 0,
+    );
+
+    _mapController.move(result.coordinates, 17);
+    _updateAddress(result.coordinates);
+  }
+
+  Future<void> _updateAddress(LatLng coordinates) async {
+    setState(() {
+      _isLoadingAddress = true;
+    });
+
+    final address = await LocationSearchService.getAddressFromCoordinates(
+      coordinates,
+    );
+
+    if (mounted) {
+      setState(() {
+        _currentAddress = address;
+        _isLoadingAddress = false;
+      });
+    }
   }
 
   Future<void> getCurrentLocation() async {
     try {
       final pos = await LocationHelper.getCurrentLocation();
-      setState(() => position = pos);
+      final latLng = LatLng(pos.latitude, pos.longitude);
+
+      setState(() {
+        position = pos;
+        selectedLatLng = latLng;
+      });
+
+      Future.delayed(const Duration(milliseconds: 200), () {
+        _mapController.move(latLng, 15);
+      });
+      _updateAddress(latLng);
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -38,58 +153,47 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  Widget buildMap() {
-    final currentCameraPosition = CameraPosition(
-      target: LatLng(position!.latitude, position!.longitude),
-      zoom: 15,
-    );
-
-    return GoogleMap(
-      initialCameraPosition: currentCameraPosition,
-      mapType: MapType.normal,
-      myLocationEnabled: true,
-      myLocationButtonEnabled: false,
-      zoomControlsEnabled: false,
-      onMapCreated: (controller) => _mapController.complete(controller),
-    );
+  void _onMapTap(LatLng point) {
+    setState(() {
+      selectedLatLng = point;
+    });
+    _mapController.move(selectedLatLng!, 17);
+    _updateAddress(point);
   }
 
-  Future<void> goToMyCurrentLocation() async {
-    final GoogleMapController controller = await _mapController.future;
-    final currentPosition = CameraPosition(
-      target: LatLng(position!.latitude, position!.longitude),
-      zoom: 15,
-    );
-    controller.animateCamera(CameraUpdate.newCameraPosition(currentPosition));
+  void goToMyCurrentLocation() {
+    if (position == null) return;
+
+    final current = LatLng(position!.latitude, position!.longitude);
+
+    setState(() {
+      selectedLatLng = current;
+    });
+
+    _mapController.move(current, 17);
+    _updateAddress(current);
   }
 
-  Widget loadingIndicator() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 90,
-            width: 90,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.shade300, width: 2),
-              image: DecorationImage(
-                image: AssetImage(AppImages.profileImage),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            "Fetching your location...",
-            style: AppStyle.styleMedium14(
-              context,
-            ).copyWith(color: Colors.grey.shade600),
-          ),
-        ],
-      ),
-    );
+  void _handleBackPressed() {
+    if (_isSearching) {
+      setState(() {
+        _isSearching = false;
+        _searchController.clear();
+        _searchResults = [];
+      });
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  void _handleSearchToggle() {
+    setState(() {
+      _isSearching = !_isSearching;
+      if (!_isSearching) {
+        _searchController.clear();
+        _searchResults = [];
+      }
+    });
   }
 
   @override
@@ -98,122 +202,48 @@ class _MapScreenState extends State<MapScreen> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          position != null ? buildMap() : loadingIndicator(),
+          position != null && selectedLatLng != null
+              ? MapWidget(
+                  mapController: _mapController,
+                  selectedLatLng: selectedLatLng!,
+                  onTap: _onMapTap,
+                )
+              : const MapLoadingIndicator(),
+
           Positioned(
             top: 60,
             left: 16,
             right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(50),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
+            child: Column(
+              children: [
+                MapSearchBar(
+                  isSearching: _isSearching,
+                  searchController: _searchController,
+                  currentAddress: _currentAddress,
+                  isLoadingAddress: _isLoadingAddress,
+                  onBackPressed: _handleBackPressed,
+                  onSearchToggle: _handleSearchToggle,
+                ),
+                if (_isSearching)
+                  SearchResultsList(
+                    results: _searchResults,
+                    isLoading: _isLoadingSearch,
+                    onLocationSelected: _selectLocation,
                   ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: AppColors.lightGrey,
-                        shape: BoxShape.rectangle,
-                      ),
-                      child: Icon(Icons.arrow_back_ios),
-                    ),
-                  ),
-                  const Spacer(),
-
-                  // 📍 Location Info (Centered)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Current location',
-                        style: AppStyle.styleMedium16(
-                          context,
-                        ).copyWith(color: Colors.black),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Image.asset(
-                            AppIcons.location,
-                            height: 16,
-                            color: AppColors.primary,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '129, El-Nasr Street, Cairo',
-                            style: AppStyle.styleMedium14(context).copyWith(
-                              color: AppColors.primary,
-                              decoration: TextDecoration.underline,
-                              decorationColor: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  const Spacer(),
-
-                  InkWell(
-                    onTap: () {},
-                    borderRadius: BorderRadius.circular(50),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.lightGrey,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(CupertinoIcons.search),
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
+
           Positioned(
             bottom: 52,
             left: 16,
             right: 16,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(AppColors.primary),
-                shape: WidgetStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              onPressed: () {},
-              child: Text(
-                'Confirm Location',
-                style: AppStyle.styleMedium16(
-                  context,
-                ).copyWith(color: Colors.white),
-              ),
-            ),
+            child: ConfirmLocationButton(position: position),
           ),
         ],
       ),
-      floatingActionButton: Container(
-        alignment: Alignment.bottomRight,
-        margin: const EdgeInsets.fromLTRB(0, 0, 0, 120),
-        child: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: goToMyCurrentLocation,
-          child: const Icon(Icons.my_location, color: AppColors.primary),
-        ),
+      floatingActionButton: CurrentLocationButton(
+        onPressed: goToMyCurrentLocation,
       ),
     );
   }

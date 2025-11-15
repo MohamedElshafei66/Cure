@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
-import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
+import 'package:round_7_mobile_cure_team3/main_layout.dart';
 import 'package:round_7_mobile_cure_team3/feature/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/splash/splash_screen.dart';
 
@@ -26,39 +26,38 @@ class _AppStartupLogicState extends State<AppStartupLogic> {
   }
 
   Future<void> _determineStartScreen() async {
-  final isFirstTime = await secureStorage.read(key: 'isFirstTime');
-  final token = await secureStorage.read(key: 'accessToken');
-  final refreshToken = await secureStorage.read(key: 'refreshToken');
+    final isFirstTime = await secureStorage.read(key: 'isFirstTime');
+    final token = await secureStorage.read(key: 'accessToken');
+    final refreshToken = await secureStorage.read(key: 'refreshToken');
 
+    if (token != null && refreshToken != null) {
+      context.read<AuthProvider>().setTokens(
+        accessToken: token,
+        refreshToken: refreshToken,
+      );
+    }
 
-  if (token != null && refreshToken != null) {
-    context.read<AuthProvider>().setTokens(
-      accessToken: token,
-      refreshToken: refreshToken,
-    );
+    Widget screen;
+
+    if (isFirstTime == null) {
+      await secureStorage.write(key: 'isFirstTime', value: 'false');
+      screen = const OnBoardingScreen();
+    } else if (token != null && token.isNotEmpty) {
+      screen = const MainLayout();
+    } else {
+      screen = const SignInScreen();
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _startScreen = screen;
+    });
   }
 
-  Widget screen;
-
-  if (isFirstTime == null) {
-    await secureStorage.write(key: 'isFirstTime', value: 'false');
-    screen = const OnBoardingScreen();
-  } else if (token != null && token.isNotEmpty) {
-    screen = Home();
-  } else {
-    screen = const SignInScreen();
-  }
-
-  if (!mounted) return;
-  setState(() {
-    _startScreen = screen;
-  });
-}
- @override
+  @override
   Widget build(BuildContext context) {
     if (_startScreen == null) {
-      return  SplashScreen();
-
+      return SplashScreen();
     }
     return _startScreen!;
   }

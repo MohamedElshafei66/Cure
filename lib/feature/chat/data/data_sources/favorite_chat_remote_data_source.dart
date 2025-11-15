@@ -1,3 +1,4 @@
+import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/data/models/favourite_chat_model.dart';
 import '../../../../core/network/api_services.dart';
 import '../../../../core/network/api_endpoints.dart';
@@ -5,8 +6,8 @@ import '../../../../core/network/api_endpoints.dart';
 class FavoriteChatRemoteDataSource {
   final ApiServices apiServices;
 
-  FavoriteChatRemoteDataSource(String token)
-      : apiServices = ApiServices(token: token);
+  FavoriteChatRemoteDataSource({String? token, SecureStorageService? secureStorage})
+      : apiServices = ApiServices(token: token, secureStorage: secureStorage);
 
   Future<FavouriteChatModel> addFavorite(String chatId) async {
     try {

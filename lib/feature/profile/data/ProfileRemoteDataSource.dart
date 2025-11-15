@@ -39,9 +39,17 @@ class ProfileRemoteDataSource {
     });
 
     try {
+      // Get token from secure storage if available
+      final token = await api.getToken();
+      final headers = <String, String>{'Accept': 'application/json'};
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
       final response = await api.dio.put(
         '${api.baseUrl}profile/EditProfile/updateprofile',
         data: formData,
+        options: Options(headers: headers),
       );
 
       print(" UPDATE PROFILE SUCCESS RESPONSE: ${response.data}");
@@ -67,8 +75,15 @@ class ProfileRemoteDataSource {
 
   Future<bool> toggleNotification() async {
     try {
+      final token = await api.getToken();
+      final headers = <String, String>{'Accept': 'application/json'};
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
       final response = await api.dio.put(
         "${api.baseUrl}Profile/NotificationSettings/toggle",
+        options: Options(headers: headers),
       );
 
       print(" TOGGLE NOTIFICATION RESPONSE: ${response.data}");

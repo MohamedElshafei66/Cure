@@ -87,8 +87,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     if (value == null || value.isEmpty) {
                       return "Email is required";
                     }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                        .hasMatch(value)) {
+                    if (!RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    ).hasMatch(value)) {
                       return "Enter a valid email";
                     }
                     return null;
@@ -117,7 +118,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   months: months,
                   years: years,
                   onDayChanged: (value) => setState(() => selectedDay = value!),
-                  onMonthChanged: (value) => setState(() => selectedMonth = value!),
+                  onMonthChanged: (value) =>
+                      setState(() => selectedMonth = value!),
                   onYearChanged: (value) {
                     if (value! <= DateTime.now().year) {
                       setState(() => selectedYear = value);
@@ -145,4 +147,3 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     );
   }
 }
-

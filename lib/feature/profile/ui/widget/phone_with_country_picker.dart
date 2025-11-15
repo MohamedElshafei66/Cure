@@ -4,19 +4,34 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 
 class PhoneWithCountryPicker extends StatefulWidget {
-  const PhoneWithCountryPicker({super.key});
+  final TextEditingController? controller;
+  final String? initialValue;
+  final String? initialCountryCode;
+  
+  const PhoneWithCountryPicker({
+    super.key,
+    this.controller,
+    this.initialValue,
+    this.initialCountryCode,
+  });
 
   @override
   State<PhoneWithCountryPicker> createState() => _PhoneWithCountryPickerState();
 }
 
 class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
-  String countryCode = '+20';
-  final TextEditingController phoneController = TextEditingController();
+  late String countryCode;
+  late TextEditingController phoneController;
   late FocusNode focusNode;
+  
   @override
   void initState() {
     super.initState();
+    countryCode = widget.initialCountryCode ?? '+20';
+    phoneController = widget.controller ?? TextEditingController();
+    if (widget.initialValue != null) {
+      phoneController.text = widget.initialValue!;
+    }
     focusNode = FocusNode();
     focusNode.addListener(() {
       setState(() {});
@@ -26,8 +41,14 @@ class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
   @override
   void dispose() {
     focusNode.dispose();
+    // Only dispose controller if we created it
+    if (widget.controller == null) {
+      phoneController.dispose();
+    }
     super.dispose();
   }
+  
+  String get fullPhoneNumber => '$countryCode${phoneController.text}';
 
   @override
   Widget build(BuildContext context) {

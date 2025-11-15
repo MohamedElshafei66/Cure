@@ -1,13 +1,14 @@
 import '../models/chat_model.dart';
+import '../models/search_chat_model.dart';
+import '../../../../core/constants/secure_storage_data.dart';
 import '../../../../core/network/api_services.dart';
 import '../../../../core/network/api_endpoints.dart';
-import '../models/unread_chat_model.dart';
 
 class ChatRemoteDataSource {
   final ApiServices apiServices;
 
-  ChatRemoteDataSource(String token)
-      : apiServices = ApiServices(token: token);
+  ChatRemoteDataSource({String? token, SecureStorageService? secureStorage})
+      : apiServices = ApiServices(token: token, secureStorage: secureStorage);
 
   Future<ChatModel> getChatsList() async {
     try {
@@ -41,6 +42,17 @@ class ChatRemoteDataSource {
       return ChatModel.fromJson(response);
     } catch (e) {
       throw Exception('Failed to send chat: $e');
+    }
+  }
+
+  Future<SearchChatModel> searchChat(String query) async {
+    try {
+      final response = await apiServices.get(
+        endPoint: '${ApiEndpoints.searchChat}?search=$query',
+      );
+      return SearchChatModel.fromJson(response);
+    } catch (e) {
+      throw Exception('Failed to search chat: $e');
     }
   }
 }

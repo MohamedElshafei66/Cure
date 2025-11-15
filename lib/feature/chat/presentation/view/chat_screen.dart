@@ -8,7 +8,6 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/domain/repositories/ChatRepository.dart';
-import '../../data/repositories/ChatRepositoryImp.dart';
 import '../cubit/conversation_cubit.dart';
 import '../cubit/conversation_state.dart';
 
@@ -86,8 +85,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.chatRepository == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Error')),
+        body: const Center(child: Text('Chat repository not available')),
+      );
+    }
+    
     return BlocProvider(
-      create: (_) => ConversationCubit(widget.chatRepository! ),
+      create: (_) => ConversationCubit(widget.chatRepository!),
       child: BlocListener<ConversationCubit, ConversationState>(
         listener: (context, state) {
           if (state is ConversationError) {

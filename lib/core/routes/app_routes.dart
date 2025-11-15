@@ -1,18 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/app_startup_logic.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/presentation/view/sign_up_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/reschedule_view.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/data/data_sources/chat_remote_data_source.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/data/models/chat_model.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/data/repositories/ChatRepositoryImp.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chat_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chats_list_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/pay_after_schedule.dart';
-import 'package:round_7_mobile_cure_team3/feature/doctors_nearby/presentation/doctors_nearby.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctors/presentation/all_doctors.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/favourites.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
@@ -31,7 +36,6 @@ import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_edit_screen
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/setting_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/search_screen.dart';
-import 'package:round_7_mobile_cure_team3/feature/splash/splash_screen.dart';
 import 'package:round_7_mobile_cure_team3/main_layout.dart';
 
 abstract class AppRoutes {
@@ -55,7 +59,7 @@ abstract class AppRoutes {
   static String paymentMethodThirdScreen = "/paymentMethodThirdScreen";
   static String chatsListScreen = "/chats_list_screen";
   static String chatScreen = "/chatScreen";
-  static String doctorsNearby = '/doctors_nearby';
+  static String allDoctorsScreen = '/doctors';
   static String search = '/search';
   static String favourites = '/favourites';
   static String map = '/map';
@@ -83,8 +87,8 @@ abstract class AppRoutes {
       GoRoute(path: map, builder: (context, state) => MapScreen()),
       GoRoute(path: '/', builder: (context, state) => AppStartupLogic()),
       GoRoute(
-        path: doctorsNearby,
-        builder: (context, state) => DoctorsNearby(),
+        path: allDoctorsScreen,
+        builder: (context, state) => AllDoctorsScreen(),
       ),
       GoRoute(
         path: onBoarding_screen,
@@ -101,8 +105,7 @@ abstract class AppRoutes {
       GoRoute(
         path: otp_screen,
         builder: (context, state) {
-          final phoneNumber =
-              state.extra as String;
+          final phoneNumber = state.extra as String;
           return OTPVerificationScreen(phoneNumber: phoneNumber);
         },
       ),
@@ -118,7 +121,23 @@ abstract class AppRoutes {
         path: chatsListScreen,
         builder: (context, state) => ChatsListScreen(),
       ),
-      GoRoute(path: chatScreen, builder: (context, state) => ChatScreen()),
+      GoRoute(
+        path: chatScreen,
+        builder: (context, state) {
+          final chat = state.extra as ChatData?;
+          final secureStorage = Provider.of<SecureStorageService>(context, listen: false);
+          final chatRemote = ChatRemoteDataSource(secureStorage: secureStorage);
+          final chatRepository = ChatRepositoryImpl(chatRemote);
+          
+          return ChatScreen(
+            doctorName: chat?.name,
+            doctorImage: chat?.image,
+            chatId: chat?.id.toString(),
+            receiverId: chat?.receiverId,
+            chatRepository: chatRepository,
+          );
+        },
+      ),
       GoRoute(
         path: paymentMethodSecondScreen,
         builder: (context, state) => PaymentMethodSecondScreen(),
@@ -136,11 +155,18 @@ abstract class AppRoutes {
       GoRoute(
         path: profileScreen,
         builder: (context, state) {
+          final secureStorage = Provider.of<SecureStorageService>(
+            context,
+            listen: false,
+          );
           return BlocProvider(
-            create: (context) => ProfileCubit(ProfileRepository()),
+            create: (context) => ProfileCubit(
+              ProfileRepository(secureStorage: secureStorage),
+              secureStorage: secureStorage,
+            ),
             child: ProfileScreen(),
           );
-        } 
+        },
       ),
       GoRoute(
         path: privacyPolicyScreen,
