@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/app_startup_logic.dart';
@@ -17,6 +18,8 @@ import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
 import 'package:round_7_mobile_cure_team3/feature/notifications/presentation/view/notification_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/onboarding/presentation/view/onboarding_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/data/repo/profile_repository.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/logic/Cubit/profile_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/add_card_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/faqs_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/password_managment.dart';
@@ -132,7 +135,12 @@ abstract class AppRoutes {
       ),
       GoRoute(
         path: profileScreen,
-        builder: (context, state) => ProfileScreen(),
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => ProfileCubit(ProfileRepository()),
+            child: ProfileScreen(),
+          );
+        } 
       ),
       GoRoute(
         path: privacyPolicyScreen,

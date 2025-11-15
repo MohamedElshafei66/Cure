@@ -17,27 +17,30 @@ class ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 120),
-      width: double.infinity,
-      height: 50,
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Row(
-          children: [
-            if (showicon) Icon(Icons.add, color: Colors.white),
-            Text(
-              title,
-              style: AppStyle.styleRegular16(
-                context,
-              ).copyWith(color: Colors.white),
-            ),
-          ],
+    return GestureDetector
+    (
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 120),
+        width: double.infinity,
+        height: 50,
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(8),
         ),
+       
+          child: Row(
+            children: [
+              if (showicon) Icon(Icons.add, color: Colors.white),
+              Text(
+                title,
+                style: AppStyle.styleRegular16(
+                  context,
+                ).copyWith(color: Colors.white),
+              ),
+            ],
+          ),
+        
       ),
     );
   }
