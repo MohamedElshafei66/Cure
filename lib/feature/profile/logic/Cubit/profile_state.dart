@@ -8,8 +8,7 @@ class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
   final ProfileModel profile;
-  final bool? notificationEnabled;
-  ProfileLoaded(this.profile, {this.notificationEnabled});
+  ProfileLoaded(this.profile);
 }
 
 class ProfileError extends ProfileState {
@@ -17,28 +16,7 @@ class ProfileError extends ProfileState {
   ProfileError(this.message);
 }
 
-<<<<<<< HEAD
-class ProfileUpdating extends ProfileState {}
-
-class ProfileUpdated extends ProfileState {
-  final ProfileModel profile;
-  ProfileUpdated(this.profile);
-}
-
-class NotificationToggling extends ProfileState {}
-
-class NotificationToggled extends ProfileState {
-  final bool enabled;
-  NotificationToggled(this.enabled);
-}
-
-class LoggingOut extends ProfileState {}
-
-class LoggedOut extends ProfileState {}
-
-=======
 class ProfileUpdateLoading extends ProfileState {}
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 
 class ProfileUpdateSuccess extends ProfileState {
   final String message;

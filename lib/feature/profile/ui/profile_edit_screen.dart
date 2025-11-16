@@ -91,28 +91,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         centerTitle: true,
       ),
 
-<<<<<<< HEAD
-                // Email
-                CustomTextField(
-                  controller: emailController,
-                  prefixIcon: AppIcons.email,
-                  hintText: "Enter your email",
-                  label: "Email",
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Email is required";
-                    }
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(value)) {
-                      return "Enter a valid email";
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(20),
-=======
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileUpdateSuccess) {
@@ -136,7 +114,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             );
           }
         },
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 
         builder: (context, state) {
           return Stack(
@@ -162,7 +139,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                     );
                                     if (picked != null) {
                                       setState(
-                                        () => imageFile = File(picked.path),
+                                            () => imageFile = File(picked.path),
                                       );
                                     }
                                   },
@@ -177,7 +154,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                     );
                                     if (picked != null) {
                                       setState(
-                                        () => imageFile = File(picked.path),
+                                            () => imageFile = File(picked.path),
                                       );
                                     }
                                   },
@@ -195,17 +172,17 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                             backgroundImage: imageFile != null
                                 ? FileImage(imageFile!)
                                 : (widget.profile.imgUrl.isNotEmpty
-                                      ? NetworkImage(
-                                          widget.profile.imgUrl.startsWith(
-                                                "http",
-                                              )
-                                              ? widget.profile.imgUrl
-                                              : "https://cure-doctor-booking.runasp.net${widget.profile.imgUrl}",
-                                        )
-                                      : const AssetImage(
-                                              "assets/images/profile_image.png",
-                                            )
-                                            as ImageProvider),
+                                ? NetworkImage(
+                              widget.profile.imgUrl.startsWith(
+                                "http",
+                              )
+                                  ? widget.profile.imgUrl
+                                  : "https://cure-doctor-booking.runasp.net${widget.profile.imgUrl}",
+                            )
+                                : const AssetImage(
+                              "assets/images/profile_image.png",
+                            )
+                            as ImageProvider),
                           ),
                           Container(
                             padding: const EdgeInsets.all(5),
@@ -224,28 +201,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       ),
                     ),
                   ),
-<<<<<<< HEAD
-                ),
-                const Gap(10),
-                BirthdayPicker(
-                  selectedDay: selectedDay,
-                  selectedMonth: selectedMonth,
-                  selectedYear: selectedYear,
-                  days: days,
-                  months: months,
-                  years: years,
-                  onDayChanged: (value) => setState(() => selectedDay = value!),
-                  onMonthChanged: (value) =>
-                      setState(() => selectedMonth = value!),
-                  onYearChanged: (value) {
-                    if (value! <= DateTime.now().year) {
-                      setState(() => selectedYear = value);
-                    }
-                  },
-                ),
-                const Gap(40),
-=======
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 
                   const Gap(15),
 
@@ -290,7 +245,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           controller: emailController,
                           hintText: "Email",
                           label: "Email",
-                           prefixIcon: AppIcons.email,
+                          prefixIcon: AppIcons.email,
                           keyboardType: TextInputType.emailAddress,
                           validator: (v) => v!.isEmpty ? "Required" : null,
                         ),
@@ -322,7 +277,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           months: _months,
                           years: List.generate(
                             100,
-                            (i) => DateTime.now().year - i,
+                                (i) => DateTime.now().year - i,
                           ),
                           onDayChanged: (v) => setState(() => selectedDay = v!),
                           onMonthChanged: (v) =>

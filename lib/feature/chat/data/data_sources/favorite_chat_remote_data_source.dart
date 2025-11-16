@@ -6,8 +6,8 @@ import '../../../../core/network/api_endpoints.dart';
 class FavoriteChatRemoteDataSource {
   final ApiServices apiServices;
 
-  FavoriteChatRemoteDataSource({String? token, SecureStorageService? secureStorage})
-      : apiServices = ApiServices(token: token, secureStorage: secureStorage);
+  FavoriteChatRemoteDataSource({String? token,})
+      : apiServices = ApiServices(token: token,);
 
   Future<FavouriteChatModel> addFavorite(String chatId) async {
     try {

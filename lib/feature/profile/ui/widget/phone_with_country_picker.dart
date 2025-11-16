@@ -4,17 +4,6 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 
 class PhoneWithCountryPicker extends StatefulWidget {
-<<<<<<< HEAD
-  final TextEditingController? controller;
-  final String? initialValue;
-  final String? initialCountryCode;
-  
-  const PhoneWithCountryPicker({
-    super.key,
-    this.controller,
-    this.initialValue,
-    this.initialCountryCode,
-=======
   final TextEditingController controller;
   final ValueChanged<String>? onCountryChanged;
 
@@ -22,7 +11,6 @@ class PhoneWithCountryPicker extends StatefulWidget {
     super.key,
     required this.controller,
     this.onCountryChanged,
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
   });
 
   @override
@@ -30,24 +18,12 @@ class PhoneWithCountryPicker extends StatefulWidget {
 }
 
 class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
-<<<<<<< HEAD
-  late String countryCode;
-  late TextEditingController phoneController;
-  late FocusNode focusNode;
-  
-=======
   String countryCode = '+20';
   late FocusNode focusNode;
 
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
   @override
   void initState() {
     super.initState();
-    countryCode = widget.initialCountryCode ?? '+20';
-    phoneController = widget.controller ?? TextEditingController();
-    if (widget.initialValue != null) {
-      phoneController.text = widget.initialValue!;
-    }
     focusNode = FocusNode();
     focusNode.addListener(() {
       setState(() {});
@@ -57,14 +33,8 @@ class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
   @override
   void dispose() {
     focusNode.dispose();
-    // Only dispose controller if we created it
-    if (widget.controller == null) {
-      phoneController.dispose();
-    }
     super.dispose();
   }
-  
-  String get fullPhoneNumber => '$countryCode${phoneController.text}';
 
   @override
   Widget build(BuildContext context) {
@@ -115,4 +85,3 @@ class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
     );
   }
 }
-

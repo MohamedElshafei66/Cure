@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-<<<<<<< HEAD
-import 'package:provider/provider.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
-=======
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
@@ -18,13 +13,7 @@ class Favourites extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-<<<<<<< HEAD
-      create: (context) => FavouritesCubit(
-        secureStorage: Provider.of<SecureStorageService>(context, listen: false),
-      )..fetchFavourites(),
-=======
       create: (context) => FavouritesCubit()..fetchFavourites(),
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(

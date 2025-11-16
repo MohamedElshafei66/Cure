@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
@@ -83,13 +81,7 @@ class _HomeState extends State<Home> {
                 ),
                 const SizedBox(height: 8),
                 BlocProvider(
-<<<<<<< HEAD
-                  create: (context) => DoctorCubit(
-                    secureStorage: Provider.of<SecureStorageService>(context, listen: false),
-                  )..fetchNearestDoctors(),
-=======
                   create: (context) => DoctorCubit()..fetchNearestDoctors(),
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
                   child: DoctorsNearby(),
                 ),
               ],

@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 
 class PaymentMethodRemoteDataSource {
   final ApiServices api;
 
   PaymentMethodRemoteDataSource(this.api);
+
 
   Future<String> addPaymentMethod({
     required String methodName,
@@ -12,11 +14,7 @@ class PaymentMethodRemoteDataSource {
     required int expYear,
     required String cvv,
   }) async {
-<<<<<<< HEAD
-    // final token = await api.getToken();
-=======
     //final token = await api.getToken();
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 
     final last3 = cardNumber.substring(cardNumber.length - 3);
 
@@ -32,15 +30,12 @@ class PaymentMethodRemoteDataSource {
     final response = await api.dio.post(
       '${api.baseUrl}profile/paymentmethods/add',
       data: data,
-<<<<<<< HEAD
-=======
       options: Options(
         headers: {
-         // 'Authorization': 'Bearer $token',
+          // 'Authorization': 'Bearer $token',
           'Accept': 'application/json',
         },
       ),
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
     );
 
     return response.data["message"] ?? "Your card successfully added 🎉";

@@ -2,12 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-<<<<<<< HEAD
-import 'package:provider/provider.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
-=======
 import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
@@ -29,21 +24,15 @@ class DoctorCard extends StatefulWidget {
 
 class _DoctorCardState extends State<DoctorCard> {
   late bool isFavourite;
-<<<<<<< HEAD
-=======
   late final FavouritesRepositoryImpl _favouritesRepo;
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 
   @override
   void initState() {
     super.initState();
     isFavourite = widget.doctor.isFavourite;
-<<<<<<< HEAD
-=======
     _favouritesRepo = FavouritesRepositoryImpl(
       ApiServices(token: SharedData.testToken),
     );
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
   }
 
   Future<void> _toggleFavourite() async {
@@ -145,17 +134,17 @@ class _DoctorCardState extends State<DoctorCard> {
                 width: heartSize,
                 child: isFavourite
                     ? Icon(
-                        CupertinoIcons.heart_fill,
-                        color: Colors.red,
-                        size: heartSize,
-                      )
+                  CupertinoIcons.heart_fill,
+                  color: Colors.red,
+                  size: heartSize,
+                )
                     : Image.asset(
-                        AppIcons.heartPng,
-                        color: Colors.black,
-                        height: heartSize,
-                        width: heartSize,
-                        fit: BoxFit.contain,
-                      ),
+                  AppIcons.heartPng,
+                  color: Colors.black,
+                  height: heartSize,
+                  width: heartSize,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ],

@@ -7,7 +7,7 @@ class UnreadChatRemoteDataSource {
   final ApiServices apiServices;
 
   UnreadChatRemoteDataSource({String? token, SecureStorageService? secureStorage})
-      : apiServices = ApiServices(token: token, secureStorage: secureStorage);
+      : apiServices = ApiServices(token: token);
 
   Future<UnreadChatModel> getUnreadChats() async {
     try {

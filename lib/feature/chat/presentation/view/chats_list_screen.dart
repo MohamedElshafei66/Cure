@@ -49,12 +49,12 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       context,
       listen: false,
     );
-    final chatRemote = ChatRemoteDataSource(secureStorage: secureStorage);
+    final chatRemote = ChatRemoteDataSource();
     final unreadRemote = UnreadChatRemoteDataSource(
       secureStorage: secureStorage,
     );
     final favoriteRemote = FavoriteChatRemoteDataSource(
-      secureStorage: secureStorage,
+
     );
 
     chatCubit = ChatCubit(ChatRepositoryImpl(chatRemote));

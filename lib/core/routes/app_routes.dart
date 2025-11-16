@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-<<<<<<< HEAD
-import 'package:provider/provider.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
-=======
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/app_startup_logic.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/presentation/view/sign_up_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/reschedule_view.dart';
-import 'package:round_7_mobile_cure_team3/feature/chat/data/data_sources/chat_remote_data_source.dart';
-import 'package:round_7_mobile_cure_team3/feature/chat/data/models/chat_model.dart';
-import 'package:round_7_mobile_cure_team3/feature/chat/data/repositories/ChatRepositoryImp.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chat_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chats_list_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
@@ -138,23 +130,7 @@ abstract class AppRoutes {
         path: chatsListScreen,
         builder: (context, state) => ChatsListScreen(),
       ),
-      GoRoute(
-        path: chatScreen,
-        builder: (context, state) {
-          final chat = state.extra as ChatData?;
-          final secureStorage = Provider.of<SecureStorageService>(context, listen: false);
-          final chatRemote = ChatRemoteDataSource(secureStorage: secureStorage);
-          final chatRepository = ChatRepositoryImpl(chatRemote);
-          
-          return ChatScreen(
-            doctorName: chat?.name,
-            doctorImage: chat?.image,
-            chatId: chat?.id.toString(),
-            receiverId: chat?.receiverId,
-            chatRepository: chatRepository,
-          );
-        },
-      ),
+      GoRoute(path: chatScreen, builder: (context, state) => ChatScreen()),
       GoRoute(
         path: AppRoutes.paymentMethodSecondScreen,
         builder: (context, state) {
@@ -183,20 +159,10 @@ abstract class AppRoutes {
       GoRoute(
         path: profileScreen,
         builder: (context, state) {
-          final secureStorage = Provider.of<SecureStorageService>(
-            context,
-            listen: false,
-          );
           return BlocProvider(
             create: (context) => ProfileCubit(
-<<<<<<< HEAD
-              ProfileRepository(secureStorage: secureStorage),
-              secureStorage: secureStorage,
-            ),
-=======
               ProfileRepository(ProfileRemoteDataSource(ApiServices())),
             )..getProfile(),
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
             child: ProfileScreen(),
           );
         },

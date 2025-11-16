@@ -1,14 +1,13 @@
 import '../models/chat_model.dart';
 import '../models/search_chat_model.dart';
-import '../../../../core/constants/secure_storage_data.dart';
 import '../../../../core/network/api_services.dart';
 import '../../../../core/network/api_endpoints.dart';
 
 class ChatRemoteDataSource {
   final ApiServices apiServices;
 
-  ChatRemoteDataSource({String? token, SecureStorageService? secureStorage})
-      : apiServices = ApiServices(token: token, secureStorage: secureStorage);
+  ChatRemoteDataSource({String? token,})
+      : apiServices = ApiServices(token: token, );
 
   Future<ChatModel> getChatsList() async {
     try {

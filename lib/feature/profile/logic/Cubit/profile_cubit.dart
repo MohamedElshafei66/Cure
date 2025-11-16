@@ -1,16 +1,9 @@
-<<<<<<< HEAD
-import 'dart:io';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
-import 'package:round_7_mobile_cure_team3/core/errors/exceptions.dart';
-=======
 
 
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 import 'package:round_7_mobile_cure_team3/feature/profile/data/model/profile_model.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/data/repo/profile_repository.dart';
 
@@ -18,173 +11,84 @@ part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository repository;
-  final SecureStorageService? secureStorage;
 
-  ProfileCubit(this.repository, {this.secureStorage}) : super(ProfileInitial());
+  ProfileCubit(this.repository) : super(ProfileInitial());
 
   Future<void> getProfile() async {
     emit(ProfileLoading());
     try {
       final profile = await repository.getProfile();
-<<<<<<< HEAD
-      final notificationStatus = await repository.getNotificationStatus();
-      emit(ProfileLoaded(profile, notificationEnabled: notificationStatus));
-    } on ServerException catch (e) {
-      emit(ProfileError(e.message));
-=======
       emit(ProfileLoaded(profile));
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
     } catch (e) {
       emit(ProfileError(_handleError(e)));
     }
   }
 
   Future<void> updateProfile({
-<<<<<<< HEAD
     required String fullName,
     required String email,
     required String phone,
     required String address,
     required String birthDate,
     File? imageFile,
-    double latitude = 0,
-    double longitude = 0,
   }) async {
-    emit(ProfileUpdating());
+    emit(ProfileUpdateLoading());
+
     try {
-      final updatedProfile = await repository.updateProfile(
+      final response = await repository.updateProfile(
         fullName: fullName,
         email: email,
         phone: phone,
         address: address,
         birthDate: birthDate,
         imageFile: imageFile,
-        latitude: latitude,
-        longitude: longitude,
       );
-      emit(ProfileUpdated(updatedProfile));
-      // Refresh profile with notification status
-      final notificationStatus = await repository.getNotificationStatus();
-      emit(ProfileLoaded(updatedProfile, notificationEnabled: notificationStatus));
-    } on ServerException catch (e) {
-      emit(ProfileError(e.message));
+
+      if (response["success"] == true) {
+        emit(ProfileUpdateSuccess(response["message"] ?? "Profile updated successfully"));
+      } else {
+        emit(ProfileUpdateError(response["message"] ?? "Failed to update"));
+      }
     } catch (e) {
-      emit(ProfileError("Failed to update profile: $e"));
+      print(" ERROR IN PROFILE CUBIT: $e");
+      emit(ProfileUpdateError(_handleError(e)));
     }
   }
 
-  Future<void> toggleNotification() async {
-    if (state is ProfileLoaded) {
-      final currentState = state as ProfileLoaded;
-      emit(NotificationToggling());
-      try {
-        final success = await repository.toggleNotification();
-        if (success) {
-          final newStatus = !(currentState.notificationEnabled ?? false);
-          emit(NotificationToggled(newStatus));
-          // Update profile state with new notification status
-          emit(ProfileLoaded(currentState.profile, notificationEnabled: newStatus));
-        } else {
-          emit(ProfileError("Failed to toggle notification"));
+
+  String _handleError(dynamic error) {
+    if (error is DioException) {
+      final data = error.response?.data;
+
+
+      if (data is Map && data.containsKey('errors')) {
+        final errors = data['errors'] as Map<String, dynamic>;
+        final firstKey = errors.keys.first;
+        final firstMessageList = errors[firstKey];
+
+        if (firstMessageList is List && firstMessageList.isNotEmpty) {
+          return firstMessageList.first;
         }
-      } on ServerException catch (e) {
-        emit(ProfileError(e.message));
-        // Restore previous state
-        emit(ProfileLoaded(currentState.profile, notificationEnabled: currentState.notificationEnabled));
-      } catch (e) {
-        emit(ProfileError("Failed to toggle notification: $e"));
-        // Restore previous state
-        emit(ProfileLoaded(currentState.profile, notificationEnabled: currentState.notificationEnabled));
       }
-    }
-  }
 
-  Future<void> logout() async {
-    emit(LoggingOut());
-    try {
-      await repository.logout();
-      
-      // Clear tokens from secure storage
-      if (secureStorage != null) {
-        await secureStorage!.delete(key: 'accessToken');
-        await secureStorage!.delete(key: 'refreshToken');
+
+      if (data is Map && data.containsKey('title')) {
+        return data['title'];
       }
-      
-      emit(LoggedOut());
-    } catch (e) {
-      // Even if logout fails, clear local tokens
-      if (secureStorage != null) {
-        await secureStorage!.delete(key: 'accessToken');
-        await secureStorage!.delete(key: 'refreshToken');
+
+      if (data is Map && data.containsKey('message')) {
+        return data['message'];
       }
-      emit(LoggedOut());
-    }
-=======
-  required String fullName,
-  required String email,
-  required String phone,
-  required String address,
-  required String birthDate,
-  File? imageFile,
-}) async {
-  emit(ProfileUpdateLoading());
 
-  try {
-    final response = await repository.updateProfile(
-      fullName: fullName,
-      email: email,
-      phone: phone,
-      address: address,
-      birthDate: birthDate,
-      imageFile: imageFile,
-    );
 
-    if (response["success"] == true) {
-      emit(ProfileUpdateSuccess(response["message"] ?? "Profile updated successfully"));
-    } else {
-      emit(ProfileUpdateError(response["message"] ?? "Failed to update"));
+      return error.message ?? "Network error occurred";
     }
-  } catch (e) {
-    print(" ERROR IN PROFILE CUBIT: $e");
-    emit(ProfileUpdateError(_handleError(e)));
->>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
+
+    if (error is SocketException) {
+      return "No internet connection";
+    }
+
+    return error.toString();
   }
-}
-
-
-String _handleError(dynamic error) {
-  if (error is DioException) {
-    final data = error.response?.data;
-
-
-    if (data is Map && data.containsKey('errors')) {
-      final errors = data['errors'] as Map<String, dynamic>;
-      final firstKey = errors.keys.first;
-      final firstMessageList = errors[firstKey];
-
-      if (firstMessageList is List && firstMessageList.isNotEmpty) {
-        return firstMessageList.first; 
-      }
-    }
-
-   
-    if (data is Map && data.containsKey('title')) {
-      return data['title'];
-    }
-
-    if (data is Map && data.containsKey('message')) {
-      return data['message'];
-    }
-
-   
-    return error.message ?? "Network error occurred";
-  }
-
-  if (error is SocketException) {
-    return "No internet connection";
-  }
-
-  return error.toString();
-}
 
 }

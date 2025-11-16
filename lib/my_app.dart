@@ -25,37 +25,26 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           BlocProvider(
-            create: (context) => SignUpCubit(
-              registerRepo: RegisterRepoImpl(
-                ApiServices(
-                  secureStorage: context.read<SecureStorageService>(),
-                ),
-              ),
-            ),
+            create: (context) =>
+                SignUpCubit(registerRepo: RegisterRepoImpl(ApiServices())),
           ),
           BlocProvider(
-            create: (context) => SignInCubit(
-              loginRepo: LoginRepoImpl(
-                ApiServices(
-                  secureStorage: context.read<SecureStorageService>(),
-                ),
-              ),
-            ),
+            create: (context) =>
+                SignInCubit(loginRepo: LoginRepoImpl(ApiServices())),
           ),
           BlocProvider(
-            create: (context) => OtpCubit(
-              otpRepo: OtpRepoImpl(
-                apiServices: ApiServices(
-                  secureStorage: context.read<SecureStorageService>(),
-                ),
-              ),
-            ),
+            create: (context) =>
+                OtpCubit(otpRepo: OtpRepoImpl(apiServices: ApiServices())),
           ),
           BlocProvider(
             create: (context) {
+              final token = context.read<AuthProvider>().accessToken ?? '';
               final secure = context.read<SecureStorageService>();
 
-              final repo = NotificationRepositoryImpl(secureStorage: secure);
+              final repo = NotificationRepositoryImpl(
+                secureStorage: secure,
+                token: token,
+              );
               return NotificationCubit(repo);
             },
           ),
