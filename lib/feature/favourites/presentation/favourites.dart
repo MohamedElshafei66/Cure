@@ -7,13 +7,18 @@ import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_state.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/doctor_card.dart';
 
+import '../../../core/constants/auth_provider.dart';
+
 class Favourites extends StatelessWidget {
   const Favourites({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => FavouritesCubit()..fetchFavourites(),
+      create: (context){
+        final authProvider = context.read<AuthProvider>();
+        return FavouritesCubit(authProvider: authProvider)..fetchFavourites();
+      },
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(

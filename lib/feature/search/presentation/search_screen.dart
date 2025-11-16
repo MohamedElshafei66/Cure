@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
@@ -66,10 +67,14 @@ class _SearchScreenState extends State<SearchScreen> {
       providers: [
         BlocProvider(
           create: (_) => SearchCubit(
-            SearchRepoImpl(ApiServices(token: SharedData.token)),
+            SearchRepoImpl(ApiServices(authProvider:context.read<AuthProvider>())),
           )..fetchHistory(),
         ),
-        BlocProvider(create: (_) => FavouritesCubit()),
+        BlocProvider(
+          create: (context) => FavouritesCubit(
+            authProvider: context.read<AuthProvider>(),
+          )..fetchFavourites(),
+        ),
       ],
       child: Scaffold(
         backgroundColor: Colors.white,

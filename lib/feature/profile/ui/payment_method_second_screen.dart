@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
@@ -9,6 +10,8 @@ import 'package:round_7_mobile_cure_team3/core/widgets/custom_button.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/data/payment_service.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/profile_button.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/profile_item.dart';
+
+import '../../../core/constants/auth_provider.dart';
 
 class PaymentMethodSecondScreen extends StatefulWidget {
   final String methodName;
@@ -31,12 +34,16 @@ class _PaymentMethodSecondScreenState extends State<PaymentMethodSecondScreen> {
 
   Future<void> fetchPaymentMethods() async {
     setState(() => isLoading = true);
-    final service = PaymentService();
+
+    final authProvider = context.read<AuthProvider>();
+    final service = PaymentService(authProvider: authProvider);
+
     final response = await service.getAllPaymentMethods(
       methodName: widget.methodName,
+      authProvider:authProvider
     );
 
-    print(" Response From API: $response");
+    print("Response From API: $response");
 
     final data = response["data"];
     if (data is List) {
@@ -49,6 +56,7 @@ class _PaymentMethodSecondScreenState extends State<PaymentMethodSecondScreen> {
 
     setState(() => isLoading = false);
   }
+
 
   Future<void> _navigateToAddCard(BuildContext context) async {
     final result = await context.push(

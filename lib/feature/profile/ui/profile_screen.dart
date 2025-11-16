@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
@@ -38,13 +39,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       providers: [
         BlocProvider(
           create: (_) => ProfileCubit(
-            ProfileRepository(ProfileRemoteDataSource(ApiServices())),
+            ProfileRepository(ProfileRemoteDataSource(ApiServices(authProvider:context.read<AuthProvider>()))),
           )..getProfile(),
         ),
 
         BlocProvider(
           create: (_) => NotificationCubit(
-            ProfileRepository(ProfileRemoteDataSource(ApiServices())),
+            ProfileRepository(ProfileRemoteDataSource(ApiServices(authProvider:context.read<AuthProvider>()))),
           )..loadStatus(),
         ),
       ],

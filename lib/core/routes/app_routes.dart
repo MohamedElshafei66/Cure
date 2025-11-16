@@ -83,10 +83,7 @@ abstract class AppRoutes {
           final profile = state.extra as ProfileModel;
 
           return BlocProvider<ProfileCubit>(
-            create: (context) => ProfileCubit(
-              ProfileRepository(ProfileRemoteDataSource(ApiServices())),
-            ),
-
+            create: (_) => ProfileCubit(getIt<ProfileRepository>()),
             child: Builder(
               builder: (context) {
                 return ProfileEditScreen(profile: profile);
@@ -163,14 +160,19 @@ abstract class AppRoutes {
       GoRoute(
         path: profileScreen,
         builder: (context, state) {
-          return BlocProvider(
-            create: (context) => ProfileCubit(
-              ProfileRepository(ProfileRemoteDataSource(ApiServices())),
-            )..getProfile(),
-            child: ProfileScreen(),
+          return Builder(
+            builder: (context) {
+              return BlocProvider<ProfileCubit>(
+                create: (_) => ProfileCubit(
+                  getIt<ProfileRepository>(),
+                )..getProfile(),
+                child: ProfileScreen(),
+              );
+            },
           );
         },
       ),
+
       GoRoute(
         path: privacyPolicyScreen,
         builder: (context, state) => PrivacyPolicyScreen(),

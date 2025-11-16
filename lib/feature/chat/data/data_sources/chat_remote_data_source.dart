@@ -1,3 +1,4 @@
+import '../../../../core/constants/auth_provider.dart';
 import '../models/chat_model.dart';
 import '../models/search_chat_model.dart';
 import '../../../../core/network/api_services.dart';
@@ -6,8 +7,8 @@ import '../../../../core/network/api_endpoints.dart';
 class ChatRemoteDataSource {
   final ApiServices apiServices;
 
-  ChatRemoteDataSource({String? token,})
-      : apiServices = ApiServices(token: token, );
+  ChatRemoteDataSource({required AuthProvider authProvider})
+      : apiServices = ApiServices(authProvider: authProvider);
 
   Future<ChatModel> getChatsList() async {
     try {

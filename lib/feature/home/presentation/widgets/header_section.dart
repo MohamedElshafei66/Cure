@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
@@ -7,6 +8,8 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/data/models/user_model.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/data/repositories/user_repo_impl.dart';
+
+import '../../../../core/constants/auth_provider.dart';
 
 class HeaderSection extends StatelessWidget {
   final VoidCallback onNotificationTap;
@@ -18,16 +21,18 @@ class HeaderSection extends StatelessWidget {
     required this.onFavoritesTap,
   });
 
-  Future<UserModel> getUser() async {
+  Future<UserModel> getUser({required AuthProvider authProvider}) async {
     return await UserReposotryImpl(
-      ApiServices(token: SharedData.token),
+      ApiServices(authProvider: authProvider),
     ).getUser();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.read<AuthProvider>();
     return FutureBuilder<UserModel>(
-      future: getUser(),
+      future: getUser(authProvider: authProvider),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const CircularProgressIndicator();

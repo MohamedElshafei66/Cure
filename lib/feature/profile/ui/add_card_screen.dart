@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
@@ -6,6 +7,8 @@ import 'package:round_7_mobile_cure_team3/feature/profile/data/payment_service.d
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/card_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/custom_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/profile_button.dart';
+
+import '../../../core/constants/auth_provider.dart';
 
 class AddCardScreen extends StatefulWidget {
   final String methodName;
@@ -28,28 +31,47 @@ class _AddCardScreenState extends State<AddCardScreen> {
   Future<void> _saveCard() async {
     if (!formKey.currentState!.validate()) return;
     setState(() => isLoading = true);
-    final service = PaymentService();
 
-    final response = await service.addPaymentMethod(
-      cardholderName: cardholderNameController.text.trim(),
-      cardNumber: cardNumberController.text.trim(),
-      expMonth: int.parse(expiryMonthController.text),
-      expYear: 2000 + int.parse(expiryYearController.text),
-      cvv: cvvController.text.trim(),
-      methodName: widget.methodName,
-    );
+    try {
+      final authProvider = context.read<AuthProvider>();
+      final token = authProvider.accessToken;
 
-    setState(() => isLoading = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(response["message"] ?? "Something went wrong"),
-        backgroundColor: (response["success"] == true)
-            ? Colors.green
-            : Colors.red,
-      ),
-    );
-    if (response["success"] == true) Navigator.pop(context, "added");
+      if (token == null || token.isEmpty) {
+        throw Exception("User is not authenticated");
+      }
+      final service = PaymentService(authProvider: authProvider);
+
+      final response = await service.addPaymentMethod(
+        cardholderName: cardholderNameController.text.trim(),
+        cardNumber: cardNumberController.text.trim(),
+        expMonth: int.parse(expiryMonthController.text),
+        expYear: 2000 + int.parse(expiryYearController.text),
+        cvv: cvvController.text.trim(),
+        methodName: widget.methodName,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response["message"] ?? "Something went wrong"),
+          backgroundColor: (response["success"] == true) ? Colors.green : Colors.red,
+        ),
+      );
+
+      if (response["success"] == true) Navigator.pop(context, "added");
+
+    } catch (e) {
+      print("Error saving card: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to add card: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

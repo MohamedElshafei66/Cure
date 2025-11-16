@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
@@ -31,8 +32,9 @@ class _DoctorCardState extends State<DoctorCard> {
     super.initState();
     isFavourite = widget.doctor.isFavourite;
     _favouritesRepo = FavouritesRepositoryImpl(
-      ApiServices(token: SharedData.token),
+      ApiServices(authProvider:AuthProvider()),
     );
+
   }
 
   Future<void> _toggleFavourite() async {

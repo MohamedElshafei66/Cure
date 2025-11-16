@@ -10,7 +10,6 @@ class ProfileRemoteDataSource {
   Future<ProfileModel> getProfile() async {
     final response = await api.get(
       endPoint: 'profile/EditProfile/getprofile',
-      // withToken: true,
     );
     return ProfileModel.fromJson(response);
   }
@@ -25,15 +24,12 @@ class ProfileRemoteDataSource {
     double latitude = 0,
     double longitude = 0,
   }) async {
-    // final token = await api.getToken();
-
     final formData = FormData.fromMap({
       'FullName': fullName,
       'Email': email,
       'PhoneNumber': phone,
       'Address': address,
       'BirthDate': birthDate,
-
       if (imageFile != null)
         'ImgFile': await MultipartFile.fromFile(
           imageFile.path,
@@ -43,32 +39,31 @@ class ProfileRemoteDataSource {
 
     try {
       final response = await api.dio.put(
-        '${api.baseUrl}profile/EditProfile/updateprofile',
+        'profile/EditProfile/updateprofile',
         data: formData,
         options: Options(
           headers: {
-            // 'Authorization': 'Bearer $token',
             'Accept': 'application/json',
           },
         ),
       );
 
-      print(" UPDATE PROFILE SUCCESS RESPONSE: ${response.data}");
+      print("UPDATE PROFILE SUCCESS RESPONSE: ${response.data}");
 
       if (response.data is Map<String, dynamic>) {
         return response.data;
       } else {
-        print(" RESPONSE IS NOT A MAP! VALUE = ${response.data}");
+        print("RESPONSE IS NOT A MAP! VALUE = ${response.data}");
         return {"success": false, "message": "Invalid response from server"};
       }
 
     } catch (e) {
-      print(" ERROR IN updateProfile(): $e");
+      print("ERROR IN updateProfile(): $e");
 
       if (e is DioException) {
-        print(" DIO ERROR MESSAGE: ${e.message}");
-        print(" DIO ERROR RESPONSE DATA: ${e.response?.data}");
-        print(" DIO ERROR STATUS CODE: ${e.response?.statusCode}");
+        print("DIO ERROR MESSAGE: ${e.message}");
+        print("DIO ERROR RESPONSE DATA: ${e.response?.data}");
+        print("DIO ERROR STATUS CODE: ${e.response?.statusCode}");
       }
 
       rethrow;
@@ -76,27 +71,24 @@ class ProfileRemoteDataSource {
   }
 
   Future<bool> toggleNotification() async {
-    // final token = await api.getToken();
-
     try {
       final response = await api.dio.put(
-        "${api.baseUrl}Profile/NotificationSettings/toggle",
+        "Profile/NotificationSettings/toggle",
         options: Options(
           headers: {
-            // "Authorization": "Bearer $token",
             "Accept": "application/json",
           },
         ),
       );
 
-      print(" TOGGLE NOTIFICATION RESPONSE: ${response.data}");
+      print("TOGGLE NOTIFICATION RESPONSE: ${response.data}");
       return response.statusCode == 200;
 
     } catch (e) {
-      print(" ERROR IN toggleNotification(): $e");
+      print("ERROR IN toggleNotification(): $e");
 
       if (e is DioException) {
-        print(" DIO ERROR RESPONSE: ${e.response?.data}");
+        print("DIO ERROR RESPONSE: ${e.response?.data}");
       }
       return false;
     }
@@ -106,15 +98,14 @@ class ProfileRemoteDataSource {
     try {
       final response = await api.get(
         endPoint: "Profile/NotificationSettings",
-        // withToken: true,
       );
 
-      print(" GET NOTIFICATION STATUS RESPONSE: $response");
+      print("GET NOTIFICATION STATUS RESPONSE: $response");
 
       return response["status"] == true;
 
     } catch (e) {
-      print(" ERROR IN getNotificationStatus(): $e");
+      print("ERROR IN getNotificationStatus(): $e");
       return false;
     }
   }

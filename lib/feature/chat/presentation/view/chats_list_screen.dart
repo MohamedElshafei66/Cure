@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
@@ -49,13 +50,9 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       context,
       listen: false,
     );
-    final chatRemote = ChatRemoteDataSource();
-    final unreadRemote = UnreadChatRemoteDataSource(
-      secureStorage: secureStorage,
-    );
-    final favoriteRemote = FavoriteChatRemoteDataSource(
-
-    );
+    final chatRemote = ChatRemoteDataSource(authProvider:AuthProvider());
+    final unreadRemote = UnreadChatRemoteDataSource(authProvider:AuthProvider());
+    final favoriteRemote = FavoriteChatRemoteDataSource(authProvider:AuthProvider());
 
     chatCubit = ChatCubit(ChatRepositoryImpl(chatRemote));
     unreadCubit = UnreadChatCubit(UnreadChatRepositoryImpl(unreadRemote));

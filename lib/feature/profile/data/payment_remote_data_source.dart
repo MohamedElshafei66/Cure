@@ -6,7 +6,6 @@ class PaymentMethodRemoteDataSource {
 
   PaymentMethodRemoteDataSource(this.api);
 
-
   Future<String> addPaymentMethod({
     required String methodName,
     required String cardNumber,
@@ -14,8 +13,6 @@ class PaymentMethodRemoteDataSource {
     required int expYear,
     required String cvv,
   }) async {
-    //final token = await api.getToken();
-
     final last3 = cardNumber.substring(cardNumber.length - 3);
 
     final data = {
@@ -28,11 +25,10 @@ class PaymentMethodRemoteDataSource {
     };
 
     final response = await api.dio.post(
-      '${api.baseUrl}profile/paymentmethods/add',
+      'profile/paymentmethods/add',
       data: data,
       options: Options(
         headers: {
-          // 'Authorization': 'Bearer $token',
           'Accept': 'application/json',
         },
       ),

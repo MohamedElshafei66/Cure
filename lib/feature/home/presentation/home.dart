@@ -11,6 +11,8 @@ import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/head
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/search_section.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/specialists_section.dart';
 
+import '../../../core/constants/auth_provider.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -81,9 +83,13 @@ class _HomeState extends State<Home> {
                 ),
                 const SizedBox(height: 8),
                 BlocProvider(
-                  create: (context) => DoctorCubit()..fetchNearestDoctors(),
+                  create: (context) {
+                    final authProvider = context.read<AuthProvider>();
+                    return DoctorCubit(authProvider: authProvider)..fetchNearestDoctors();
+                  },
                   child: DoctorsNearby(),
                 ),
+
               ],
             ),
           ),

@@ -15,6 +15,8 @@ import 'package:round_7_mobile_cure_team3/feature/search/data/repositries/search
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/cubits/search_cubit/search_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/cubits/search_cubit/search_state.dart';
 
+import '../../../core/constants/auth_provider.dart';
+
 class AllDoctorsScreen extends StatefulWidget {
   const AllDoctorsScreen({super.key});
 
@@ -61,13 +63,28 @@ class _AllDoctorsScreenState extends State<AllDoctorsScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => DoctorCubit()..fetchAllDoctors()),
         BlocProvider(
-          create: (_) => SearchCubit(
-            SearchRepoImpl(ApiServices(token: SharedData.token)),
-          ),
+          create: (context) {
+            final authProvider = context.read<AuthProvider>();
+            return DoctorCubit(authProvider: authProvider)..fetchAllDoctors();
+          },
         ),
-        BlocProvider(create: (_) => FavouritesCubit()),
+        BlocProvider(
+          create: (context) {
+            final authProvider = context.read<AuthProvider>();
+            return SearchCubit(
+              SearchRepoImpl(
+                ApiServices(authProvider: authProvider),
+              ),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            final authProvider = context.read<AuthProvider>();
+            return FavouritesCubit(authProvider: authProvider);
+          },
+        ),
       ],
       child: Scaffold(
         backgroundColor: Colors.white,

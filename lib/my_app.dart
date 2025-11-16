@@ -21,38 +21,52 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<SecureStorageService>(
       create: (_) => SecureStorageService(),
-      child: MultiBlocProvider(
+      child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
-          BlocProvider(
-            create: (context) =>
-                SignUpCubit(registerRepo: RegisterRepoImpl(ApiServices())),
-          ),
-          BlocProvider(
-            create: (context) =>
-                SignInCubit(loginRepo: LoginRepoImpl(ApiServices())),
-          ),
-          BlocProvider(
-            create: (context) =>
-                OtpCubit(otpRepo: OtpRepoImpl(apiServices: ApiServices())),
-          ),
-          BlocProvider(
-            create: (context) {
-              final token = context.read<AuthProvider>().accessToken ?? '';
-              final secure = context.read<SecureStorageService>();
-
-              final repo = NotificationRepositoryImpl(
-                secureStorage: secure,
-                token: token,
-              );
-              return NotificationCubit(repo);
-            },
-          ),
         ],
-        child: MaterialApp.router(
-          routerConfig: AppRoutes.router,
-          debugShowCheckedModeBanner: false,
-        ),
+        child: Builder(builder: (context) {
+          final authProvider = context.read<AuthProvider>();
+          final secure = context.read<SecureStorageService>();
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => SignUpCubit(
+                  registerRepo: RegisterRepoImpl(
+                    ApiServices(authProvider: authProvider),
+                  ),
+                ),
+              ),
+              BlocProvider(
+                create: (_) => SignInCubit(
+                  loginRepo: LoginRepoImpl(
+                    ApiServices(authProvider: authProvider),
+                  ),
+                ),
+              ),
+              BlocProvider(
+                create: (_) => OtpCubit(
+                  otpRepo: OtpRepoImpl(
+                    apiServices: ApiServices(authProvider: authProvider),
+                  ),
+                ),
+              ),
+              BlocProvider(
+                create: (_) {
+                  final repo = NotificationRepositoryImpl(
+                    secureStorage: secure,
+                    authProvider: authProvider,
+                  );
+                  return NotificationCubit(repo);
+                },
+              ),
+            ],
+            child: MaterialApp.router(
+              routerConfig: AppRoutes.router,
+              debugShowCheckedModeBanner: false,
+            ),
+          );
+        }),
       ),
     );
   }
