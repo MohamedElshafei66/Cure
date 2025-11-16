@@ -4,10 +4,12 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
+   final String? Function(String?) validator;
 
   const PasswordField({
     required this.controller,
     required this.hintText,
+    required this.validator
   });
 
   @override
@@ -20,9 +22,12 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: widget.controller,
+      validator: widget.validator,
+
       obscureText: isHidden,
+      
       decoration: InputDecoration(
         hintText: widget.hintText,
         filled: true,

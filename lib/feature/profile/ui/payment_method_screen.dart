@@ -18,60 +18,57 @@ class PaymentMethodScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: InkWell(
           onTap: () => context.pop(),
-          child: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+          child: const Icon(Icons.arrow_back_ios_new, color: Colors.grey),
         ),
-
         title: Text(
           AppStrings.paymentMethod,
           style: AppStyle.styleRegular24(context),
         ),
         centerTitle: true,
       ),
-
       body: Padding(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Credit / Debit Card",
-              style: AppStyle.styleRegular20(context),
-            ),
-            Gap(30),
+            Text("Credit / Debit Card", style: AppStyle.styleRegular20(context)),
+            const Gap(30),
             ProfileItem(
               icon: AppIcons.visa,
               title: "VISA",
-              onTap: () {
-                context.push(AppRoutes.paymentMethodSecondScreen);
-              },
+              onTap: () => context.push(
+                AppRoutes.paymentMethodSecondScreen,
+                extra: "Visa",
+              ),
             ),
-            Gap(30),
+            const Gap(30),
             ProfileItem(
               icon: AppIcons.masterCaed,
               title: "MasterCard",
-              onTap: () {
-                context.push(AppRoutes.paymentMethodSecondScreen);
-              },
+              onTap: () => context.push(
+                AppRoutes.paymentMethodSecondScreen,
+                extra: "MasterCard",
+              ),
             ),
-            Gap(20),
+            const Gap(20),
             Text("Mobile Wallets", style: AppStyle.styleRegular20(context)),
-            Gap(30),
+            const Gap(30),
             ProfileItem(
               icon: AppIcons.applePay,
               title: "Apple Pay",
-              icons: AppIcons.circle,
-              onTap: () {
-                context.push(AppRoutes.paymentMethodSecondScreen);
-              },
+              onTap: () => context.push(
+                AppRoutes.paymentMethodSecondScreen,
+                extra: "ApplePay",
+              ),
             ),
-            Gap(30),
+            const Gap(30),
             ProfileItem(
               icon: AppIcons.payPal,
-              title: "Pay Pla",
-              icons: AppIcons.circle,
-              onTap: () {
-                context.push(AppRoutes.paymentMethodSecondScreen);
-              },
+              title: "PayPal",
+              onTap: () => context.push(
+                AppRoutes.paymentMethodSecondScreen,
+                extra: "PayPal",
+              ),
             ),
           ],
         ),

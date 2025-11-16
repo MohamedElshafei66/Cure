@@ -58,6 +58,9 @@ dependencies:
   image_picker: ^1.2.0
 
 
+  get_it: ^9.0.5
+
+
 
 dev_dependencies:
   flutter_test:
