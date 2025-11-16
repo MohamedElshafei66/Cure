@@ -4,8 +4,11 @@ import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_images.dart';
 import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
+import '../../../domain/entites/doctor_details_entity.dart';
+
 class DoctorInfoDetails extends StatelessWidget {
-  const DoctorInfoDetails({super.key});
+  final DoctorDetailsEntity doctorDetails;
+  const DoctorInfoDetails({super.key, required this.doctorDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -13,31 +16,35 @@ class DoctorInfoDetails extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children:[
+        children: [
           Expanded(
-              child: StateItem(
-                image: AppImages.patiantsImage,
-                label: "2,000+",
-                sub: AppStrings.patientsLabel,
-              )),
+            child: StateItem(
+              image: AppImages.patiantsImage,
+              label: "${doctorDetails.patients.toInt()}+",
+              sub: AppStrings.patientsLabel,
+            ),
+          ),
           Expanded(
-              child: StateItem(
-                image: AppImages.experienceImage,
-                label: "10+",
-                sub: AppStrings.experienceLabel,
-              )),
+            child: StateItem(
+              image: AppImages.experienceImage,
+              label: "${doctorDetails.experience.toInt()}+",
+              sub: AppStrings.experienceLabel,
+            ),
+          ),
           Expanded(
-              child: StateItem(
-                image: AppImages.starImage,
-                label: "4.5",
-                sub: AppStrings.ratingLabel,
-              )),
+            child: StateItem(
+              image: AppImages.starImage,
+              label: doctorDetails.rating.toStringAsFixed(1),
+              sub: AppStrings.ratingLabel,
+            ),
+          ),
           Expanded(
-              child: StateItem(
-                image: AppImages.reviewsImage,
-                label: "1,872",
-                sub: AppStrings.reviewsLabel,
-              )),
+            child: StateItem(
+              image: AppImages.reviewsImage,
+              label: "${doctorDetails.reviews.toInt()}",
+              sub: AppStrings.reviewsLabel,
+            ),
+          ),
         ],
       ),
     );

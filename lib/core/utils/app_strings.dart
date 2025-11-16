@@ -182,7 +182,7 @@ abstract class AppStrings {
   static const String paymentMethodTitle = "Payment Method";
   static const String creditDebitCard = "Credit / Debit Card";
   static const String mobileWallet = "Mobile Wallet";
-  static const String paypal = "PayPal";
+  static const String cach = "Cash";
   static const String creditCard = "Credit Cart";
   static const String applePay = "Apple Pay";
 

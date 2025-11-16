@@ -4,6 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/app_startup_logic.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/dependincy_injection.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/appointment_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/booking_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/doctor_details_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/presentation/view/sign_up_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
@@ -15,6 +19,7 @@ import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/vie
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/pay_after_schedule.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctors/presentation/all_doctors.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/payment_webview_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/favourites.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
@@ -66,9 +71,11 @@ abstract class AppRoutes {
   static String passwordManagement = '/manage_password';
   static String profileEdit = '/profile_edit';
   static String addCard = '/addCard';
+  static String paymentWebView = '/paymentWebView';
 
   static final router = GoRouter(
-    initialLocation: profileScreen,
+
+    initialLocation:"/",
     routes: [
       GoRoute(
         path: profileEdit,
@@ -138,12 +145,10 @@ abstract class AppRoutes {
           return PaymentMethodSecondScreen(methodName: method);
         },
       ),
-
       GoRoute(
         path: paymentMethodScreen,
         builder: (context, state) => PaymentMethodScreen(),
       ),
-
       GoRoute(
         path: AppRoutes.addCard,
         builder: (context, state) {
@@ -151,7 +156,6 @@ abstract class AppRoutes {
           return AddCardScreen(methodName: method);
         },
       ),
-
       GoRoute(
         path: settingScreen,
         builder: (context, state) => SettingScreen(),
@@ -167,7 +171,6 @@ abstract class AppRoutes {
           );
         },
       ),
-
       GoRoute(
         path: privacyPolicyScreen,
         builder: (context, state) => PrivacyPolicyScreen(),
@@ -179,15 +182,47 @@ abstract class AppRoutes {
       ),
       GoRoute(
         path: AppRoutes.confirmAppointmentScreen,
-        builder: (context, state) => ConfirmAppointmentScreen(),
+        builder: (context, state) {
+          // Get AppointmentCubit from extra parameter or create new one
+          final appointmentCubit = state.extra as AppointmentCubit?;
+          if (appointmentCubit != null) {
+            return BlocProvider.value(
+              value: appointmentCubit,
+              child: const ConfirmAppointmentScreen(),
+            );
+          } else {
+            // Fallback: create new one if not passed
+            return BlocProvider(
+              create: (context) => getIt<AppointmentCubit>(),
+              child: const ConfirmAppointmentScreen(),
+            );
+          }
+        },
       ),
       GoRoute(
         path: AppRoutes.payAfterScheduleScreen,
-        builder: (context, state) => PayAfterScheduleScreen(),
+        builder: (context, state) {
+          // Get AppointmentCubit from extra parameter or create new one
+          final appointmentCubit = state.extra as AppointmentCubit?;
+          return MultiBlocProvider(
+            providers: [
+              if (appointmentCubit != null)
+                BlocProvider.value(value: appointmentCubit)
+              else
+                BlocProvider(create: (context) => getIt<AppointmentCubit>()),
+              BlocProvider(create: (context) => getIt<BookingCubit>()),
+              BlocProvider(create: (context) => getIt<DoctorDetailsCubit>()),
+            ],
+            child: const PayAfterScheduleScreen(),
+          );
+        },
       ),
       GoRoute(
         path: AppRoutes.addReviewScreen,
-        builder: (context, state) => AddReviewScreen(),
+        builder: (context, state) {
+          final doctorId = state.extra as int? ?? 2;
+          return AddReviewScreen(doctorId: doctorId);
+        },
       ),
       GoRoute(
         path: AppRoutes.bookingScreen,
@@ -195,7 +230,35 @@ abstract class AppRoutes {
       ),
       GoRoute(
         path: AppRoutes.rescheduleScreen,
-        builder: (context, state) => RescheduleView(),
+        builder: (context, state) {
+          final bookingId = state.extra as String?;
+          return RescheduleView(bookingId: bookingId);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.paymentWebView,
+        builder: (context, state) {
+          final paymentUrl = state.uri.queryParameters['url'] ?? '';
+          final doctorName = state.uri.queryParameters['doctorName'];
+          final dateStr = state.uri.queryParameters['date'];
+          final time = state.uri.queryParameters['time'];
+          
+          DateTime? selectedDate;
+          if (dateStr != null && dateStr.isNotEmpty) {
+            try {
+              selectedDate = DateTime.parse(dateStr);
+            } catch (e) {
+              print('Error parsing date: $e');
+            }
+          }
+          
+          return PaymentWebViewScreen(
+            paymentUrl: paymentUrl,
+            doctorName: doctorName,
+            selectedDate: selectedDate,
+            selectedTime: time,
+          );
+        },
       ),
     ],
   );

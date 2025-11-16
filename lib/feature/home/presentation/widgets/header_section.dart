@@ -20,7 +20,7 @@ class HeaderSection extends StatelessWidget {
 
   Future<UserModel> getUser() async {
     return await UserReposotryImpl(
-      ApiServices(token: SharedData.testToken),
+      ApiServices(token: SharedData.token),
     ).getUser();
   }
 

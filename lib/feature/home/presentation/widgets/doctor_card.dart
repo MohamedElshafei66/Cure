@@ -31,7 +31,7 @@ class _DoctorCardState extends State<DoctorCard> {
     super.initState();
     isFavourite = widget.doctor.isFavourite;
     _favouritesRepo = FavouritesRepositoryImpl(
-      ApiServices(token: SharedData.testToken),
+      ApiServices(token: SharedData.token),
     );
   }
 

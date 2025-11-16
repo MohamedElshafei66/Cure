@@ -6,7 +6,7 @@ import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
 
-Widget bookingButtons(String status,BuildContext context) {
+Widget bookingButtons(String status, BuildContext context, String bookingId) {
   switch (status) {
     case 'Upcoming':
       return Row(
@@ -14,7 +14,7 @@ Widget bookingButtons(String status,BuildContext context) {
           Expanded(
             child: MaterialButton(
               onPressed:(){
-                cancelBooking(context);
+                cancelBooking(context, bookingId);
               },
               shape:OutlineInputBorder(
                   borderSide:BorderSide(
@@ -37,7 +37,7 @@ Widget bookingButtons(String status,BuildContext context) {
           Expanded(
             child: MaterialButton(
               onPressed:(){
-                context.push(AppRoutes.rescheduleScreen);
+                context.push(AppRoutes.rescheduleScreen, extra: bookingId);
               },
               color:AppColors.primary,
               shape:OutlineInputBorder(
@@ -103,6 +103,7 @@ Widget bookingButtons(String status,BuildContext context) {
         ],
       );
     case 'Canceled':
+    case 'Cancelled':
       return Row(
         children: [
           Expanded(

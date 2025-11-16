@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import '../constants/shared_data.dart';
 
 class ApiServices {
   final Dio dio;
+
 
   final String baseUrl = 'https://cure-doctor-booking.runasp.net/api/';
 
@@ -11,24 +13,61 @@ class ApiServices {
       : dio = Dio(
     BaseOptions(
       baseUrl: 'https://cure-doctor-booking.runasp.net/api/',
-
       headers: {
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
 
         if (token != null) 'Authorization': 'Bearer $token',
       },
     ),
   );
 
+
+
+  // Get headers with current token dynamically
+  Map<String, dynamic> _getHeaders() {
+    final headers = <String, dynamic>{
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+    
+    final token = SharedData.token;
+    if (token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    
+    return headers;
+  }
+
   Future<dynamic> get({required String endPoint}) async {
     try {
-      final response = await dio.get(endPoint);
-
+      final headers = _getHeaders();
+      print('Making GET request to: $endPoint');
+      print('Full URL: ${dio.options.baseUrl}$endPoint');
+      print('Headers: $headers');
+      
+      final response = await dio.get(
+        endPoint,
+        options: Options(headers: headers),
+      );
+      
+      print('Response status: ${response.statusCode}');
+      print('Response data type: ${response.data.runtimeType}');
+      
       return response.data;
     } on DioException catch (e) {
-      throw Exception('GET $endPoint failed: ${e.response?.data ?? e.message}');
+      print('DioException in ApiServices:');
+      print('Type: ${e.type}');
+      print('Message: ${e.message}');
+      print('Response: ${e.response?.data}');
+      print('Status Code: ${e.response?.statusCode}');
+      rethrow; // Re-throw to be caught by data source
+    } catch (e) {
+      print('Exception in ApiServices: $e');
+      rethrow;
     }
   }
+
 
   Future<dynamic> post({
     required String endPoint,
@@ -36,10 +75,58 @@ class ApiServices {
     required Map<String, dynamic> body,
   }) async {
     try {
+
       final response = await dio.post(endPoint, data: body);
 
       return response.data;
     } on DioException catch (e) {
+
+      final headers = _getHeaders();
+      print('========================================');
+      print('API SERVICES: POST REQUEST');
+      print('========================================');
+      print('Full URL: ${dio.options.baseUrl}$endPoint');
+      print('Headers: $headers');
+      print('Request Body:');
+      body.forEach((key, value) {
+        print('  $key: $value (${value.runtimeType})');
+      });
+      print('========================================');
+      
+      final response = await dio.post(
+        endPoint,
+        data: body,
+        options: Options(headers: headers),
+      );
+      
+      print('========================================');
+      print('API SERVICES: POST RESPONSE');
+      print('========================================');
+      print('Status Code: ${response.statusCode}');
+      print('Response Data: ${response.data}');
+      print('Response Type: ${response.data.runtimeType}');
+      print('========================================');
+      
+      return response.data;
+    } on DioException catch (e) {
+      print('========================================');
+      print('API SERVICES: POST ERROR');
+      print('========================================');
+      print('Error Type: ${e.type}');
+      print('Error Message: ${e.message}');
+      print('Status Code: ${e.response?.statusCode}');
+      print('Response Data: ${e.response?.data}');
+      print('Request Headers: ${e.requestOptions.headers}');
+      print('========================================');
+      
+      // Provide more specific error message for 401
+      if (e.response?.statusCode == 401) {
+        throw Exception(
+          'Authentication failed. Please check if your token is valid and not expired. POST $endPoint failed: ${e.response?.data ?? e.message}',
+        );
+      }
+      
+
       throw Exception(
         'POST $endPoint failed: ${e.response?.data ?? e.message}',
       );
@@ -48,72 +135,65 @@ class ApiServices {
 
   Future<dynamic> put({
     required String endPoint,
-    Map<String, dynamic>? body,
-  }) async {
+
+    dynamic body,
+  })async {
     try {
-      final response = await dio.put(endPoint, data: body);
+      final headers = _getHeaders();
+      print('========================================');
+      print('API SERVICES: PUT REQUEST');
+      print('========================================');
+      print('Full URL: ${dio.options.baseUrl}$endPoint');
+      print('Headers: $headers');
+      if (body != null) {
+        print('Request Body:');
+        if (body is Map) {
+          body.forEach((key, value) {
+            print('  $key: $value (${value.runtimeType})');
+          });
+        } else {
+          print('  $body (${body.runtimeType})');
+        }
+      }
+      print('========================================');
+      
+      final response = await dio.put(
+        endPoint,
+        data: body,
+        options: Options(headers: headers),
+      );
+      
+      print('========================================');
+      print('API SERVICES: PUT RESPONSE');
+      print('========================================');
+      print('Status Code: ${response.statusCode}');
+      print('Response Data: ${response.data}');
+      print('Response Type: ${response.data.runtimeType}');
+      print('========================================');
+      
       return response.data;
     } on DioException catch (e) {
-      throw Exception('PUT $endPoint failed: ${e.response?.data ?? e.message}');
+      print('========================================');
+      print('API SERVICES: PUT ERROR');
+      print('========================================');
+      print('Error Type: ${e.type}');
+      print('Error Message: ${e.message}');
+      print('Status Code: ${e.response?.statusCode}');
+      print('Response Data: ${e.response?.data}');
+      print('Request Headers: ${e.requestOptions.headers}');
+      print('========================================');
+      
+      // Provide more specific error message for 401
+      if (e.response?.statusCode == 401) {
+        throw Exception(
+          'Authentication failed. Please check if your token is valid and not expired. PUT $endPoint failed: ${e.response?.data ?? e.message}',
+        );
+      }
+      
+      throw Exception(
+        'PUT $endPoint failed: ${e.response?.data ?? e.message}',
+      );
+
     }
   }
 }
-//class ApiServices {
-// Dio dio = Dio();
-//final String baseUrl = 'https://cure-doctor-booking.runasp.net/api/';
-
-//final String testToken =
-//  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ODA4Y2YwNS0zYTI1LTRjOTUtODBlMi1kNTI2MDJlM2FmNDgiLCJ1bmlxdWVfbmFtZSI6IiswMTA5MDE1OTAxNiIsImZpcnN0TmFtZSI6Ik1pbmEiLCJsYXN0TmFtZSI6IlJvbWEiLCJhZGRyZXNzIjoiIiwiaW1nVXJsIjoiIiwiYmlydGhEYXRlIjoiMDAwMS0wMS0wMSIsImdlbmRlciI6Ik1hbGUiLCJsb2NhdGlvbiI6IiIsImlzTm90aWZpY2F0aW9uc0VuYWJsZWQiOiJUcnVlIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiI4ODA4Y2YwNS0zYTI1LTRjOTUtODBlMi1kNTI2MDJlM2FmNDgiLCJleHAiOjE3NjMzMzgxMDYsImlzcyI6Imh0dHBzOi8vY3VyZS1kb2N0b3ItYm9va2luZy5ydW5hc3AubmV0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAsaHR0cHM6Ly9sb2NhbGhvc3Q6NTUwMCxodHRwczovL2xvY2FsaG9zdDo0MjAwICxodHRwczovL2N1cmUtZG9jdG9yLWJvb2tpbmcucnVuYXNwLm5ldC8ifQ.JTtiIO0T9oYFf2xwSt2q1dwaQOZ1gEBXqGB2GoLHA1c";
-
-//Future<String> getToken() async {
-//final prefs = await SharedPreferences.getInstance();
-//final token = prefs.getString('token');
-//if (token != null && token.isNotEmpty) {
-//  return token;
-//}
-
-// return testToken;
-// }
-
-//  Future<Map<String, dynamic>> get({
-// required String endPoint,
-// bool withToken = false,
-//}) async {
-//  Options? options;
-/// if (withToken) {
-// final token = await getToken();
-// options = Options(
-///  headers: {
-// 'Authorization': 'Bearer $token',
-//  'Accept': 'application/json',
-//},
-// );
-// }
-// final response = await dio.get('$baseUrl$endPoint', options: options);
-//     return response.data;
-//   }
-
-//   Future<Map<String, dynamic>> put({
-//     required String endPoint,
-//     required dynamic data,
-//     bool withToken = false,
-//   }) async {
-//     Options? options;
-//     if (withToken) {
-//       final token = await getToken();
-//       options = Options(
-//         headers: {
-//           'Authorization': 'Bearer $token',
-//           'Accept': 'application/json',
-//         },
-//       );
-//     }
-
-//     final response = await dio.put(
-//       '$baseUrl$endPoint',
-//       data: data,
-//       options: options,
-//     );
-//     return response.data;
-//   }
-// }

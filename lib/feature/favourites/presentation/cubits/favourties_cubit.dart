@@ -12,7 +12,7 @@ class FavouritesCubit extends Cubit<FavouritesState> {
     emit(FavouriteLoading());
     try {
       final favourites = await FavouritesRepositoryImpl(
-        ApiServices(token: SharedData.testToken),
+        ApiServices(token: SharedData.token),
       ).getFavourites();
 
       if (favourites.isEmpty) {
@@ -28,7 +28,7 @@ class FavouritesCubit extends Cubit<FavouritesState> {
   Future<void> toggleDoctorFavourite(DoctorModel doctor) async {
     try {
       await FavouritesRepositoryImpl(
-        ApiServices(token: SharedData.testToken),
+        ApiServices(token: SharedData.token),
       ).toggleFavourite(doctor);
 
       await fetchFavourites();

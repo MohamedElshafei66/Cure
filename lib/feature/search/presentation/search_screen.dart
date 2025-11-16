@@ -66,7 +66,7 @@ class _SearchScreenState extends State<SearchScreen> {
       providers: [
         BlocProvider(
           create: (_) => SearchCubit(
-            SearchRepoImpl(ApiServices(token: SharedData.testToken)),
+            SearchRepoImpl(ApiServices(token: SharedData.token)),
           )..fetchHistory(),
         ),
         BlocProvider(create: (_) => FavouritesCubit()),

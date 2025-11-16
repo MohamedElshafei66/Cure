@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_styles.dart';
-class ReviewTextField extends StatelessWidget {
+import '../../cubit/add_review_cubit.dart';
 
-  const ReviewTextField({super.key,});
+class ReviewTextField extends StatelessWidget {
+  const ReviewTextField({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return  TextField(
-      maxLines:8,
+    final cubit = context.read<AddReviewCubit>();
+    
+    return TextField(
+      maxLines: 8,
       keyboardType: TextInputType.multiline,
+      onChanged: (value) {
+        cubit.setComment(value);
+      },
       decoration: InputDecoration(
-        hintText:AppStrings.writeYourReview,
+        hintText: AppStrings.writeYourReview,
         hintStyle: AppStyle.styleMedium14(context).copyWith(
           color: AppColors.whiteColor79,
         ),

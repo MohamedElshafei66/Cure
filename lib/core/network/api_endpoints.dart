@@ -1,4 +1,5 @@
 class ApiEndpoints {
+
   static const String register = "Identity/Accounts/Register";
   static const String verifyRegister = "Identity/Accounts/verify-register";
   static const String verifyLogin = "Identity/Accounts/verify-login";
@@ -38,5 +39,9 @@ class ApiEndpoints {
   static const String searchByLocation = 'Customer/SearchData/SearchByLocation';
 
   static const String getUserProfile = 'profile/Editprofile/getprofile';
+
+
+    final String baseUrl = "https://cure-doctor-booking.runasp.net/api/";
+    final String getDoctorDetailsUrl = "Customer/Doctors/DoctorDetails/4";
 
 }

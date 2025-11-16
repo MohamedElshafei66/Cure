@@ -11,7 +11,7 @@ class DoctorCubit extends Cubit<DoctorState> {
     emit(DoctorLoading());
     try {
       final doctors = await DoctorRepoImpl(
-        ApiServices(token: SharedData.testToken),
+        ApiServices(token: SharedData.token),
       ).getAllDoctors();
       emit(DoctorLoaded(doctors));
     } catch (e) {
@@ -23,7 +23,7 @@ class DoctorCubit extends Cubit<DoctorState> {
     emit(NearestDoctorLoading());
     try {
       final doctors = await DoctorRepoImpl(
-        ApiServices(token: SharedData.testToken),
+        ApiServices(token: SharedData.token),
       ).getNearestDoctors();
       emit(NearestDoctorLoaded(doctors));
     } catch (e) {

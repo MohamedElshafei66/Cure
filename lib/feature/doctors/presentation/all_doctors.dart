@@ -64,7 +64,7 @@ class _AllDoctorsScreenState extends State<AllDoctorsScreen> {
         BlocProvider(create: (_) => DoctorCubit()..fetchAllDoctors()),
         BlocProvider(
           create: (_) => SearchCubit(
-            SearchRepoImpl(ApiServices(token: SharedData.testToken)),
+            SearchRepoImpl(ApiServices(token: SharedData.token)),
           ),
         ),
         BlocProvider(create: (_) => FavouritesCubit()),
