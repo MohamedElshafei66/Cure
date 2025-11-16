@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/dependincy_injection.dart';
+import 'package:provider/provider.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
+import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/data/data_sources/doctor_details_remote_data_source.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/data/repositories/doctor_details_repo_impl.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/domain/use_cases/get_doctor_details_use_case.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/appointment_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/doctor_details_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/doctor_details_app_bar.dart';
@@ -13,14 +18,23 @@ class DoctorDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.read<AuthProvider>();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<DoctorDetailsCubit>(
-          create: (context) => getIt<DoctorDetailsCubit>()
-            ..fetchDoctorDetails(doctorId ?? 2),
+          create: (context) => DoctorDetailsCubit(
+            getDoctorDetailsUseCase: GetDoctorDetailsUseCase(
+              DoctorDetailsRepoImpl(
+                remoteDataSource: DoctorDetailsRemoteDataSourceImpl(
+                  apiServices: ApiServices(authProvider: authProvider),
+                ),
+              ),
+            ),
+          )..fetchDoctorDetails(doctorId ?? 2),
         ),
         BlocProvider<AppointmentCubit>(
-          create: (context) => getIt<AppointmentCubit>(),
+          create: (context) => AppointmentCubit(),
         ),
       ],
       child: Scaffold(

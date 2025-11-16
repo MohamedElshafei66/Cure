@@ -16,40 +16,34 @@ import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/profile_item
 import 'package:round_7_mobile_cure_team3/feature/splash/splash_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-
-
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool isNotificationOn = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    context.read<ProfileCubit>();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.read<AuthProvider>();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (_) => ProfileCubit(
-            ProfileRepository(ProfileRemoteDataSource(ApiServices(authProvider:context.read<AuthProvider>()))),
+            ProfileRepository(
+              ProfileRemoteDataSource(ApiServices(authProvider: authProvider)),
+            ),
           )..getProfile(),
         ),
-
         BlocProvider(
           create: (_) => NotificationCubit(
-            ProfileRepository(ProfileRemoteDataSource(ApiServices(authProvider:context.read<AuthProvider>()))),
+            ProfileRepository(
+              ProfileRemoteDataSource(ApiServices(authProvider: authProvider)),
+            ),
           )..loadStatus(),
         ),
       ],
-
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -70,7 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         BlocBuilder<NotificationCubit, NotificationState>(
                           builder: (context, state) {
                             bool isOn = false;
-
                             if (state is NotificationLoaded) {
                               isOn = state.isOn;
                             }
@@ -125,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Gap(10),
 
-                        // Logout Button
+                        /// Logout Button
                         GestureDetector(
                           onTap: () {
                             showModalBottomSheet(
@@ -145,24 +138,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     child: DeleteAndLogoutDialog(
                                       title: "Logout",
                                       message:
-                                      "Are you sure you want to log out?",
+                                          "Are you sure you want to log out?",
                                       confirmText: "Yes, Logout",
                                       onConfirm: () {
-                                        Navigator.push(
+                                        Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                SplashScreen(),
+                                                const SplashScreen(),
                                           ),
                                         );
-
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
                                           const SnackBar(
                                             content: Text(
-                                              "Logged out successfully",
-                                            ),
+                                                "Logged out successfully"),
                                           ),
                                         );
                                       },
@@ -189,7 +179,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   );
                 } else {
-                  return const Center(child: Text("No profile data available"));
+                  return const Center(
+                      child: Text("No profile data available"));
                 }
               },
             ),

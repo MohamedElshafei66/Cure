@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
-import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
-import 'package:round_7_mobile_cure_team3/feature/auth/app_startup_logic.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/dependincy_injection.dart';
+
+// Doctor details imports
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/data/data_sources/doctor_details_remote_data_source.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/data/data_sources/booking_remote_data_source.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/data/repositories/doctor_details_repo_impl.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/data/repositories/booking_repo_impl.dart'
+    as DoctorDetailsBookingRepoImpl;
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/domain/use_cases/create_booking_use_case.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/domain/use_cases/get_doctor_details_use_case.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/appointment_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/booking_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/doctor_details_cubit.dart';
+
+// Feature imports
+import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/auth/app_startup_logic.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/presentation/view/sign_up_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/booking_view.dart';
@@ -18,8 +29,8 @@ import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/vie
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/pay_after_schedule.dart';
-import 'package:round_7_mobile_cure_team3/feature/doctors/presentation/all_doctors.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/payment_webview_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctors/presentation/all_doctors.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/favourites.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
@@ -74,47 +85,34 @@ abstract class AppRoutes {
   static String paymentWebView = '/paymentWebView';
 
   static final router = GoRouter(
-
-    initialLocation:"/",
+    initialLocation: "/",
     routes: [
       GoRoute(
         path: profileEdit,
         builder: (context, state) {
           final profile = state.extra as ProfileModel;
-
-          return BlocProvider<ProfileCubit>(
-            create: (_) => ProfileCubit(getIt<ProfileRepository>()),
-            child: Builder(
-              builder: (context) {
-                return ProfileEditScreen(profile: profile);
-              },
+          return BlocProvider(
+            create: (_) => ProfileCubit(
+              ProfileRepository(
+                ProfileRemoteDataSource(
+                  ApiServices(authProvider: context.read<AuthProvider>()),
+                ),
+              ),
             ),
+            child: ProfileEditScreen(profile: profile),
           );
         },
       ),
-
       GoRoute(path: mainLayout, builder: (context, state) => MainLayout()),
       GoRoute(path: home, builder: (context, state) => Home()),
       GoRoute(path: search, builder: (context, state) => SearchScreen()),
       GoRoute(path: favourites, builder: (context, state) => Favourites()),
       GoRoute(path: map, builder: (context, state) => MapScreen()),
       GoRoute(path: '/', builder: (context, state) => AppStartupLogic()),
-      GoRoute(
-        path: allDoctorsScreen,
-        builder: (context, state) => AllDoctorsScreen(),
-      ),
-      GoRoute(
-        path: onBoarding_screen,
-        builder: (context, state) => OnBoardingScreen(),
-      ),
-      GoRoute(
-        path: sign_in_screen,
-        builder: (context, state) => SignInScreen(),
-      ),
-      GoRoute(
-        path: sign_up_screen,
-        builder: (context, state) => SignUpScreen(),
-      ),
+      GoRoute(path: allDoctorsScreen, builder: (context, state) => AllDoctorsScreen()),
+      GoRoute(path: onBoarding_screen, builder: (context, state) => OnBoardingScreen()),
+      GoRoute(path: sign_in_screen, builder: (context, state) => SignInScreen()),
+      GoRoute(path: sign_up_screen, builder: (context, state) => SignUpScreen()),
       GoRoute(
         path: otp_screen,
         builder: (context, state) {
@@ -122,18 +120,9 @@ abstract class AppRoutes {
           return OTPVerificationScreen(phoneNumber: phoneNumber);
         },
       ),
-      GoRoute(
-        path: notification_screen,
-        builder: (context, state) => NotificationScreen(),
-      ),
-      GoRoute(
-        path: paymentMethodThirdScreen,
-        builder: (context, state) => PaymentMethodThirdScreen(),
-      ),
-      GoRoute(
-        path: chatsListScreen,
-        builder: (context, state) => ChatsListScreen(),
-      ),
+      GoRoute(path: notification_screen, builder: (context, state) => NotificationScreen()),
+      GoRoute(path: paymentMethodThirdScreen, builder: (context, state) => PaymentMethodThirdScreen()),
+      GoRoute(path: chatsListScreen, builder: (context, state) => ChatsListScreen()),
       GoRoute(path: chatScreen, builder: (context, state) => ChatScreen()),
       GoRoute(
         path: AppRoutes.paymentMethodSecondScreen,
@@ -142,10 +131,7 @@ abstract class AppRoutes {
           return PaymentMethodSecondScreen(methodName: method);
         },
       ),
-      GoRoute(
-        path: paymentMethodScreen,
-        builder: (context, state) => PaymentMethodScreen(),
-      ),
+      GoRoute(path: paymentMethodScreen, builder: (context, state) => PaymentMethodScreen()),
       GoRoute(
         path: AppRoutes.addCard,
         builder: (context, state) {
@@ -153,31 +139,26 @@ abstract class AppRoutes {
           return AddCardScreen(methodName: method);
         },
       ),
-      GoRoute(
-        path: settingScreen,
-        builder: (context, state) => SettingScreen(),
-      ),
+      GoRoute(path: settingScreen, builder: (context, state) => SettingScreen()),
       GoRoute(
         path: profileScreen,
         builder: (context, state) {
-          return Builder(
-            builder: (context) {
-              return BlocProvider<ProfileCubit>(
-                create: (_) => ProfileCubit(
-                  getIt<ProfileRepository>(),
-                )..getProfile(),
-                child: ProfileScreen(),
-              );
-            },
+          return BlocProvider(
+            create: (_) => ProfileCubit(
+              ProfileRepository(
+                ProfileRemoteDataSource(
+                  ApiServices(authProvider: context.read<AuthProvider>()),
+                ),
+              ),
+            )..getProfile(),
+            child: ProfileScreen(),
           );
         },
       ),
-
-      GoRoute(
-        path: privacyPolicyScreen,
-        builder: (context, state) => PrivacyPolicyScreen(),
-      ),
+      GoRoute(path: privacyPolicyScreen, builder: (context, state) => PrivacyPolicyScreen()),
       GoRoute(path: faqsSreen, builder: (context, state) => FaqsScreen()),
+
+   
       GoRoute(
         path: AppRoutes.doctorDetailsScreen,
         builder: (context, state) => DoctorDetailsScreen(),
@@ -185,7 +166,6 @@ abstract class AppRoutes {
       GoRoute(
         path: AppRoutes.confirmAppointmentScreen,
         builder: (context, state) {
-          // Get AppointmentCubit from extra parameter or create new one
           final appointmentCubit = state.extra as AppointmentCubit?;
           if (appointmentCubit != null) {
             return BlocProvider.value(
@@ -193,9 +173,8 @@ abstract class AppRoutes {
               child: const ConfirmAppointmentScreen(),
             );
           } else {
-            // Fallback: create new one if not passed
             return BlocProvider(
-              create: (context) => getIt<AppointmentCubit>(),
+              create: (context) => AppointmentCubit(),
               child: const ConfirmAppointmentScreen(),
             );
           }
@@ -204,16 +183,38 @@ abstract class AppRoutes {
       GoRoute(
         path: AppRoutes.payAfterScheduleScreen,
         builder: (context, state) {
-          // Get AppointmentCubit from extra parameter or create new one
           final appointmentCubit = state.extra as AppointmentCubit?;
           return MultiBlocProvider(
             providers: [
-              if (appointmentCubit != null)
-                BlocProvider.value(value: appointmentCubit)
-              else
-                BlocProvider(create: (context) => getIt<AppointmentCubit>()),
-              BlocProvider(create: (context) => getIt<BookingCubit>()),
-              BlocProvider(create: (context) => getIt<DoctorDetailsCubit>()),
+              BlocProvider(
+                create: (context) => appointmentCubit ?? AppointmentCubit(),
+              ),
+              BlocProvider(
+                create: (context) => BookingCubit(
+                  createBookingUseCase: CreateBookingUseCase(
+                    DoctorDetailsBookingRepoImpl.BookingRepoImpl(
+                      remoteDataSource: BookingRemoteDataSourceImpl(
+                        apiServices: ApiServices(
+                          authProvider: context.read<AuthProvider>(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => DoctorDetailsCubit(
+                  getDoctorDetailsUseCase: GetDoctorDetailsUseCase(
+                    DoctorDetailsRepoImpl(
+                      remoteDataSource: DoctorDetailsRemoteDataSourceImpl(
+                        apiServices: ApiServices(
+                          authProvider: context.read<AuthProvider>(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
             child: const PayAfterScheduleScreen(),
           );
@@ -226,10 +227,7 @@ abstract class AppRoutes {
           return AddReviewScreen(doctorId: doctorId);
         },
       ),
-      GoRoute(
-        path: AppRoutes.bookingScreen,
-        builder: (context, state) => BookingScreen(),
-      ),
+      GoRoute(path: AppRoutes.bookingScreen, builder: (context, state) => BookingScreen()),
       GoRoute(
         path: AppRoutes.rescheduleScreen,
         builder: (context, state) {
@@ -244,7 +242,7 @@ abstract class AppRoutes {
           final doctorName = state.uri.queryParameters['doctorName'];
           final dateStr = state.uri.queryParameters['date'];
           final time = state.uri.queryParameters['time'];
-          
+
           DateTime? selectedDate;
           if (dateStr != null && dateStr.isNotEmpty) {
             try {
@@ -253,7 +251,7 @@ abstract class AppRoutes {
               print('Error parsing date: $e');
             }
           }
-          
+
           return PaymentWebViewScreen(
             paymentUrl: paymentUrl,
             doctorName: doctorName,

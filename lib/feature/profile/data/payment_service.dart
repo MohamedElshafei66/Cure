@@ -9,6 +9,7 @@ class PaymentService {
 
   PaymentService({required this.authProvider});
 
+ 
   Future<String?> getToken() async {
     return authProvider.accessToken;
   }
@@ -21,44 +22,82 @@ class PaymentService {
     required String cvv,
     required String methodName,
   }) async {
-    final token = await getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception("User is not authenticated");
+    try {
+      final token = await getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception("User is not authenticated");
+      }
+
+      final last3 = cardNumber.substring(cardNumber.length - 3);
+
+
+      final body = {
+        "methodName": methodName,
+        "last3": last3,
+        "brand": methodName,
+        "expMonth": expMonth,
+        "expYear": expYear, 
+        "isEnabled": true,
+      };
+
+      print("📤 Sending Payment Data: $body");
+
+      final response = await _dio.post(
+        "${_baseUrl}add",
+        data: body,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+          validateStatus: (status) => true, 
+        ),
+      );
+
+      print("📥 Response: ${response.statusCode} - ${response.data}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data ??
+            {
+              "success": true,
+              "message": "Payment method added successfully 🎉",
+            };
+      } else {
+        final data = response.data;
+        String message = "Failed to add payment method";
+
+        if (data is Map && data.containsKey("errors")) {
+          final errors = data["errors"] as Map<String, dynamic>;
+          final firstErrorList = errors.values.first;
+          if (firstErrorList is List && firstErrorList.isNotEmpty) {
+            message = firstErrorList.first;
+          }
+        } else if (data is Map && data.containsKey("message")) {
+          message = data["message"];
+        } else if (data is Map && data.containsKey("title")) {
+          message = data["title"];
+        }
+
+        return {"success": false, "message": message};
+      }
+    } on DioException catch (e) {
+      print(" DioException: ${e.response?.data}");
+      return {
+        "success": false,
+        "message": e.response?.data?["message"] ??
+            "Failed to add payment method (Dio error)",
+      };
+    } catch (e) {
+      print(" General Error: $e");
+      return {"success": false, "message": e.toString()};
     }
-
-    final last3 = cardNumber.substring(cardNumber.length - 3);
-
-    final body = {
-      "methodName": methodName,
-      "last3": last3,
-      "brand": "Visa",
-      "expMonth": expMonth,
-      "expYear": expYear,
-      "isEnabled": true,
-    };
-
-    final response = await _dio.post(
-      "${_baseUrl}add",
-      data: body,
-      options: Options(
-        headers: {
-          "Authorization": "Bearer $token",
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-      ),
-    );
-
-    return response.data ?? {"message": "Your card successfully added 🎉"};
   }
 
-
-  Future<Map<String, dynamic>> getAllPaymentMethods({
-    String? methodName,
-    required AuthProvider authProvider, // تمرير الـ authProvider
-  }) async {
+  /// 🔹 Fetch all payment methods
+  Future<Map<String, dynamic>> getAllPaymentMethods({String? methodName}) async {
     try {
-      final token = authProvider.accessToken;
+      final token = await getToken();
       if (token == null || token.isEmpty) {
         throw Exception("User is not authenticated");
       }
@@ -68,6 +107,8 @@ class PaymentService {
         url += "?methodName=$methodName";
       }
 
+      print("📥 Fetching Payment Methods from: $url");
+
       final response = await _dio.get(
         url,
         options: Options(
@@ -75,24 +116,38 @@ class PaymentService {
             "Authorization": "Bearer $token",
             "Accept": "application/json",
           },
+          validateStatus: (status) => true,
         ),
       );
 
-      if (response.data is Map && response.data["data"] is List) {
-        return {"success": true, "data": response.data["data"]};
-      } else {
-        return {"success": false, "message": "Unexpected response format", "data": []};
+      print("📦 Response: ${response.statusCode} - ${response.data}");
+
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data;
+        return {
+          "success": true,
+          "data": data["data"] ?? [],
+          "message": data["message"] ?? "Success",
+        };
       }
-    } on DioException catch (e) {
+
       return {
         "success": false,
-        "message": e.response?.data?["message"] ?? "Failed to fetch payment methods",
+        "message": "Unexpected response format",
+        "data": [],
+      };
+    } on DioException catch (e) {
+      print(" DioException while fetching cards: ${e.response?.data}");
+      return {
+        "success": false,
+        "message":
+            e.response?.data?["message"] ?? "Failed to fetch payment methods",
         "data": [],
       };
     } catch (e) {
+      print("⚠️ General Error: $e");
       return {"success": false, "message": e.toString(), "data": []};
     }
   }
-
-
 }
+

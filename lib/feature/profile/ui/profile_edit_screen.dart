@@ -36,18 +36,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   int selectedYear = DateTime.now().year;
 
   static const List<String> _months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
   ];
 
   @override
@@ -58,10 +48,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     emailController = TextEditingController(text: widget.profile.email);
 
     String phone = widget.profile.phoneNumber.replaceAll("+", "").trim();
-
     if (phone.startsWith("20")) phone = phone.substring(2);
     if (phone.startsWith("0")) phone = phone.substring(1);
-
     phoneController = TextEditingController(text: phone);
 
     if (widget.profile.birthDate.isNotEmpty &&
@@ -89,6 +77,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        title: const Text("Edit Profile", style: TextStyle(color: Colors.black)),
       ),
 
       body: BlocConsumer<ProfileCubit, ProfileState>(
@@ -100,10 +89,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 backgroundColor: Colors.green,
               ),
             );
-            Future.microtask(() {
-              if (mounted) {
-                Navigator.pop(context, true);
-              }
+
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (mounted) Navigator.pop(context, true);
             });
           } else if (state is ProfileUpdateError) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -121,49 +109,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               ListView(
                 padding: const EdgeInsets.all(18),
                 children: [
+                  /// Profile Image
                   Center(
                     child: GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (_) => SafeArea(
-                            child: Wrap(
-                              children: [
-                                ListTile(
-                                  leading: const Icon(Icons.photo_library),
-                                  title: const Text("Choose from Gallery"),
-                                  onTap: () async {
-                                    Navigator.pop(context);
-                                    final picked = await picker.pickImage(
-                                      source: ImageSource.gallery,
-                                    );
-                                    if (picked != null) {
-                                      setState(
-                                            () => imageFile = File(picked.path),
-                                      );
-                                    }
-                                  },
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.camera_alt),
-                                  title: const Text("Take a Photo"),
-                                  onTap: () async {
-                                    Navigator.pop(context);
-                                    final picked = await picker.pickImage(
-                                      source: ImageSource.camera,
-                                    );
-                                    if (picked != null) {
-                                      setState(
-                                            () => imageFile = File(picked.path),
-                                      );
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                      onTap: _showImagePicker,
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         children: [
@@ -172,17 +121,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                             backgroundImage: imageFile != null
                                 ? FileImage(imageFile!)
                                 : (widget.profile.imgUrl.isNotEmpty
-                                ? NetworkImage(
-                              widget.profile.imgUrl.startsWith(
-                                "http",
-                              )
-                                  ? widget.profile.imgUrl
-                                  : "https://cure-doctor-booking.runasp.net${widget.profile.imgUrl}",
-                            )
-                                : const AssetImage(
-                              "assets/images/profile_image.png",
-                            )
-                            as ImageProvider),
+                                    ? NetworkImage(
+                                        widget.profile.imgUrl.startsWith("http")
+                                            ? widget.profile.imgUrl
+                                            : "https://cure-doctor-booking.runasp.net${widget.profile.imgUrl}",
+                                      )
+                                    : const AssetImage(
+                                        "assets/images/profile_image.png",
+                                      )) as ImageProvider,
                           ),
                           Container(
                             padding: const EdgeInsets.all(5),
@@ -203,7 +149,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   ),
 
                   const Gap(15),
-
                   Center(
                     child: Text(
                       nameController.text.isEmpty
@@ -212,9 +157,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       style: AppStyle.styleRegular24(context),
                     ),
                   ),
-
                   const Gap(8),
-
                   Center(
                     child: Text(
                       widget.profile.address.isNotEmpty
@@ -226,6 +169,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
                   const Gap(30),
 
+                  /// Form Fields
                   Form(
                     key: _formKey,
                     child: Column(
@@ -238,7 +182,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           keyboardType: TextInputType.name,
                           validator: (v) => v!.isEmpty ? "Required" : null,
                         ),
-
                         const Gap(20),
 
                         CustomTextField(
@@ -249,14 +192,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           keyboardType: TextInputType.emailAddress,
                           validator: (v) => v!.isEmpty ? "Required" : null,
                         ),
-
                         const Gap(20),
 
                         PhoneWithCountryPicker(
                           controller: phoneController,
                           onCountryChanged: (code) => countryCode = code,
                         ),
-
                         const Gap(20),
 
                         const Align(
@@ -266,7 +207,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
-
                         const Gap(8),
 
                         BirthdayPicker(
@@ -277,7 +217,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           months: _months,
                           years: List.generate(
                             100,
-                                (i) => DateTime.now().year - i,
+                            (i) => DateTime.now().year - i,
                           ),
                           onDayChanged: (v) => setState(() => selectedDay = v!),
                           onMonthChanged: (v) =>
@@ -291,40 +231,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         ProfileButton(
                           title: "Edit Profile",
                           showicon: false,
-                          onTap: () {
-                            if (!_formKey.currentState!.validate()) return;
-
-                            final monthIndex = _months.indexOf(selectedMonth);
-                            final birthDate =
-                                "$selectedYear-${monthIndex + 1}-$selectedDay";
-
-                            String rawPhone = phoneController.text.trim();
-                            rawPhone = rawPhone
-                                .replaceAll("+", "")
-                                .replaceAll(" ", "");
-
-                            if (rawPhone.startsWith("20"))
-                              rawPhone = rawPhone.substring(2);
-                            if (rawPhone.startsWith("0"))
-                              rawPhone = rawPhone.substring(1);
-
-                            String finalPhone = "+20$rawPhone";
-
-                            String address = widget.profile.address.isNotEmpty
-                                ? widget.profile.address
-                                : "Cairo";
-
-                            context.read<ProfileCubit>().updateProfile(
-                              fullName: nameController.text.trim(),
-                              email: emailController.text.trim(),
-                              phone: finalPhone,
-                              address: address,
-                              birthDate: birthDate,
-                              imageFile: imageFile,
-                            );
-                          },
+                          onTap: _onSaveProfile,
                         ),
-
                         const Gap(40),
                       ],
                     ),
@@ -340,6 +248,69 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             ],
           );
         },
+      ),
+    );
+  }
+
+  void _onSaveProfile() {
+    if (!_formKey.currentState!.validate()) return;
+
+    final monthIndex = _months.indexOf(selectedMonth);
+    final birthDate = "$selectedYear-${monthIndex + 1}-$selectedDay";
+
+    String rawPhone = phoneController.text.trim()
+        .replaceAll("+", "")
+        .replaceAll(" ", "");
+
+    if (rawPhone.startsWith("20")) rawPhone = rawPhone.substring(2);
+    if (rawPhone.startsWith("0")) rawPhone = rawPhone.substring(1);
+
+    final finalPhone = "$countryCode$rawPhone";
+
+    final address = widget.profile.address.isNotEmpty
+        ? widget.profile.address
+        : "Cairo";
+
+    context.read<ProfileCubit>().updateProfile(
+      fullName: nameController.text.trim(),
+      email: emailController.text.trim(),
+      phone: finalPhone,
+      address: address,
+      birthDate: birthDate,
+      imageFile: imageFile,
+    );
+  }
+
+  void _showImagePicker() {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Choose from Gallery"),
+              onTap: () async {
+                Navigator.pop(context);
+                final picked = await picker.pickImage(source: ImageSource.gallery);
+                if (picked != null) {
+                  setState(() => imageFile = File(picked.path));
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Take a Photo"),
+              onTap: () async {
+                Navigator.pop(context);
+                final picked = await picker.pickImage(source: ImageSource.camera);
+                if (picked != null) {
+                  setState(() => imageFile = File(picked.path));
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
