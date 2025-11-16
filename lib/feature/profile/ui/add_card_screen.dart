@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/data/payment_service.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/card_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/custom_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/profile_button.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 
 class AddCardScreen extends StatefulWidget {
   final String methodName;
@@ -43,7 +43,9 @@ class _AddCardScreenState extends State<AddCardScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(response["message"] ?? "Something went wrong"),
-        backgroundColor: (response["success"] == true) ? Colors.green : Colors.red,
+        backgroundColor: (response["success"] == true)
+            ? Colors.green
+            : Colors.red,
       ),
     );
     if (response["success"] == true) Navigator.pop(context, "added");
@@ -55,7 +57,10 @@ class _AddCardScreenState extends State<AddCardScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("Add ${widget.methodName} Card", style: AppStyle.styleRegular24(context)),
+        title: Text(
+          "Add ${widget.methodName} Card",
+          style: AppStyle.styleRegular24(context),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -68,29 +73,33 @@ class _AddCardScreenState extends State<AddCardScreen> {
               children: [
                 Image.asset(AppImages.addCardImage),
                 const Gap(20),
-                Text('Cardholder Name',style: AppStyle.styleMedium16(context),),
+                Text('Cardholder Name', style: AppStyle.styleMedium16(context)),
                 const Gap(10),
-                
+
                 CustomTextField(
                   controller: cardholderNameController,
                   hintText: "Cardholder Name",
                   keyboardType: TextInputType.text,
-                  validator: (v) => v!.isEmpty ? "Cardholder name required" : null,
+                  validator: (v) =>
+                      v!.isEmpty ? "Cardholder name required" : null,
                 ),
                 const Gap(10),
-                Text('Card Number',style: AppStyle.styleMedium16(context),),
+                Text('Card Number', style: AppStyle.styleMedium16(context)),
                 CardTextField(
                   controller: cardNumberController,
                   hintText: "Card Number",
-                  validator: (v) => v!.length != 16 ? "Enter valid 16-digit card" : null,
+                  validator: (v) =>
+                      v!.length != 16 ? "Enter valid 16-digit card" : null,
                 ),
                 const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  Text("Expiry Date",style: AppStyle.styleMedium16(context),),
-                Text('CVV Code',style: AppStyle.styleMedium16(context),),],),
-                  const Gap(10),
+                    Text("Expiry Date", style: AppStyle.styleMedium16(context)),
+                    Text('CVV Code', style: AppStyle.styleMedium16(context)),
+                  ],
+                ),
+                const Gap(10),
 
                 Row(
                   children: [
@@ -125,7 +134,11 @@ class _AddCardScreenState extends State<AddCardScreen> {
                 const Gap(40),
                 isLoading
                     ? const CircularProgressIndicator()
-                    : ProfileButton(title: "Save", showicon: false, onTap: _saveCard),
+                    : ProfileButton(
+                        title: "Save",
+                        showicon: false,
+                        onTap: _saveCard,
+                      ),
               ],
             ),
           ),
