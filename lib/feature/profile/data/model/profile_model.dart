@@ -6,7 +6,7 @@ class ProfileModel {
   final String birthDate;
   final String imgUrl;
 
-  ProfileModel({
+  const ProfileModel({
     required this.fullName,
     required this.email,
     required this.phoneNumber,
@@ -16,13 +16,31 @@ class ProfileModel {
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    // API may return {"data": {...}} or directly the fields
+    final data = json['data'] ?? json;
+
+    final rawBirth = data['birthDate'] ?? '';
+    final birthDate = (rawBirth == null || rawBirth == "0001-01-01T00:00:00") ? '' : rawBirth.toString();
+
+    final rawImg = data['imgUrl'] ?? '';
+    final imgUrl = rawImg == null ? '' : rawImg.toString();
+
     return ProfileModel(
-      fullName: json['fullName'] ?? '',
-      email: json['email'] ?? '',
-      phoneNumber: json['phoneNumber'] ?? '',
-      address: json['address'] ?? '',
-      birthDate: json['birthDate'] ?? '',
-      imgUrl: json['imgUrl'] ?? '',
+      fullName: (data['fullName'] ?? '').toString(),
+      email: (data['email'] ?? '').toString(),
+      phoneNumber: (data['phoneNumber'] ?? '').toString(),
+      address: (data['address'] ?? '').toString(),
+      birthDate: birthDate,
+      imgUrl: imgUrl,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        "fullName": fullName,
+        "email": email,
+        "phoneNumber": phoneNumber,
+        "address": address,
+        "birthDate": birthDate,
+        "imgUrl": imgUrl,
+      };
 }

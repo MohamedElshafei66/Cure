@@ -4,6 +4,7 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 
 class PhoneWithCountryPicker extends StatefulWidget {
+<<<<<<< HEAD
   final TextEditingController? controller;
   final String? initialValue;
   final String? initialCountryCode;
@@ -13,6 +14,15 @@ class PhoneWithCountryPicker extends StatefulWidget {
     this.controller,
     this.initialValue,
     this.initialCountryCode,
+=======
+  final TextEditingController controller;
+  final ValueChanged<String>? onCountryChanged;
+
+  const PhoneWithCountryPicker({
+    super.key,
+    required this.controller,
+    this.onCountryChanged,
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
   });
 
   @override
@@ -20,10 +30,16 @@ class PhoneWithCountryPicker extends StatefulWidget {
 }
 
 class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
+<<<<<<< HEAD
   late String countryCode;
   late TextEditingController phoneController;
   late FocusNode focusNode;
   
+=======
+  String countryCode = '+20';
+  late FocusNode focusNode;
+
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
   @override
   void initState() {
     super.initState();
@@ -52,29 +68,25 @@ class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
 
   @override
   Widget build(BuildContext context) {
-    bool isFocused = focusNode.hasFocus;
-    Color hintColor = isFocused ? Colors.blue : Colors.grey;
-    Color labelColor = isFocused ? Colors.blue : Colors.grey[700]!;
+    final isFocused = focusNode.hasFocus;
+    final hintColor = isFocused ? Colors.blue : Colors.grey;
+    final labelColor = isFocused ? Colors.blue : Colors.grey[700]!;
 
     return TextFormField(
-      controller: phoneController,
+      controller: widget.controller,
       focusNode: focusNode,
       validator: (value) {
-        if (value == null || value.isEmpty) {
-          return " number is required";
-        } else if (value.length != 11) {
-          return 'number must be 11 digits';
-        }
+        if (value == null || value.isEmpty) return "number is required";
+        // optional: validate length after concatenation at submit time
         return null;
       },
       keyboardType: TextInputType.phone,
-
       decoration: InputDecoration(
         filled: true,
         fillColor: AppColors.lightGrey,
         labelText: 'Phone Number',
         labelStyle: AppStyle.styleMedium16(context).copyWith(color: labelColor),
-        hintText: 'Enter phone number',
+        hintText: 'Enter phone number (without country code)',
         hintStyle: AppStyle.styleMedium16(context).copyWith(color: hintColor),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -86,9 +98,10 @@ class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
         ),
         prefixIcon: CountryCodePicker(
           onChanged: (code) {
-            setState(() {
-              countryCode = code.dialCode ?? '+20';
-            });
+            final dial = code.dialCode ?? '+20';
+            countryCode = dial;
+            if (widget.onCountryChanged != null) widget.onCountryChanged!(dial);
+            setState(() {});
           },
           initialSelection: 'EG',
           favorite: const ['+20', 'EG', '+1', '+44', '+91'],
@@ -102,3 +115,4 @@ class _PhoneWithCountryPickerState extends State<PhoneWithCountryPicker> {
     );
   }
 }
+

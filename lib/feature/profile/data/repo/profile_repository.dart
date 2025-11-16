@@ -1,4 +1,5 @@
 import 'dart:io';
+<<<<<<< HEAD
 import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
 import 'package:round_7_mobile_cure_team3/core/errors/exceptions.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
@@ -99,4 +100,43 @@ class ProfileRepository {
       print("Logout error: $e");
     }
   }
+=======
+import '../ProfileRemoteDataSource.dart';
+import '../model/profile_model.dart';
+
+class ProfileRepository {
+  final ProfileRemoteDataSource remoteDataSource;
+
+  ProfileRepository(this.remoteDataSource);
+
+  Future<ProfileModel> getProfile() => remoteDataSource.getProfile();
+
+  Future<Map<String, dynamic>> updateProfile({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String address,
+    required String birthDate,
+    File? imageFile,
+    double latitude = 0,
+    double longitude = 0,
+  }) {
+    return remoteDataSource.updateProfile(
+      fullName: fullName,
+      email: email,
+      phone: phone,
+      address: address,
+      birthDate: birthDate,
+      imageFile: imageFile,
+      latitude: latitude,
+      longitude: longitude,
+    );
+  }
+
+  Future<bool> getNotificationStatus() =>
+      remoteDataSource.getNotificationStatus();
+
+  Future<bool> toggleNotification() =>
+      remoteDataSource.toggleNotification();
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 }

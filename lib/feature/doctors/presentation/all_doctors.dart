@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+<<<<<<< HEAD
 import 'package:provider/provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
+=======
+import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
@@ -49,6 +53,7 @@ class _AllDoctorsScreenState extends State<AllDoctorsScreen> {
   ];
 
   @override
+<<<<<<< HEAD
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -155,6 +160,101 @@ class _AllDoctorsScreenState extends State<AllDoctorsScreen> {
               );
             },
           ),
+=======
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SearchCubit>().searchDoctors(
+        SearchModel(keyword: '', specialityId: null),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => DoctorCubit()..fetchAllDoctors()),
+        BlocProvider(
+          create: (_) => SearchCubit(
+            SearchRepoImpl(ApiServices(token: SharedData.testToken)),
+          ),
+        ),
+        BlocProvider(create: (_) => FavouritesCubit()),
+      ],
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Text('Doctors', style: AppStyle.styleRegular20(context)),
+          centerTitle: true,
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: Image.asset(AppIcons.arrowBackPng),
+          ),
+        ),
+        body: BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomSearchBar(
+                    controller: searchController,
+                    showIcons: state is! SearchInitial,
+                    onSubmitted: (value) {
+                      final searchModel = SearchModel(
+                        keyword: value.trim(),
+                        specialityId: _getSelectedSpecialtyId(),
+                      );
+                      context.read<SearchCubit>().searchDoctors(searchModel);
+                    },
+                    onReset: () {
+                      searchController.clear();
+                      setState(() => selectedSpecialtyIndex = 0);
+                      context.read<SearchCubit>().reset();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 40,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: specialties.length,
+                      itemBuilder: (context, index) {
+                        final item = specialties[index];
+                        return SpecialistCard(
+                          image: item['image'],
+                          text: item['text'],
+                          selected: selectedSpecialtyIndex == index,
+                          onTap: () {
+                            setState(() {
+                              selectedSpecialtyIndex =
+                                  selectedSpecialtyIndex == index ? 0 : index;
+                            });
+
+                            final selected =
+                                specialties[selectedSpecialtyIndex ?? 0];
+                            context.read<SearchCubit>().searchDoctors(
+                              SearchModel(
+                                keyword: searchController.text.trim(),
+                                specialityId: selected['id'] as int?,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildDoctorsSection(context, state),
+                ],
+              ),
+            );
+          },
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
         ),
       ),
     );

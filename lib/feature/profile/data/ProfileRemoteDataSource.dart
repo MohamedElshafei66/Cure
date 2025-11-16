@@ -10,7 +10,14 @@ class ProfileRemoteDataSource {
   ProfileRemoteDataSource(this.api);
 
   Future<ProfileModel> getProfile() async {
+<<<<<<< HEAD
     final response = await api.get(endPoint: 'profile/EditProfile/getprofile');
+=======
+    final response = await api.get(
+      endPoint: 'profile/EditProfile/getprofile',
+     // withToken: true,
+    );
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
     return ProfileModel.fromJson(response);
   }
 
@@ -24,6 +31,11 @@ class ProfileRemoteDataSource {
     double latitude = 0,
     double longitude = 0,
   }) async {
+<<<<<<< HEAD
+=======
+   // final token = await api.getToken();
+
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
     final formData = FormData.fromMap({
       'FullName': fullName,
       'Email': email,
@@ -49,7 +61,16 @@ class ProfileRemoteDataSource {
       final response = await api.dio.put(
         '${api.baseUrl}profile/EditProfile/updateprofile',
         data: formData,
+<<<<<<< HEAD
         options: Options(headers: headers),
+=======
+        options: Options(
+          headers: {
+           // 'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
+        ),
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
       );
 
       print(" UPDATE PROFILE SUCCESS RESPONSE: ${response.data}");
@@ -74,6 +95,11 @@ class ProfileRemoteDataSource {
   }
 
   Future<bool> toggleNotification() async {
+<<<<<<< HEAD
+=======
+   // final token = await api.getToken();
+
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
     try {
       final token = await api.getToken();
       final headers = <String, String>{'Accept': 'application/json'};
@@ -83,7 +109,16 @@ class ProfileRemoteDataSource {
 
       final response = await api.dio.put(
         "${api.baseUrl}Profile/NotificationSettings/toggle",
+<<<<<<< HEAD
         options: Options(headers: headers),
+=======
+        options: Options(
+          headers: {
+           // "Authorization": "Bearer $token",
+            "Accept": "application/json",
+          },
+        ),
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
       );
 
       print(" TOGGLE NOTIFICATION RESPONSE: ${response.data}");
@@ -100,7 +135,14 @@ class ProfileRemoteDataSource {
 
   Future<bool> getNotificationStatus() async {
     try {
+<<<<<<< HEAD
       final response = await api.get(endPoint: "Profile/NotificationSettings");
+=======
+      final response = await api.get(
+        endPoint: "Profile/NotificationSettings",
+       // withToken: true,
+      );
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 
       print(" GET NOTIFICATION STATUS RESPONSE: $response");
 

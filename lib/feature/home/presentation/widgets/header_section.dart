@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:provider/provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
+=======
+import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
@@ -19,6 +23,7 @@ class HeaderSection extends StatelessWidget {
     required this.onFavoritesTap,
   });
 
+<<<<<<< HEAD
   Future<UserModel> getUser(BuildContext context) async {
     final secureStorage = Provider.of<SecureStorageService>(
       context,
@@ -26,13 +31,22 @@ class HeaderSection extends StatelessWidget {
     );
     return await UserReposotryImpl(
       ApiServices(secureStorage: secureStorage),
+=======
+  Future<UserModel> getUser() async {
+    return await UserReposotryImpl(
+      ApiServices(token: SharedData.testToken),
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
     ).getUser();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<UserModel>(
+<<<<<<< HEAD
       future: getUser(context),
+=======
+      future: getUser(),
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const CircularProgressIndicator();

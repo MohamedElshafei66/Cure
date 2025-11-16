@@ -56,12 +56,20 @@ dependencies:
   flutter_map: ^8.2.2
   latlong2: ^0.9.1
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 
 
   get_it: ^9.0.5
+  location: ^8.0.1
+  http: ^1.6.0
   pretty_dio_logger: ^1.4.0
 
-  bloc: ^9.1.0
+
   dartz: ^0.10.1
   flutter_secure_storage: ^9.2.4
   provider: ^6.1.5+1

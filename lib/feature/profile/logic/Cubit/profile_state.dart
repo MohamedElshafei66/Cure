@@ -17,6 +17,7 @@ class ProfileError extends ProfileState {
   ProfileError(this.message);
 }
 
+<<<<<<< HEAD
 class ProfileUpdating extends ProfileState {}
 
 class ProfileUpdated extends ProfileState {
@@ -35,5 +36,16 @@ class LoggingOut extends ProfileState {}
 
 class LoggedOut extends ProfileState {}
 
+=======
+class ProfileUpdateLoading extends ProfileState {}
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 
+class ProfileUpdateSuccess extends ProfileState {
+  final String message;
+  ProfileUpdateSuccess(this.message);
+}
 
+class ProfileUpdateError extends ProfileState {
+  final String message;
+  ProfileUpdateError(this.message);
+}

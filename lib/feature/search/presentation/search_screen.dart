@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+<<<<<<< HEAD
 import 'package:provider/provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/secure_storage_data.dart';
+=======
+import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
@@ -66,6 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+<<<<<<< HEAD
           create: (context) => SearchCubit(
             SearchRepoImpl(
               ApiServices(
@@ -85,6 +90,13 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
         ),
+=======
+          create: (_) => SearchCubit(
+            SearchRepoImpl(ApiServices(token: SharedData.testToken)),
+          )..fetchHistory(),
+        ),
+        BlocProvider(create: (_) => FavouritesCubit()),
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
       ],
       child: Scaffold(
         backgroundColor: Colors.white,

@@ -83,9 +83,13 @@ class _HomeState extends State<Home> {
                 ),
                 const SizedBox(height: 8),
                 BlocProvider(
+<<<<<<< HEAD
                   create: (context) => DoctorCubit(
                     secureStorage: Provider.of<SecureStorageService>(context, listen: false),
                   )..fetchNearestDoctors(),
+=======
+                  create: (context) => DoctorCubit()..fetchNearestDoctors(),
+>>>>>>> 8fc1234635d783872ebafe8a5be92910c4f6d3ab
                   child: DoctorsNearby(),
                 ),
               ],
