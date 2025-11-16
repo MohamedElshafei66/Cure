@@ -50,6 +50,7 @@ abstract class AppIcons {
   static const String booking = 'assets/icons/booking.png';
   static const String home = 'assets/icons/Home.png';
   static const String profile = 'assets/icons/Profile.png';
+   static const String settings = 'assets/icons/Settings.png';
 
   //  Specialties Icons
   static const String cardiologist = 'assets/icons/cardiologist.png';

@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/view/sign_in_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/app_startup_logic.dart';
 import 'package:round_7_mobile_cure_team3/feature/auth/otp/presentation/otp_screen.dart';
@@ -17,9 +20,12 @@ import 'package:round_7_mobile_cure_team3/feature/home/presentation/home.dart';
 import 'package:round_7_mobile_cure_team3/feature/map/presentation/map.dart';
 import 'package:round_7_mobile_cure_team3/feature/notifications/presentation/view/notification_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/onboarding/presentation/view/onboarding_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/data/ProfileRemoteDataSource.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/data/model/profile_model.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/data/repo/profile_repository.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/logic/Cubit/profile_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/add_card_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/faqs_screen.dart';
-import 'package:round_7_mobile_cure_team3/feature/profile/ui/password_managment.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_second_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_third_screen.dart';
@@ -28,7 +34,7 @@ import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_edit_screen
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/setting_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/search_screen.dart';
-import 'package:round_7_mobile_cure_team3/feature/splash/splash_screen.dart';
+
 import 'package:round_7_mobile_cure_team3/main_layout.dart';
 
 abstract class AppRoutes {
@@ -61,18 +67,30 @@ abstract class AppRoutes {
   static String passwordManagement = '/manage_password';
   static String profileEdit = '/profile_edit';
   static String addCard = '/addCard';
+  
 
   static final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: profileScreen,
     routes: [
       GoRoute(
-        path: passwordManagement,
-        builder: (context, state) => PasswordManagment(),
-      ),
-      GoRoute(
         path: profileEdit,
-        builder: (context, state) => ProfileEditScreen(),
+        builder: (context, state) {
+          final profile = state.extra as ProfileModel;
+
+          return BlocProvider<ProfileCubit>(
+            create: (context) => ProfileCubit(
+              ProfileRepository(ProfileRemoteDataSource(ApiServices())),
+            ),
+
+            child: Builder(
+              builder: (context) {
+                return ProfileEditScreen(profile: profile);
+              },
+            ),
+          );
+        },
       ),
+
       GoRoute(path: mainLayout, builder: (context, state) => MainLayout()),
       GoRoute(path: home, builder: (context, state) => Home()),
       GoRoute(path: search, builder: (context, state) => SearchScreen()),
@@ -98,8 +116,7 @@ abstract class AppRoutes {
       GoRoute(
         path: otp_screen,
         builder: (context, state) {
-          final phoneNumber =
-              state.extra as String;
+          final phoneNumber = state.extra as String;
           return OTPVerificationScreen(phoneNumber: phoneNumber);
         },
       ),
@@ -117,23 +134,40 @@ abstract class AppRoutes {
       ),
       GoRoute(path: chatScreen, builder: (context, state) => ChatScreen()),
       GoRoute(
-        path: paymentMethodSecondScreen,
-        builder: (context, state) => PaymentMethodSecondScreen(),
+        path: AppRoutes.paymentMethodSecondScreen,
+        builder: (context, state) {
+          final method = state.extra as String;
+          return PaymentMethodSecondScreen(methodName: method);
+        },
       ),
       GoRoute(
-        path: paymentMethodScreen,
+        path: AppRoutes. paymentMethodScreen,
         builder: (context, state) => PaymentMethodScreen(),
       ),
 
-      GoRoute(path: addCard, builder: (context, state) => AddCardScreen()),
+      GoRoute(
+        path: AppRoutes.addCard,
+        builder: (context, state) {
+          final method = state.extra as String;
+          return AddCardScreen(methodName: method);
+        },
+      ),
       GoRoute(
         path: settingScreen,
         builder: (context, state) => SettingScreen(),
       ),
       GoRoute(
         path: profileScreen,
-        builder: (context, state) => ProfileScreen(),
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => ProfileCubit(
+              ProfileRepository(ProfileRemoteDataSource(ApiServices())),
+            )..getProfile(),
+            child: ProfileScreen(),
+          );
+        },
       ),
+
       GoRoute(
         path: privacyPolicyScreen,
         builder: (context, state) => PrivacyPolicyScreen(),

@@ -26,7 +26,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       ),
       body: 
          Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(12.0),
 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +50,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 "Welcome to Cure. Your privacy is important to\n us. This Privacy Policy explains how we collect,\n use, and protect your personal information \n when you use our doctor appointment booking\n app.",
                 style: AppStyle.styleMedium16(context),
               ),
-              Gap(50),
+              Gap(20),
 
               Text(
                 "terms & conditions",

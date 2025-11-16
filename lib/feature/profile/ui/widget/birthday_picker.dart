@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 
 class BirthdayPicker extends StatelessWidget {
@@ -10,11 +11,12 @@ class BirthdayPicker extends StatelessWidget {
   final List<String> months;
   final List<int> years;
 
-  final ValueChanged<int?> onDayChanged;
-  final ValueChanged<String?> onMonthChanged;
-  final ValueChanged<int?> onYearChanged;
+  final Function(int?) onDayChanged;
+  final Function(String?) onMonthChanged;
+  final Function(int?) onYearChanged;
 
-  BirthdayPicker({
+  const BirthdayPicker({
+    super.key,
     required this.selectedDay,
     required this.selectedMonth,
     required this.selectedYear,
@@ -30,77 +32,54 @@ class BirthdayPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: DropdownButtonFormField<int>(
-            value: selectedDay,
-            isDense: true,
-            items: days
-                .map(
-                  (day) =>
-                      DropdownMenuItem(value: day, child: Text(day.toString())),
-                )
-                .toList(),
-            onChanged: onDayChanged,
-            decoration: decoration(),
-          ),
-        ),
-        const SizedBox(width: 8),
+        Expanded(child: _buildDropdown<int>(
+          value: selectedDay,
+          items: days.map((d) => DropdownMenuItem(value: d, child: FittedBox(child: Text("$d")))).toList(),
+          onChanged: onDayChanged,
+        )),
 
-        Expanded(
-          child: DropdownButtonFormField<String>(
-            value: selectedMonth,
-            isDense: true,
-            items: months
-                .map(
-                  (month) => DropdownMenuItem(
-                    value: month,
-                    child: Container(
-                      width: 50,
-                      child: Text(
-                        month,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 13),
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-            onChanged: onMonthChanged,
-            decoration: decoration(),
-          ),
-        ),
-        const SizedBox(width: 8),
+        const Gap(8),
 
-        Expanded(
-          child: DropdownButtonFormField<int>(
-            value: selectedYear,
-            isDense: true,
-            items: years
-                .map(
-                  (year) => DropdownMenuItem(
-                    value: year,
-                    child: Text(year.toString()),
-                  ),
-                )
-                .toList(),
-            onChanged: onYearChanged,
-            decoration: decoration(),
-          ),
-        ),
+        Expanded(child: _buildDropdown<String>(
+          value: selectedMonth,
+          items: months.map((m) => DropdownMenuItem(value: m, child: FittedBox(child: Text(m)))).toList(),
+          onChanged: onMonthChanged,
+        )),
+
+        const Gap(8),
+
+        Expanded(child: _buildDropdown<int>(
+          value: selectedYear,
+          items: years.map((y) => DropdownMenuItem(value: y, child: FittedBox(child: Text("$y")))).toList(),
+          onChanged: onYearChanged,
+        )),
       ],
     );
   }
 
-  InputDecoration decoration() {
-    return InputDecoration(
-      filled: true,
-      fillColor: AppColors.lightGrey,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
+  Widget _buildDropdown<T>({
+    required T value,
+    required List<DropdownMenuItem<T>> items,
+    required Function(T?) onChanged,
+  }) {
+    return SizedBox(
+      height: 48,
+      child: DropdownButtonFormField<T>(
+        isExpanded: true,  
+        value: value,
+        items: items,
+        onChanged: onChanged,
+        decoration: const InputDecoration(
+          filled: true,
+          fillColor: AppColors.lightGrey,
+          contentPadding: EdgeInsets.symmetric(horizontal: 8),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(6)),
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+        ),
+        icon: const Icon(Icons.arrow_drop_down),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
     );
   }
 }

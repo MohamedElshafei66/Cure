@@ -17,4 +17,12 @@ class ApiEndpoints {
   static const String favouriteChat = "chat/chat/chats?isfavoutire=true";
   static const String markChatAsFavourite = "chat/chat/chatfavourite";
 
+
+
+  static const String getProfile = 'profile/Editprofile/getprofile';
+  static const String updateProfile = 'profile/Editprofile';
+
+
 }
+
+

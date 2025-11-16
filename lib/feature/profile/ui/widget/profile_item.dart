@@ -51,7 +51,10 @@ class ProfileItem extends StatelessWidget {
                 activeColor: Colors.green, 
               )
             else if (showArrow)
-              Image.asset(icons ?? AppIcons.arrow, width: 24, height: 24),
+              Padding(
+                padding: const EdgeInsets.only(right: 5,),
+                child: Image.asset(icons ?? AppIcons.arrow, width: 40, height: 40),
+              ),
           ],
         ),
       ),

@@ -1,164 +1,133 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/data/payment_service.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/card_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/custom_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/profile_button.dart';
+import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 
 class AddCardScreen extends StatefulWidget {
+  final String methodName;
+  const AddCardScreen({super.key, required this.methodName});
+
   @override
   State<AddCardScreen> createState() => _AddCardScreenState();
 }
 
 class _AddCardScreenState extends State<AddCardScreen> {
-  final TextEditingController cardholderNameController =
-      TextEditingController();
-  final TextEditingController cardNumberController = TextEditingController();
-  final TextEditingController expiryMonthController = TextEditingController();
-  final TextEditingController expiryYearController = TextEditingController();
-  final TextEditingController cvvController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final cardholderNameController = TextEditingController();
+  final cardNumberController = TextEditingController();
+  final expiryMonthController = TextEditingController();
+  final expiryYearController = TextEditingController();
+  final cvvController = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> _saveCard() async {
+    if (!formKey.currentState!.validate()) return;
+    setState(() => isLoading = true);
+    final service = PaymentService();
+
+    final response = await service.addPaymentMethod(
+      cardholderName: cardholderNameController.text.trim(),
+      cardNumber: cardNumberController.text.trim(),
+      expMonth: int.parse(expiryMonthController.text),
+      expYear: 2000 + int.parse(expiryYearController.text),
+      cvv: cvvController.text.trim(),
+      methodName: widget.methodName,
+    );
+
+    setState(() => isLoading = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(response["message"] ?? "Something went wrong"),
+        backgroundColor: (response["success"] == true) ? Colors.green : Colors.red,
+      ),
+    );
+    if (response["success"] == true) Navigator.pop(context, "added");
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
-          onPressed: () {
-            context.pop();
-          },
-        ),
-        title: Text(
-          AppStrings.addNewCardTitle,
-          style: AppStyle.styleRegular24(context),
-        ),
+        title: Text("Add ${widget.methodName} Card", style: AppStyle.styleRegular24(context)),
         centerTitle: true,
       ),
-
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset(AppImages.addCardImage),
+                const Gap(20),
+                Text('Cardholder Name',style: AppStyle.styleMedium16(context),),
+                const Gap(10),
+                
+                CustomTextField(
+                  controller: cardholderNameController,
+                  hintText: "Cardholder Name",
+                  keyboardType: TextInputType.text,
+                  validator: (v) => v!.isEmpty ? "Cardholder name required" : null,
+                ),
+                const Gap(10),
+                Text('Card Number',style: AppStyle.styleMedium16(context),),
+                CardTextField(
+                  controller: cardNumberController,
+                  hintText: "Card Number",
+                  validator: (v) => v!.length != 16 ? "Enter valid 16-digit card" : null,
+                ),
+                const Gap(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  Text("Expiry Date",style: AppStyle.styleMedium16(context),),
+                Text('CVV Code',style: AppStyle.styleMedium16(context),),],),
+                  const Gap(10),
 
-            children: [
-              Image.asset(AppImages.addCardImage),
-              Gap(15),
-
-              Text("Cardholder Name", style: AppStyle.styleMedium16(context)),
-              CustomTextField(
-                controller: cardholderNameController,
-                hintText: "Cardholder Name",
-                keyboardType: TextInputType.text,
-              ),
-
-              Gap(16),
-
-              Text("Card Number", style: AppStyle.styleMedium16(context)),
-              CardTextField(
-                controller: cardNumberController,
-                hintText: "Enter card number",
-              ),
-
-              Gap(16),
-
-              Row(
-                children: [
-                  Text("Expiry Date", style: AppStyle.styleMedium16(context)),
-                  Gap(170),
-                  Text("CVV Code", style: AppStyle.styleMedium16(context)),
-                ],
-              ),
-              Gap(6),
-
-              Row(
-                children: [
-                  // MM & YY Container
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      margin: EdgeInsets.only(right: 110),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: expiryMonthController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                hintText: "MM",
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-
-                          Container(
-                            width: 1,
-                            height: 25,
-                            color: Colors.grey.shade500,
-                          ),
-                          Gap(10),
-                          Expanded(
-                            child: TextField(
-                              controller: expiryYearController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                hintText: "YY",
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  Gap(12),
-
-                  // CVV Container
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: TextField(
-                        controller: cvvController,
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        controller: expiryMonthController,
+                        hintText: "MM",
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: "CVV",
-                          border: InputBorder.none,
-                        ),
+                        validator: (v) => v!.isEmpty ? "Required" : null,
                       ),
                     ),
-                  ),
-                ],
-              ),
-
-              Gap(110),
-
-              ProfileButton(
-                title: "      Save",
-                showicon: false,
-                onTap: () {
-                  context.push(AppRoutes.paymentMethodThirdScreen);
-                },
-              ),
-              Gap(20),
-            ],
+                    const Gap(12),
+                    Expanded(
+                      child: CustomTextField(
+                        controller: expiryYearController,
+                        hintText: "YY",
+                        keyboardType: TextInputType.number,
+                        validator: (v) => v!.isEmpty ? "Required" : null,
+                      ),
+                    ),
+                    const Gap(12),
+                    Expanded(
+                      child: CustomTextField(
+                        controller: cvvController,
+                        hintText: "CVV",
+                        keyboardType: TextInputType.number,
+                        validator: (v) => v!.length != 3 ? "3 digits" : null,
+                      ),
+                    ),
+                  ],
+                ),
+                const Gap(40),
+                isLoading
+                    ? const CircularProgressIndicator()
+                    : ProfileButton(title: "Save", showicon: false, onTap: _saveCard),
+              ],
+            ),
           ),
         ),
       ),
