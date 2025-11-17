@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
+import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/google_meet_utils.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/domain/repositories/ChatRepository.dart';
@@ -117,24 +118,26 @@ class _ChatScreenState extends State<ChatScreen> {
                 CircleAvatar(
                   radius: 20,
                   backgroundColor: AppColors.lightGrey,
-                  backgroundImage: (widget.doctorImage != null && 
-                                   widget.doctorImage!.isNotEmpty)
-                      ? CachedNetworkImageProvider(
-                          widget.doctorImage!.startsWith('http')
-                              ? widget.doctorImage!
-                              : 'https://cure-doctor-booking.runasp.net/${widget.doctorImage!}',
-                        )
-                      : null,
-                  child: (widget.doctorImage == null || 
-                         widget.doctorImage!.isEmpty)
-                      ? Icon(Icons.person, color: AppColors.primary)
-                      : null,
+                   backgroundImage:AssetImage(AppImages.doctorImage),
+
+                   //(widget.doctorImage != null &&
+                  //                  widget.doctorImage!.isNotEmpty)
+                  //     ? CachedNetworkImageProvider(
+                  //         widget.doctorImage!.startsWith('http')
+                  //             ? widget.doctorImage!
+                  //             : 'https://cure-doctor-booking.runasp.net/${widget.doctorImage!}',
+                  //       )
+                  //     : null,
+                  // child: (widget.doctorImage == null ||
+                  //        widget.doctorImage!.isEmpty)
+                  //     ? Icon(Icons.person, color: AppColors.primary)
+                  //     : null,
                 ),
                 const SizedBox(width: 10),
                 Text(
                   widget.doctorName != null && widget.doctorName!.isNotEmpty
                       ? widget.doctorName!
-                      : "doctor",
+                      : "Deo",
                   style: AppStyle.styleMedium16(context),
                 ),
               ],
@@ -159,7 +162,6 @@ class _ChatScreenState extends State<ChatScreen> {
               IconButton(
                 icon: const Icon(Icons.call),
                 onPressed: () {
-                  // TODO: Implement voice call functionality
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Voice call feature coming soon'),

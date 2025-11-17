@@ -9,6 +9,7 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/core/widgets/chat_card.dart';
+import 'package:round_7_mobile_cure_team3/feature/auth/Sign%20In/presentation/widgets/custom_text_field.dart';
 import '../../data/models/favourite_chat_model.dart';
 import '../../data/data_sources/chat_remote_data_source.dart';
 import '../../data/data_sources/unread_chat_remote_data_source.dart';
@@ -131,6 +132,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              CustomTextFormFeild(iconpath: AppIcons.search,hintText: "search for chat,doctor",),
               // Tabs
               SizedBox(
                 height: 50,

@@ -19,7 +19,12 @@ class ChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String name =
-        doctorDTO?.name ?? chatDTO?.name ?? "Unknown";
+    doctorDTO?.name?.isNotEmpty == true
+        ? doctorDTO!.name!
+        : chatDTO?.name?.isNotEmpty == true
+        ? chatDTO!.name!
+        : "Deo";
+
 
     final String? image =
         doctorDTO?.img ??
