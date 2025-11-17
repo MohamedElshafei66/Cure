@@ -38,6 +38,19 @@ class BookingSearchRemoteDataSourceImpl implements BookingSearchRemoteDataSource
       
       throw ServerException('Invalid response format');
     } on DioException catch (e) {
+      // Handle 404 responses that might indicate "no bookings found"
+      if (e.response != null && e.response!.statusCode == 404) {
+        final responseData = e.response!.data;
+        if (responseData is Map<String, dynamic>) {
+          final message = responseData['message']?.toString().toLowerCase() ?? '';
+          // If the message indicates no bookings found, return empty list instead of error
+          if (message.contains('no bookings found') || 
+              message.contains('no booking found') ||
+              message.contains('matching the criteria')) {
+            return [];
+          }
+        }
+      }
       throw ServerException.fromDioError(e);
     } catch (e) {
       throw ServerException(e.toString());

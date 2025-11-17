@@ -7,11 +7,13 @@ part 'doctor_details_state.dart';
 
 class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
   final GetDoctorDetailsUseCase getDoctorDetailsUseCase;
+  int? currentDoctorId;
 
   DoctorDetailsCubit({required this.getDoctorDetailsUseCase})
       : super(DoctorDetailsInitial());
 
   Future<void> fetchDoctorDetails(int doctorId) async {
+    currentDoctorId = doctorId;
     try {
       print('Cubit: Fetching doctor details for ID: $doctorId');
       emit(DoctorDetailsLoading());

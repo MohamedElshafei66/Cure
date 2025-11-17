@@ -10,6 +10,7 @@ import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/doct
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/header_section.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/search_section.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/specialists_section.dart';
+import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_cubit.dart';
 
 import '../../../core/constants/auth_provider.dart';
 
@@ -40,57 +41,68 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                HeaderSection(
-                  onNotificationTap: () =>
-                      context.push(AppRoutes.notification_screen),
-                  onFavoritesTap: () => context.push(AppRoutes.favourites),
-                ),
-                const SizedBox(height: 16),
-                SearchSection(controller: searchController),
-                const SizedBox(height: 24),
-                SpecialtiesSection(
-                  specialties: specialties,
-                  selectedIndex: selectedIndex,
-                  onTap: (index) => setState(() => selectedIndex = index),
-                ),
-                const SizedBox(height: 24),
-                BannerSection(),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    Text(
-                      'Doctors near you',
-                      style: AppStyle.styleRegular20(context),
-                    ),
-                    const Spacer(),
-                    TextButton(
-                      onPressed: () => context.push(AppRoutes.allDoctorsScreen),
-                      child: Text(
-                        'View All',
-                        style: AppStyle.styleMedium14(context),
+    final authProvider = context.read<AuthProvider>();
+    
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<DoctorCubit>(
+          create: (context) {
+            final cubit = DoctorCubit(authProvider: authProvider);
+            // Fetch all doctors and display first few in home screen
+            cubit.fetchAllDoctors();
+            return cubit;
+          },
+        ),
+        BlocProvider<FavouritesCubit>(
+          create: (context) => FavouritesCubit(authProvider: authProvider)
+            ..fetchFavourites(),
+        ),
+      ],
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HeaderSection(
+                    onNotificationTap: () =>
+                        context.push(AppRoutes.notification_screen),
+                    onFavoritesTap: () => context.push(AppRoutes.favourites),
+                  ),
+                  const SizedBox(height: 16),
+                  SearchSection(controller: searchController),
+                  const SizedBox(height: 24),
+                  SpecialtiesSection(
+                    specialties: specialties,
+                    selectedIndex: selectedIndex,
+                    onTap: (index) => setState(() => selectedIndex = index),
+                  ),
+                  const SizedBox(height: 24),
+                  BannerSection(),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Text(
+                        'Doctors near you',
+                        style: AppStyle.styleRegular20(context),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                BlocProvider(
-                  create: (context) {
-                    final authProvider = context.read<AuthProvider>();
-                    return DoctorCubit(authProvider: authProvider)..fetchNearestDoctors();
-                  },
-                  child: DoctorsNearby(),
-                ),
-
-              ],
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () => context.push(AppRoutes.allDoctorsScreen),
+                        child: Text(
+                          'View All',
+                          style: AppStyle.styleMedium14(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height:4),
+                  DoctorsNearby(),
+                ],
+              ),
             ),
           ),
         ),

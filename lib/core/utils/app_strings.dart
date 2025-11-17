@@ -135,6 +135,7 @@ abstract class AppStrings {
   static const String support = "Support";
   static const String bookAgain = "Book Again";
   static const String upComing = "Upcoming";
+  static const String joinVideoCall = "Join Video Call";
 
   // Review
   static const String review = "Review";

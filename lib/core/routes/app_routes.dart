@@ -25,6 +25,11 @@ import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/boo
 import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/reschedule_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chat_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chats_list_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/data/models/chat_model.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/data/models/favourite_chat_model.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/data/models/unread_chat_model.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/data/data_sources/chat_remote_data_source.dart';
+import 'package:round_7_mobile_cure_team3/feature/chat/data/repositories/ChatRepositoryImp.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
@@ -39,7 +44,7 @@ import 'package:round_7_mobile_cure_team3/feature/onboarding/presentation/view/o
 import 'package:round_7_mobile_cure_team3/feature/profile/data/ProfileRemoteDataSource.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/data/model/profile_model.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/data/repo/profile_repository.dart';
-import 'package:round_7_mobile_cure_team3/feature/profile/logic/Cubit/profile_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/logic/cubit/profile_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/add_card_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/faqs_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_screen.dart';
@@ -123,7 +128,47 @@ abstract class AppRoutes {
       GoRoute(path: notification_screen, builder: (context, state) => NotificationScreen()),
       GoRoute(path: paymentMethodThirdScreen, builder: (context, state) => PaymentMethodThirdScreen()),
       GoRoute(path: chatsListScreen, builder: (context, state) => ChatsListScreen()),
-      GoRoute(path: chatScreen, builder: (context, state) => ChatScreen()),
+      GoRoute(
+        path: chatScreen,
+        builder: (context, state) {
+          final authProvider = context.read<AuthProvider>();
+          final chatRemote = ChatRemoteDataSource(authProvider: authProvider);
+          final chatRepository = ChatRepositoryImpl(chatRemote);
+          
+          // Handle both ChatData and DoctorDTO types
+          dynamic data = state.extra;
+          
+          String? doctorName;
+          String? doctorImage;
+          String? chatId;
+          String? receiverId;
+          
+          // Check if it's ChatData (from All tab)
+          if (data is ChatData) {
+            doctorName = data.name;
+            doctorImage = data.image;
+            chatId = data.id.toString();
+            receiverId = data.receiverId;
+          }
+          // Check if it's a DoctorDTO (from Unread/Favorite tabs)
+          // Both unread_chat_model.DoctorDTO and favourite_chat_model.DoctorDTO have similar structure
+          else {
+            // Access properties directly - both DoctorDTO types have id, name, img
+            doctorName = data.name?.toString() ?? data.name ?? '';
+            doctorImage = data.img?.toString() ?? data.img ?? '';
+            receiverId = data.id?.toString() ?? data.id ?? '';
+            chatId = receiverId; // Use receiverId as chatId
+          }
+          
+          return ChatScreen(
+            doctorName: doctorName,
+            doctorImage: doctorImage,
+            chatId: chatId,
+            receiverId: receiverId,
+            chatRepository: chatRepository,
+          );
+        },
+      ),
       GoRoute(
         path: AppRoutes.paymentMethodSecondScreen,
         builder: (context, state) {
@@ -161,7 +206,10 @@ abstract class AppRoutes {
    
       GoRoute(
         path: AppRoutes.doctorDetailsScreen,
-        builder: (context, state) => DoctorDetailsScreen(),
+        builder: (context, state) {
+          final doctorId = state.extra as int?;
+          return DoctorDetailsScreen(doctorId: doctorId);
+        },
       ),
       GoRoute(
         path: AppRoutes.confirmAppointmentScreen,

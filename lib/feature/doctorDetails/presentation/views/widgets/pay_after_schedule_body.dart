@@ -32,8 +32,10 @@ class _PayAfterScheduleBodyState extends State<PayAfterScheduleBody> {
         final appointmentState = context.read<AppointmentCubit>().state;
         if (appointmentState.doctorDetails == null) {
           print('No doctor details found, fetching doctor details...');
-          // Use doctor ID 2 as default for testing
-          context.read<DoctorDetailsCubit>().fetchDoctorDetails(2);
+          final doctorDetailsCubit = context.read<DoctorDetailsCubit>();
+          // Use currentDoctorId from cubit if available, otherwise fallback to 2
+          final doctorId = doctorDetailsCubit.currentDoctorId ?? 2;
+          doctorDetailsCubit.fetchDoctorDetails(doctorId);
         }
       }
     });

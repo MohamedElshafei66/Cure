@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
+import 'package:round_7_mobile_cure_team3/core/utils/google_meet_utils.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/domain/repositories/ChatRepository.dart';
 import '../cubit/conversation_cubit.dart';
 import '../cubit/conversation_state.dart';
@@ -113,22 +115,60 @@ class _ChatScreenState extends State<ChatScreen> {
             title: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(widget.doctorImage??""),
+                  radius: 20,
+                  backgroundColor: AppColors.lightGrey,
+                  backgroundImage: (widget.doctorImage != null && 
+                                   widget.doctorImage!.isNotEmpty)
+                      ? CachedNetworkImageProvider(
+                          widget.doctorImage!.startsWith('http')
+                              ? widget.doctorImage!
+                              : 'https://cure-doctor-booking.runasp.net/${widget.doctorImage!}',
+                        )
+                      : null,
+                  child: (widget.doctorImage == null || 
+                         widget.doctorImage!.isEmpty)
+                      ? Icon(Icons.person, color: AppColors.primary)
+                      : null,
                 ),
                 const SizedBox(width: 10),
-                Text(widget.doctorName??"", style: AppStyle.styleMedium16(context)),
+                Text(
+                  widget.doctorName != null && widget.doctorName!.isNotEmpty
+                      ? widget.doctorName!
+                      : "doctor",
+                  style: AppStyle.styleMedium16(context),
+                ),
               ],
             ),
-            actions: const [
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.video_call),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.video_call),
+                onPressed: () async {
+                  final launched = await GoogleMeetUtils.openMeetLink();
+                  if (!launched) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Unable to open Google Meet. Please check your connection.'),
+                        ),
+                      );
+                    }
+                  }
+                },
+                tooltip: 'Join Video Call',
               ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.call),
+              IconButton(
+                icon: const Icon(Icons.call),
+                onPressed: () {
+                  // TODO: Implement voice call functionality
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Voice call feature coming soon'),
+                    ),
+                  );
+                },
+                tooltip: 'Voice Call',
               ),
-              Icon(Icons.more_vert),
+              const Icon(Icons.more_vert),
             ],
           ),
           body: Padding(

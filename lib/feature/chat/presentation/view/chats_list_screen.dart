@@ -50,9 +50,14 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       context,
       listen: false,
     );
-    final chatRemote = ChatRemoteDataSource(authProvider:AuthProvider());
-    final unreadRemote = UnreadChatRemoteDataSource(authProvider:AuthProvider());
-    final favoriteRemote = FavoriteChatRemoteDataSource(authProvider:AuthProvider());
+    final authProvider = Provider.of<AuthProvider>(
+      context,
+      listen: false,
+    );
+    
+    final chatRemote = ChatRemoteDataSource(authProvider: authProvider);
+    final unreadRemote = UnreadChatRemoteDataSource(authProvider: authProvider);
+    final favoriteRemote = FavoriteChatRemoteDataSource(authProvider: authProvider);
 
     chatCubit = ChatCubit(ChatRepositoryImpl(chatRemote));
     unreadCubit = UnreadChatCubit(UnreadChatRepositoryImpl(unreadRemote));
@@ -248,10 +253,18 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                               itemCount: state.doctors.length,
                               itemBuilder: (context, index) {
                                 final chat = state.doctors[index];
-                                return ChatCard(
-                                  doctorDTO: DoctorDTO(
-                                    name: chat.name,
-                                    img: chat.img,
+                                return GestureDetector(
+                                  onTap: () {
+                                    GoRouter.of(context).push(
+                                      AppRoutes.chatScreen,
+                                      extra: chat,
+                                    );
+                                  },
+                                  child: ChatCard(
+                                    doctorDTO: DoctorDTO(
+                                      name: chat.name,
+                                      img: chat.img,
+                                    ),
                                   ),
                                 );
                               },
@@ -281,7 +294,15 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                                   const SizedBox(height: 8),
                               itemBuilder: (context, index) {
                                 final doctor = state.doctors[index];
-                                return ChatCard(doctorDTO: doctor);
+                                return GestureDetector(
+                                  onTap: () {
+                                    GoRouter.of(context).push(
+                                      AppRoutes.chatScreen,
+                                      extra: doctor,
+                                    );
+                                  },
+                                  child: ChatCard(doctorDTO: doctor),
+                                );
                               },
                             );
                           } else if (state is FavoriteChatError) {

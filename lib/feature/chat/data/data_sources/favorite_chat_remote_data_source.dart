@@ -17,7 +17,8 @@ class FavoriteChatRemoteDataSource {
         body: {'id': chatId},
       );
 
-      return FavouriteChatModel.fromJson(response.data);
+      // apiServices.post() returns response.data directly, not a response object
+      return FavouriteChatModel.fromJson(response);
 
     } catch (e) {
       throw Exception('Dio error: $e');
@@ -30,7 +31,8 @@ class FavoriteChatRemoteDataSource {
         endPoint: ApiEndpoints.favouriteChat,
       );
 
-      return FavouriteChatModel.fromJson(response.data);
+      // apiServices.get() returns response.data directly, not a response object
+      return FavouriteChatModel.fromJson(response);
 
     } catch (e) {
       throw Exception('Failed to load favorite chats: $e');

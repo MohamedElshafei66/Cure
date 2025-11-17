@@ -39,7 +39,10 @@ class DoctorDetailsBody extends StatelessWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<DoctorDetailsCubit>().fetchDoctorDetails(4);
+                    final cubit = context.read<DoctorDetailsCubit>();
+                    if (cubit.currentDoctorId != null) {
+                      cubit.fetchDoctorDetails(cubit.currentDoctorId!);
+                    }
                   },
                   child: const Text('Retry'),
                 ),

@@ -12,27 +12,60 @@ class DoctorsNearby extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (doctors != null) {
+      // Limit to first 3-4 doctors for home screen
+      final limitedDoctors = doctors!.take(4).toList();
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: doctors!.map((doctor) => DoctorCard(doctor: doctor)).toList(),
+        children: limitedDoctors.map((doctor) => DoctorCard(doctor: doctor)).toList(),
       );
     }
 
     return BlocBuilder<DoctorCubit, DoctorState>(
       builder: (context, state) {
         if (state is NearestDoctorLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const SizedBox(
+            height: 200,
+            child: Center(child: CircularProgressIndicator()),
+          );
         } else if (state is NearestDoctorLoaded) {
+          if (state.doctors.isEmpty) {
+            // If no nearest doctors, try to fetch all doctors
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.read<DoctorCubit>().fetchAllDoctors();
+            });
+            return const SizedBox(
+              height: 200,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          // Limit to first 4 doctors for home screen
+          final limitedDoctors = state.doctors.take(4).toList();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: state.doctors
+            children: limitedDoctors
+                .map((doctor) => DoctorCard(doctor: doctor))
+                .toList(),
+          );
+        } else if (state is DoctorLoaded) {
+          // Fallback to all doctors if nearest doctors failed
+          final limitedDoctors = state.doctors.take(4).toList();
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: limitedDoctors
                 .map((doctor) => DoctorCard(doctor: doctor))
                 .toList(),
           );
         } else if (state is DoctorError) {
-          return Center(child: Text(state.message));
+          // Try to fetch all doctors as fallback
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<DoctorCubit>().fetchAllDoctors();
+          });
+          return const SizedBox(
+            height: 200,
+            child: Center(child: CircularProgressIndicator()),
+          );
         }
-        return const SizedBox();
+        return const SizedBox(height: 200);
       },
     );
   }

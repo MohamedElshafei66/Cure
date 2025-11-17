@@ -11,6 +11,7 @@ import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cub
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/cubit/doctor_details_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/doctor_details_app_bar.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/doctor_details_body.dart';
+import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_cubit.dart';
 
 class DoctorDetailsScreen extends StatelessWidget {
   final int? doctorId;
@@ -35,6 +36,10 @@ class DoctorDetailsScreen extends StatelessWidget {
         ),
         BlocProvider<AppointmentCubit>(
           create: (context) => AppointmentCubit(),
+        ),
+        BlocProvider<FavouritesCubit>(
+          create: (context) => FavouritesCubit(authProvider: authProvider)
+            ..fetchFavourites(),
         ),
       ],
       child: Scaffold(

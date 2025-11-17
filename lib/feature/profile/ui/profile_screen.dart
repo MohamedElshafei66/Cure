@@ -140,21 +140,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       message:
                                           "Are you sure you want to log out?",
                                       confirmText: "Yes, Logout",
-                                      onConfirm: () {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SplashScreen(),
-                                          ),
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                                "Logged out successfully"),
-                                          ),
-                                        );
+                                      onConfirm: () async {
+                                        // Clear tokens from AuthProvider (this also clears from SecureStorageService)
+                                        final authProvider = context.read<AuthProvider>();
+                                        await authProvider.clearTokens();
+                                        
+                                        // Navigate to sign in screen
+                                        if (context.mounted) {
+                                          context.go(AppRoutes.sign_in_screen);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  "Logged out successfully"),
+                                            ),
+                                          );
+                                        }
                                       },
                                     ),
                                   ),

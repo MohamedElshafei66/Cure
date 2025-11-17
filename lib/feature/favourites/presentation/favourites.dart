@@ -49,7 +49,33 @@ class Favourites extends StatelessWidget {
               } else if (state is FavouriteEmpty) {
                 return Center(child: _buildEmptyView(context));
               } else if (state is FavouriteError) {
-                return Center(child: Text(state.error));
+                // Check if error is 404 or "no favourites" related
+                final errorMessage = state.error.toLowerCase();
+                if (errorMessage.contains('404') || 
+                    errorMessage.contains('not found') ||
+                    errorMessage.contains('no favourites')) {
+                  return Center(child: _buildEmptyView(context));
+                }
+                // For other errors, show error message
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        state.error,
+                        style: AppStyle.styleMedium14(context),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<FavouritesCubit>().fetchFavourites();
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                );
               }
               return const SizedBox.shrink();
             },
@@ -65,11 +91,15 @@ class Favourites extends StatelessWidget {
       children: [
         Image.asset(AppImages.yourFavDoctorsImage),
         const SizedBox(height: 12),
-        Text('Your favorite!', style: AppStyle.styleRegular20(context)),
+        Text(
+          'No favorite doctors yet',
+          style: AppStyle.styleRegular20(context),
+        ),
         const SizedBox(height: 8),
         Text(
-          'Add your favorite to find it easily',
+          'Add your favorite doctors to find them easily',
           style: AppStyle.styleMedium12(context),
+          textAlign: TextAlign.center,
         ),
       ],
     );

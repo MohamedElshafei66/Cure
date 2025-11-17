@@ -35,13 +35,22 @@ class ServerFailure extends Failure{
 
   factory ServerFailure.fromResponseError(int statusCode , dynamic response){
     if(statusCode == 404){
+      // Try to extract the actual message from the response body
+      if (response != null && response is Map<String, dynamic>) {
+        final message = response['message'];
+        if (message != null && message is String && message.isNotEmpty) {
+          return ServerFailure(message);
+        }
+      }
       return ServerFailure("Your request is not found. Please try again");
     } else if(statusCode == 500){
       return ServerFailure("There is a problem in the server. Please try again");
     } else if(statusCode == 400 || statusCode == 401 || statusCode == 403){
       final message = response != null && response['error'] != null
           ? response['error']['message']
-          : "Something went wrong";
+          : (response != null && response is Map<String, dynamic> && response['message'] != null
+              ? response['message']
+              : "Something went wrong");
       return ServerFailure(message);
     } else {
       return ServerFailure("Please try again.");

@@ -7,7 +7,6 @@ import 'package:round_7_mobile_cure_team3/feature/profile/data/payment_service.d
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/card_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/custom_text_field.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/widget/profile_button.dart';
-
 import '../../../core/constants/auth_provider.dart';
 
 class AddCardScreen extends StatefulWidget {
@@ -28,8 +27,10 @@ class _AddCardScreenState extends State<AddCardScreen> {
 
   bool isLoading = false;
 
+  /// 🔹 Save the card after validation
   Future<void> _saveCard() async {
     if (!formKey.currentState!.validate()) return;
+
     setState(() => isLoading = true);
 
     try {
@@ -39,39 +40,49 @@ class _AddCardScreenState extends State<AddCardScreen> {
       if (token == null || token.isEmpty) {
         throw Exception("User is not authenticated");
       }
+
       final service = PaymentService(authProvider: authProvider);
+
+      // ✅ تعديل السنة بحيث لو المستخدم كتب "31" تتحول لـ "2031"
+      int year = int.parse(expiryYearController.text);
+      if (year < 100) year += 2000;
 
       final response = await service.addPaymentMethod(
         cardholderName: cardholderNameController.text.trim(),
         cardNumber: cardNumberController.text.trim(),
         expMonth: int.parse(expiryMonthController.text),
-        expYear: 2000 + int.parse(expiryYearController.text),
+        expYear: year,
         cvv: cvvController.text.trim(),
         methodName: widget.methodName,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(response["message"] ?? "Something went wrong"),
-          backgroundColor: (response["success"] == true) ? Colors.green : Colors.red,
-        ),
-      );
+      final success = response["success"] == true;
+      final message = response["message"] ?? "Something went wrong";
 
-      if (response["success"] == true) Navigator.pop(context, "added");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: success ? Colors.green : Colors.red,
+          ),
+        );
 
+        if (success) Navigator.pop(context, "added");
+      }
     } catch (e) {
-      print("Error saving card: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Failed to add card: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      print("❌ Error saving card: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to add card: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
-      setState(() => isLoading = false);
+      if (mounted) setState(() => isLoading = false);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +106,9 @@ class _AddCardScreenState extends State<AddCardScreen> {
               children: [
                 Image.asset(AppImages.addCardImage),
                 const Gap(20),
+
                 Text('Cardholder Name', style: AppStyle.styleMedium16(context)),
                 const Gap(10),
-
                 CustomTextField(
                   controller: cardholderNameController,
                   hintText: "Cardholder Name",
@@ -105,6 +116,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                   validator: (v) =>
                       v!.isEmpty ? "Cardholder name required" : null,
                 ),
+
                 const Gap(10),
                 Text('Card Number', style: AppStyle.styleMedium16(context)),
                 CardTextField(
@@ -113,6 +125,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                   validator: (v) =>
                       v!.length != 16 ? "Enter valid 16-digit card" : null,
                 ),
+
                 const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,7 +143,14 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         controller: expiryMonthController,
                         hintText: "MM",
                         keyboardType: TextInputType.number,
-                        validator: (v) => v!.isEmpty ? "Required" : null,
+                        validator: (v) {
+                          if (v!.isEmpty) return "Required";
+                          final month = int.tryParse(v);
+                          if (month == null || month < 1 || month > 12) {
+                            return "Invalid";
+                          }
+                          return null;
+                        },
                       ),
                     ),
                     const Gap(12),
@@ -139,7 +159,8 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         controller: expiryYearController,
                         hintText: "YY",
                         keyboardType: TextInputType.number,
-                        validator: (v) => v!.isEmpty ? "Required" : null,
+                        validator: (v) =>
+                            v!.isEmpty ? "Required" : null,
                       ),
                     ),
                     const Gap(12),
@@ -148,14 +169,16 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         controller: cvvController,
                         hintText: "CVV",
                         keyboardType: TextInputType.number,
-                        validator: (v) => v!.length != 3 ? "3 digits" : null,
+                        validator: (v) =>
+                            v!.length != 3 ? "3 digits" : null,
                       ),
                     ),
                   ],
                 ),
+
                 const Gap(40),
                 isLoading
-                    ? const CircularProgressIndicator()
+                    ? const Center(child: CircularProgressIndicator())
                     : ProfileButton(
                         title: "Save",
                         showicon: false,
@@ -166,6 +189,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
           ),
         ),
       ),
-    );
-  }
+ );
+ }
 }

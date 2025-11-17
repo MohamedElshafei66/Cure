@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
@@ -179,15 +181,29 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
               ),
             const SizedBox(height: 40),
             BlocConsumer<OtpCubit, OtpState>(
-              listener: (context, state) {
+              listener: (context, state) async {
                 if (state is OtpSuccess && state.isResend == false) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.otpMessage ?? "OTP Verified!"),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  context.go(AppRoutes.home);
+                  // Load tokens into AuthProvider before navigating
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  final accessToken = state.otpModel.data?.accessToken;
+                  final refreshToken = state.otpModel.data?.refreshToken;
+                  
+                  if (accessToken != null && refreshToken != null) {
+                    await authProvider.setTokens(
+                      accessToken: accessToken,
+                      refreshToken: refreshToken,
+                    );
+                  }
+                  
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.otpMessage ?? "OTP Verified!"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    context.go(AppRoutes.mainLayout);
+                  }
                 } else if (state is OtpError) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

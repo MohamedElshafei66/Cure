@@ -30,13 +30,25 @@ class PaymentService {
 
       final last3 = cardNumber.substring(cardNumber.length - 3);
 
+      // Generate a placeholder token from card data
+      // In production, this should be obtained from a payment gateway (e.g., Stripe)
+      // For now, we create a simple token identifier from card details
+      final last4Digits = cardNumber.length >= 4 
+          ? cardNumber.substring(cardNumber.length - 4) 
+          : cardNumber;
+      final expYearStr = expYear.toString();
+      final expYearLast2 = expYearStr.length >= 2 
+          ? expYearStr.substring(expYearStr.length - 2) 
+          : expYearStr.padLeft(2, '0');
+      final providerToken = "card_${last4Digits}_${expMonth.toString().padLeft(2, '0')}${expYearLast2}_${DateTime.now().millisecondsSinceEpoch}";
 
       final body = {
         "methodName": methodName,
         "last3": last3,
         "brand": methodName,
         "expMonth": expMonth,
-        "expYear": expYear, 
+        "expYear": expYear,
+        "providerToken": providerToken, // Placeholder token - should be replaced with actual payment gateway token
         "isEnabled": true,
       };
 
