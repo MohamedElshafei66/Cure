@@ -15,21 +15,21 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
   Future<void> fetchDoctorDetails(int doctorId) async {
     currentDoctorId = doctorId;
     try {
-      print('Cubit: Fetching doctor details for ID: $doctorId');
+      print('cubit: Fetching doctor details for ID: $doctorId');
       emit(DoctorDetailsLoading());
       final result = await getDoctorDetailsUseCase(doctorId);
       result.fold(
         (failure) {
-          print('Cubit: Error - ${failure.message}');
+          print('cubit: Error - ${failure.message}');
           emit(DoctorDetailsError(failure.message));
         },
         (doctorDetails) {
-          print('Cubit: Success - Doctor name: ${doctorDetails.doctorName}');
+          print('cubit: Success - Doctor name: ${doctorDetails.doctorName}');
           emit(DoctorDetailsLoaded(doctorDetails));
         },
       );
     } catch (e, stackTrace) {
-      print('Cubit: Exception - $e');
+      print('cubit: Exception - $e');
       print('Stack trace: $stackTrace');
       emit(DoctorDetailsError('Failed to fetch doctor details: ${e.toString()}'));
     }

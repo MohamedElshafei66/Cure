@@ -44,7 +44,6 @@ import 'package:round_7_mobile_cure_team3/feature/onboarding/presentation/view/o
 import 'package:round_7_mobile_cure_team3/feature/profile/data/ProfileRemoteDataSource.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/data/model/profile_model.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/data/repo/profile_repository.dart';
-import 'package:round_7_mobile_cure_team3/feature/profile/logic/cubit/profile_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/add_card_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/faqs_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_screen.dart';
@@ -56,6 +55,8 @@ import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_screen.dart
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/setting_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/search_screen.dart';
 import 'package:round_7_mobile_cure_team3/main_layout.dart';
+
+import '../../feature/profile/logic/Cubit/profile_cubit.dart';
 
 abstract class AppRoutes {
   static String doctorDetailsScreen = "/doctorDetailsScreen";
