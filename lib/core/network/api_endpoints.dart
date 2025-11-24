@@ -1,5 +1,4 @@
 class ApiEndpoints {
-
   static const String register = "Identity/Accounts/Register";
   static const String verifyRegister = "Identity/Accounts/verify-register";
   static const String verifyLogin = "Identity/Accounts/verify-login";
@@ -18,8 +17,6 @@ class ApiEndpoints {
   static const String sendChat = "chat/chat/send";
   static const String favouriteChat = "chat/chat/chats?isfavoutire=true";
   static const String markChatAsFavourite = "chat/chat/chatfavourite";
-
-
 
   static const String getProfile = 'profile/Editprofile/getprofile';
   static const String updateProfile = 'profile/Editprofile';
@@ -40,8 +37,7 @@ class ApiEndpoints {
 
   static const String getUserProfile = 'profile/Editprofile/getprofile';
 
-
-    final String baseUrl = "https://cure-doctor-booking.runasp.net/api/";
-    final String getDoctorDetailsUrl = "Customer/Doctors/DoctorDetails/4";
-
+  final String baseUrl = "https://cure-doctor-booking.runasp.net/api/";
+  final String getDoctorDetailsUrl = "Customer/Doctors/DoctorDetails/4";
+  final String getSpecialists = 'Customer/Specialists/GetAllSpecialists';
 }

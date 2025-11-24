@@ -3,13 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/core/widgets/custom_search_bar.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/home/data/repositories/specialist_repo_impl.dart';
+import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/specialists_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/specialists_state.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/data/models/search_model.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/data/repositries/search_repo_impl.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/cubits/search_cubit/search_cubit.dart';
@@ -20,7 +22,9 @@ import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/se
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/specialties_section.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  final int? preselectedSpecialtyId;
+
+  const SearchScreen({super.key, this.preselectedSpecialtyId});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -30,6 +34,12 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
   int? selectedIndexSpecialist;
   int? selectedIndexHistory;
+  bool _hasAppliedPreselection = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -37,43 +47,28 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  final List<Map<String, dynamic>> specialties = [
-    {'image': AppIcons.cardiologist, 'text': 'Cardiologist', 'id': 1},
-    {'image': AppIcons.generalPractitioner, 'text': 'Dermatology', 'id': 2},
-    {'image': AppIcons.dentist, 'text': 'Dentist', 'id': null},
-    {'image': AppIcons.ent, 'text': 'ENT', 'id': null},
-    {'image': AppIcons.neurologist, 'text': 'Neurologist', 'id': null},
-    {
-      'image': AppIcons.generalPractitioner,
-      'text': 'General Practitioner',
-      'id': null,
-    },
-    {'image': AppIcons.ophthalmologist, 'text': 'Ophthalmologist', 'id': null},
-    {'image': AppIcons.pulmonologist, 'text': 'Pulmonologist', 'id': null},
-    {'image': AppIcons.orthopedic, 'text': 'Orthopedic', 'id': null},
-    {
-      'image': AppIcons.gastroenterologist,
-      'text': 'Gastroenterologist',
-      'id': null,
-    },
-    {'image': AppIcons.oncologist, 'text': 'Oncologist', 'id': null},
-    {'image': AppIcons.endocrinologist, 'text': 'Endocrinologist', 'id': null},
-    {'image': AppIcons.psychiatrist, 'text': 'Psychiatrist', 'id': null},
-  ];
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (_) => SearchCubit(
-            SearchRepoImpl(ApiServices(authProvider:context.read<AuthProvider>())),
+            SearchRepoImpl(
+              ApiServices(authProvider: context.read<AuthProvider>()),
+            ),
           )..fetchHistory(),
         ),
         BlocProvider(
-          create: (context) => FavouritesCubit(
-            authProvider: context.read<AuthProvider>(),
-          )..fetchFavourites(),
+          create: (context) => SpecialistCubit(
+            SpecialistRepoImpl(
+              ApiServices(authProvider: context.read<AuthProvider>()),
+            ),
+          )..loadSpecialists(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              FavouritesCubit(authProvider: context.read<AuthProvider>())
+                ..fetchFavourites(),
         ),
       ],
       child: Scaffold(
@@ -121,7 +116,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 builder: (builderContext) {
                   return LocationRow(
                     onLocationPressed: () async {
-                      // Get cubit reference before navigation to avoid context issues
                       final searchCubit = builderContext.read<SearchCubit>();
                       final result = await builderContext.push(AppRoutes.map);
                       if (mounted && result is Position) {
@@ -184,25 +178,69 @@ class _SearchScreenState extends State<SearchScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SpecialtiesSection(
-          specialties: specialties,
-          selectedIndex: selectedIndexSpecialist,
-          onSelect: (index) {
-            setState(() {
-              selectedIndexSpecialist = selectedIndexSpecialist == index
-                  ? null
-                  : index;
-            });
-            if (selectedIndexSpecialist != null) {
-              final specialty = specialties[selectedIndexSpecialist!];
-              final searchModel = SearchModel(
-                keyword: specialty['id'] != null
-                    ? ''
-                    : specialty['text'] as String,
-                specialityId: specialty['id'] as int?,
-              );
-              context.read<SearchCubit>().searchDoctors(searchModel);
+        BlocBuilder<SpecialistCubit, SpecialistState>(
+          builder: (context, specialistState) {
+            if (specialistState is SpecialistLoading) {
+              return const Center(child: CircularProgressIndicator());
             }
+            if (specialistState is SpecialistError) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: Text(
+                  specialistState.message,
+                  style: AppStyle.styleMedium16(context),
+                ),
+              );
+            }
+            if (specialistState is SpecialistLoaded) {
+              final specialists = specialistState.specialists;
+
+              // Apply preselection once when specialists are loaded
+              if (widget.preselectedSpecialtyId != null &&
+                  !_hasAppliedPreselection) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!mounted) return;
+
+                  final index = specialists.indexWhere(
+                    (s) => s.id == widget.preselectedSpecialtyId,
+                  );
+
+                  if (index != -1) {
+                    setState(() {
+                      selectedIndexSpecialist = index;
+                      _hasAppliedPreselection = true;
+                    });
+
+                    final specialist = specialists[index];
+                    context.read<SearchCubit>().searchDoctors(
+                      SearchModel(keyword: '', specialityId: specialist.id),
+                    );
+                  }
+                });
+              }
+
+              return SpecialtiesSection(
+                specialists: specialists,
+                selectedIndex: selectedIndexSpecialist,
+                onSelect: (index) {
+                  setState(() {
+                    selectedIndexSpecialist = selectedIndexSpecialist == index
+                        ? null
+                        : index;
+                  });
+                  if (selectedIndexSpecialist != null) {
+                    final specialist = specialists[selectedIndexSpecialist!];
+                    context.read<SearchCubit>().searchDoctors(
+                      SearchModel(keyword: '', specialityId: specialist.id),
+                    );
+                  } else {
+                    context.read<SearchCubit>().reset();
+                    context.read<SearchCubit>().fetchHistory();
+                  }
+                },
+              );
+            }
+            return const SizedBox();
           },
         ),
         const SizedBox(height: 16),

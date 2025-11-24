@@ -18,9 +18,9 @@ class SearchModel {
   Map<String, dynamic> toJson() {
     return {
       'keyword': keyword,
-      'specialityId': specialityId,
-      'gender': gender,
-      'sortBy': sortBy,
+      if (specialityId != null) 'specialityId': specialityId,
+      if (gender != null) 'gender': gender,
+      if (sortBy != null) 'sortBy': sortBy,
       'pageNumber': pageNumber ?? 1,
       'pageSize': pageSize ?? 10,
     };

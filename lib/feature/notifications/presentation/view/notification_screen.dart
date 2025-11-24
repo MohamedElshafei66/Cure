@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_strings.dart';
 import 'package:round_7_mobile_cure_team3/feature/notifications/data/model/notification_model.dart';
@@ -17,22 +16,27 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   @override
-void initState() {
-  super.initState();
-  final cubit = context.read<NotificationCubit>();
-  cubit.fetchNotifications();
-  // cubit.startLiveNotifications();
-}
+  void initState() {
+    super.initState();
+    final cubit = context.read<NotificationCubit>();
+    cubit.fetchNotifications();
+    // cubit.startLiveNotifications();
+  }
 
-@override
-// void dispose() {
-//   // context.read<NotificationCubit>().stopLiveNotifications();
-//   super.dispose();
-// }
+  @override
+  // void dispose() {
+  //   // context.read<NotificationCubit>().stopLiveNotifications();
+  //   super.dispose();
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppStrings.notifications), centerTitle: true),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(AppStrings.notifications),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+      ),
       body: BlocBuilder<NotificationCubit, NotificationState>(
         builder: (context, state) {
           if (state is NotificationLoading) {

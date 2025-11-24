@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
@@ -26,8 +25,6 @@ import 'package:round_7_mobile_cure_team3/feature/booking/presentation/views/res
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chat_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chats_list_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/data/models/chat_model.dart';
-import 'package:round_7_mobile_cure_team3/feature/chat/data/models/favourite_chat_model.dart';
-import 'package:round_7_mobile_cure_team3/feature/chat/data/models/unread_chat_model.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/data/data_sources/chat_remote_data_source.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/data/repositories/ChatRepositoryImp.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
@@ -85,7 +82,6 @@ abstract class AppRoutes {
   static String map = '/map';
   static String home = '/home';
   static String mainLayout = '/main_layout';
-  static String passwordManagement = '/manage_password';
   static String profileEdit = '/profile_edit';
   static String addCard = '/addCard';
   static String paymentWebView = '/paymentWebView';
@@ -111,14 +107,32 @@ abstract class AppRoutes {
       ),
       GoRoute(path: mainLayout, builder: (context, state) => MainLayout()),
       GoRoute(path: home, builder: (context, state) => Home()),
-      GoRoute(path: search, builder: (context, state) => SearchScreen()),
+      GoRoute(
+        path: search,
+        builder: (context, state) {
+          final specialtyId = state.extra as int?;
+          return SearchScreen(preselectedSpecialtyId: specialtyId);
+        },
+      ),
       GoRoute(path: favourites, builder: (context, state) => Favourites()),
       GoRoute(path: map, builder: (context, state) => MapScreen()),
       GoRoute(path: '/', builder: (context, state) => AppStartupLogic()),
-      GoRoute(path: allDoctorsScreen, builder: (context, state) => AllDoctorsScreen()),
-      GoRoute(path: onBoarding_screen, builder: (context, state) => OnBoardingScreen()),
-      GoRoute(path: sign_in_screen, builder: (context, state) => SignInScreen()),
-      GoRoute(path: sign_up_screen, builder: (context, state) => SignUpScreen()),
+      GoRoute(
+        path: allDoctorsScreen,
+        builder: (context, state) => AllDoctorsScreen(),
+      ),
+      GoRoute(
+        path: onBoarding_screen,
+        builder: (context, state) => OnBoardingScreen(),
+      ),
+      GoRoute(
+        path: sign_in_screen,
+        builder: (context, state) => SignInScreen(),
+      ),
+      GoRoute(
+        path: sign_up_screen,
+        builder: (context, state) => SignUpScreen(),
+      ),
       GoRoute(
         path: otp_screen,
         builder: (context, state) {
@@ -126,24 +140,33 @@ abstract class AppRoutes {
           return OTPVerificationScreen(phoneNumber: phoneNumber);
         },
       ),
-      GoRoute(path: notification_screen, builder: (context, state) => NotificationScreen()),
-      GoRoute(path: paymentMethodThirdScreen, builder: (context, state) => PaymentMethodThirdScreen()),
-      GoRoute(path: chatsListScreen, builder: (context, state) => ChatsListScreen()),
+      GoRoute(
+        path: notification_screen,
+        builder: (context, state) => NotificationScreen(),
+      ),
+      GoRoute(
+        path: paymentMethodThirdScreen,
+        builder: (context, state) => PaymentMethodThirdScreen(),
+      ),
+      GoRoute(
+        path: chatsListScreen,
+        builder: (context, state) => ChatsListScreen(),
+      ),
       GoRoute(
         path: chatScreen,
         builder: (context, state) {
           final authProvider = context.read<AuthProvider>();
           final chatRemote = ChatRemoteDataSource(authProvider: authProvider);
           final chatRepository = ChatRepositoryImpl(chatRemote);
-          
+
           // Handle both ChatData and DoctorDTO types
           dynamic data = state.extra;
-          
+
           String? doctorName;
           String? doctorImage;
           String? chatId;
           String? receiverId;
-          
+
           // Check if it's ChatData (from All tab)
           if (data is ChatData) {
             doctorName = data.name;
@@ -152,7 +175,6 @@ abstract class AppRoutes {
             receiverId = data.receiverId;
           }
           // Check if it's a DoctorDTO (from Unread/Favorite tabs)
-          // Both unread_chat_model.DoctorDTO and favourite_chat_model.DoctorDTO have similar structure
           else {
             // Access properties directly - both DoctorDTO types have id, name, img
             doctorName = data.name?.toString() ?? data.name ?? '';
@@ -160,7 +182,7 @@ abstract class AppRoutes {
             receiverId = data.id?.toString() ?? data.id ?? '';
             chatId = receiverId; // Use receiverId as chatId
           }
-          
+
           return ChatScreen(
             doctorName: doctorName,
             doctorImage: doctorImage,
@@ -177,7 +199,10 @@ abstract class AppRoutes {
           return PaymentMethodSecondScreen(methodName: method);
         },
       ),
-      GoRoute(path: paymentMethodScreen, builder: (context, state) => PaymentMethodScreen()),
+      GoRoute(
+        path: paymentMethodScreen,
+        builder: (context, state) => PaymentMethodScreen(),
+      ),
       GoRoute(
         path: AppRoutes.addCard,
         builder: (context, state) {
@@ -185,7 +210,10 @@ abstract class AppRoutes {
           return AddCardScreen(methodName: method);
         },
       ),
-      GoRoute(path: settingScreen, builder: (context, state) => SettingScreen()),
+      GoRoute(
+        path: settingScreen,
+        builder: (context, state) => SettingScreen(),
+      ),
       GoRoute(
         path: profileScreen,
         builder: (context, state) {
@@ -201,10 +229,12 @@ abstract class AppRoutes {
           );
         },
       ),
-      GoRoute(path: privacyPolicyScreen, builder: (context, state) => PrivacyPolicyScreen()),
+      GoRoute(
+        path: privacyPolicyScreen,
+        builder: (context, state) => PrivacyPolicyScreen(),
+      ),
       GoRoute(path: faqsSreen, builder: (context, state) => FaqsScreen()),
 
-   
       GoRoute(
         path: AppRoutes.doctorDetailsScreen,
         builder: (context, state) {
@@ -276,7 +306,10 @@ abstract class AppRoutes {
           return AddReviewScreen(doctorId: doctorId);
         },
       ),
-      GoRoute(path: AppRoutes.bookingScreen, builder: (context, state) => BookingScreen()),
+      GoRoute(
+        path: AppRoutes.bookingScreen,
+        builder: (context, state) => BookingScreen(),
+      ),
       GoRoute(
         path: AppRoutes.rescheduleScreen,
         builder: (context, state) {

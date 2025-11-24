@@ -23,23 +23,32 @@ class DoctorCard extends StatefulWidget {
 class _DoctorCardState extends State<DoctorCard> {
   bool _getIsFavourite(FavouritesState state) {
     if (state is FavouriteLoaded) {
-      return state.doctors?.any((doctor) => doctor.id == widget.doctor.id) ?? false;
+      return state.doctors?.any((doctor) => doctor.id == widget.doctor.id) ??
+          false;
     }
     return widget.doctor.isFavourite;
   }
 
-  Future<void> _toggleFavourite(bool currentIsFavorite) async {
+  bool _isProcessing = false;
+
+  Future<void> _toggleFavourite(bool isFavourite) async {
+    if (_isProcessing) return;
+
+    setState(() => _isProcessing = true);
+
     try {
       await context.read<FavouritesCubit>().toggleDoctorFavourite(
         widget.doctor,
       );
-      // Refresh favourites list to sync state
-      await context.read<FavouritesCubit>().fetchFavourites();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update favourite: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to update favourite')));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
       }
     }
   }
@@ -51,6 +60,7 @@ class _DoctorCardState extends State<DoctorCard> {
     return BlocBuilder<FavouritesCubit, FavouritesState>(
       builder: (context, state) {
         final isFavourite = _getIsFavourite(state);
+
         return InkWell(
           onTap: () => context.push(
             AppRoutes.doctorDetailsScreen,
@@ -58,92 +68,120 @@ class _DoctorCardState extends State<DoctorCard> {
           ),
           child: Container(
             margin: const EdgeInsets.only(top: 16),
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: AppColors.grey, width: 1.4),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
+                // FIX: Fixed width image (no overflow!)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
                   child: Image.network(
                     widget.doctor.imgUrl,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Image.asset(AppImages.doctorImage),
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return const Center(child: CircularProgressIndicator());
-                    },
+                    width: 82,
+                    height: 82,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Image.asset(
+                      AppImages.doctorImage,
+                      width: 82,
+                      height: 82,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.doctor.fullName,
-                      style: AppStyle.styleRegular16(context),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Text(
-                          '${widget.doctor.specialistTitle} |',
-                          style: AppStyle.styleMedium12(context),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.doctor.address,
-                          style: AppStyle.styleMedium12(context),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Image.asset(AppIcons.star),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.doctor.rating.toString(),
-                          style: AppStyle.styleRegular12(context),
-                        ),
-                        const SizedBox(width: 4),
-                        Image.asset(AppIcons.clock),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.doctor.startDate ?? '9:00 AM',
-                          style: AppStyle.styleRegular12(context),
-                        ),
-                        const SizedBox(width: 4),
-                        Text('-', style: AppStyle.styleRegular12(context)),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.doctor.endDate ?? '5:00 PM',
-                          style: AppStyle.styleRegular12(context),
-                        ),
-                      ],
-                    ),
-                  ],
+
+                const SizedBox(width: 10),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.doctor.fullName,
+                              style: AppStyle.styleRegular16(context),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${widget.doctor.specialistTitle} | ${widget.doctor.address}',
+                              style: AppStyle.styleMedium12(context),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 5),
+
+                      // Rating & Time
+                      Row(
+                        children: [
+                          Image.asset(AppIcons.star, height: 14),
+                          const SizedBox(width: 4),
+                          Text(
+                            widget.doctor.rating.toString(),
+                            style: AppStyle.styleRegular12(context),
+                          ),
+                          const SizedBox(width: 10),
+                          Image.asset(AppIcons.clock, height: 14),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              '${widget.doctor.startDate ?? '9:00 AM'} - ${widget.doctor.endDate ?? '5:00 PM'}',
+                              style: AppStyle.styleRegular12(context),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                const Spacer(),
-                InkWell(
+
+                const SizedBox(width: 6),
+
+                // Heart (does not overflow)
+                GestureDetector(
                   onTap: () => _toggleFavourite(isFavourite),
                   child: SizedBox(
-                    height: heartSize,
                     width: heartSize,
-                    child: isFavourite
+                    height: heartSize,
+                    child: _isProcessing
+                        ? const Center(
+                            child: SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          )
+                        : isFavourite
                         ? Icon(
-                      CupertinoIcons.heart_fill,
-                      color: Colors.red,
-                      size: heartSize,
-                    )
+                            CupertinoIcons.heart_fill,
+                            color: Colors.red,
+                            size: heartSize,
+                          )
                         : Image.asset(
-                      AppIcons.heartPng,
-                      color: Colors.black,
-                      height: heartSize,
-                      width: heartSize,
-                      fit: BoxFit.contain,
-                    ),
+                            AppIcons.heartPng,
+                            height: heartSize,
+                            width: heartSize,
+                          ),
                   ),
                 ),
               ],
