@@ -17,6 +17,7 @@ import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/lo
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/search_app_bar.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/search_default_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/search_results_list.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SearchScreen extends StatefulWidget {
   final int? preselectedSpecialtyId;
@@ -90,61 +91,226 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              LocationRow(
-                onLocationPressed: () async {
-                  final searchCubit = context.read<SearchCubit>();
-                  final result = await context.push(AppRoutes.map);
-                  if (mounted && result is Position) {
-                    searchCubit.searchWithLocation(result);
-                  }
+              Builder(
+                builder: (builderContext) {
+                  return LocationRow(
+                    onLocationPressed: () async {
+                      final searchCubit = builderContext.read<SearchCubit>();
+                      final result = await builderContext.push(AppRoutes.map);
+                      if (mounted && result is Position) {
+                        searchCubit.searchWithLocation(result);
+                      }
+                    },
+                  );
                 },
               ),
               const SizedBox(height: 16),
               BlocBuilder<SearchCubit, SearchState>(
                 builder: (context, state) {
-                  if (state is SearchInitial || state is SearchHistoryLoaded) {
-                    return _buildDefaultView(context, state);
-                  }
+                  final loading = state is SearchLoading;
 
-                  if (state is SearchLoading) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(32.0),
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
+                  return Skeletonizer(
+                    enableSwitchAnimation: true,
+                    enabled: loading,
+                    child: Builder(
+                      builder: (context) {
+                        if (state is SearchInitial ||
+                            state is SearchHistoryLoaded) {
+                          return _buildDefaultView(context, state);
+                        }
 
-                  if (state is SearchLoaded) {
-                    return SearchResultsList(results: state.doctors);
-                  }
+                        if (loading) {
+                          return Column(
+                            children: List.generate(
+                              3,
+                              (index) => Container(
+                                margin: const EdgeInsets.only(top: 16),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                    width: 1.4,
+                                  ),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Skeleton Image
+                                    Container(
+                                      width: 82,
+                                      height: 82,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
 
-                  if (state is SearchEmpty) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Text(
-                          'No results found.',
-                          style: AppStyle.styleMedium16(context),
-                        ),
-                      ),
-                    );
-                  }
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            height: 16,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade300,
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Container(
+                                            width: 120,
+                                            height: 14,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade300,
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Container(
+                                            width: 100,
+                                            height: 12,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade300,
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 60,
+                                                height: 12,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey.shade300,
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              Container(
+                                                width: 50,
+                                                height: 14,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey.shade300,
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
 
-                  if (state is SearchFailed) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Text(
-                          state.message,
-                          style: AppStyle.styleMedium16(context),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
-                  }
+                                    // Skeleton Heart Icon
+                                    Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }
 
-                  return const SizedBox.shrink();
+                        if (state is SearchLoaded) {
+                          return SearchResultsList(results: state.doctors);
+                        }
+
+                        if (state is SearchEmpty) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.search_off_rounded,
+                                    size: 64,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'No doctors found',
+                                    style: AppStyle.styleMedium20(context),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Try adjusting your search criteria or browse by specialty.',
+                                    style: AppStyle.styleRegular14(
+                                      context,
+                                    ).copyWith(color: Colors.grey),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+
+                        if (state is SearchFailed) {
+                          final errorMessage = state.message.toLowerCase();
+                          final is404Error =
+                              errorMessage.contains('404') ||
+                              errorMessage.contains('not found') ||
+                              errorMessage.contains('no doctors');
+
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    is404Error
+                                        ? Icons.search_off
+                                        : Icons.error_outline,
+                                    size: 64,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    is404Error
+                                        ? 'No doctors found'
+                                        : 'Something went wrong',
+                                    style: AppStyle.styleMedium20(context),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    is404Error
+                                        ? 'Try adjusting your search criteria or search by a different specialty.'
+                                        : 'Please try again later.',
+                                    style: AppStyle.styleRegular14(
+                                      context,
+                                    ).copyWith(color: Colors.grey),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  );
                 },
               ),
             ],
