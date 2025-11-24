@@ -15,7 +15,8 @@ import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits
 
 class DoctorDetailsScreen extends StatelessWidget {
   final int? doctorId;
-  const DoctorDetailsScreen({super.key, this.doctorId});
+  final String? fallbackImageUrl;
+  const DoctorDetailsScreen({super.key, this.doctorId, this.fallbackImageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,9 @@ class DoctorDetailsScreen extends StatelessWidget {
           showActions: true,
           text: AppStrings.doctorDetailsTitle,
         ),
-        body: const DoctorDetailsBody(),
+        body: DoctorDetailsBody(
+          fallbackImageUrl: fallbackImageUrl,
+        ),
       ),
     );
   }

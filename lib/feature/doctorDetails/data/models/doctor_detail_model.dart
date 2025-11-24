@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import '../../domain/entites/doctor_details_entity.dart';
 import 'available_slot_model.dart';
+import 'doctor_review_model.dart';
 
 class DoctorDetailsModel extends DoctorDetailsEntity {
  final int bookingCount;
  final int reviewCount;
- final List<String> reviewsList;
+ final List<DoctorReviewModel> reviewsList;
  final List<AvailableSlotModel> availableSlots;
   DoctorDetailsModel({
     required int doctorId,
@@ -79,7 +82,7 @@ class DoctorDetailsModel extends DoctorDetailsEntity {
         bookingCount: _parseNum(json['bookingCount']).toInt(),
         reviewCount: _parseNum(json['reviewsCount']).toInt(),
         availableSlots: _parseAvailableSlots(json['availableSlots']),
-        reviewsList: _parseStringList(json['reviews']),
+        reviewsList: _parseReviews(json['reviews']),
       );
     } catch (e, stackTrace) {
       rethrow;
@@ -101,17 +104,32 @@ class DoctorDetailsModel extends DoctorDetailsEntity {
     return 0;
   }
   
-  static List<String> _parseStringList(dynamic value) {
+  static List<DoctorReviewModel> _parseReviews(dynamic value) {
     if (value == null) return [];
     if (value is List) {
       return value.map((item) {
-        if (item is String) return item;
-        if (item is Map) {
-          // If it's a map, try to get a string representation
-          return item.toString();
+        try {
+          if (item is DoctorReviewModel) return item;
+          if (item is Map<String, dynamic>) {
+            return DoctorReviewModel.fromJson(item);
+          }
+          if (item is Map) {
+            return DoctorReviewModel.fromJson(
+              item.map((key, val) => MapEntry(key.toString(), val)),
+            );
+          }
+          if (item is String) {
+            final decoded = jsonDecode(item);
+            if (decoded is Map<String, dynamic>) {
+              return DoctorReviewModel.fromJson(decoded);
+            }
+            return DoctorReviewModel(comment: item);
+          }
+        } catch (_) {
+          return DoctorReviewModel(comment: item.toString());
         }
-        return item.toString();
-      }).toList().cast<String>();
+        return null;
+      }).whereType<DoctorReviewModel>().toList();
     }
     return [];
   }

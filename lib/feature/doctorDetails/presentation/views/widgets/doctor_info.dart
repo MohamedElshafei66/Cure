@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:svg_image/svg_image.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_images.dart';
 import '../../../../../core/utils/app_styles.dart';
@@ -12,12 +11,15 @@ import '../../../../favourites/presentation/cubits/favourties_state.dart';
 
 class DoctorInfo extends StatefulWidget {
   final DoctorDetailsEntity? doctorDetails;
-  const DoctorInfo({super.key, this.doctorDetails});
+  final String? fallbackImageUrl;
+  const DoctorInfo({super.key, this.doctorDetails, this.fallbackImageUrl});
   @override
   State<DoctorInfo> createState() => _DoctorInfoState();
 }
 
 class _DoctorInfoState extends State<DoctorInfo> {
+  bool _useHomeFallbackImage = false;
+
   bool _getIsFavourite(FavouritesState state) {
     if (widget.doctorDetails == null) return false;
     
@@ -103,16 +105,7 @@ class _DoctorInfoState extends State<DoctorInfo> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CircleAvatar(
-          radius: size.width * 0.12,
-          backgroundImage: CachedNetworkImageProvider(
-            widget.doctorDetails!.doctorImage.isNotEmpty
-                ? widget.doctorDetails!.doctorImage.startsWith('http')
-                    ? widget.doctorDetails!.doctorImage
-                    : 'https://cure-doctor-booking.runasp.net/${widget.doctorDetails!.doctorImage}'
-                : 'https://images.unsplash.com/photo-1550831107-1553da8c8464',
-          ),
-        ),
+        _buildAvatar(size),
         const SizedBox(width: 16),
         Expanded(
           child: Column(
@@ -182,6 +175,69 @@ class _DoctorInfoState extends State<DoctorInfo> {
         ),
       ],
     );
+  }
+
+  Widget _buildAvatar(Size size) {
+    final radius = size.width * 0.12;
+    final diameter = radius * 2;
+    final doctorImageUrl = _resolveDoctorImageUrl();
+    final homeFallbackUrl = _resolveFallbackUrl();
+
+    final bool shouldUseHomeFallback =
+        _useHomeFallbackImage || doctorImageUrl == null;
+    final String? imageUrl =
+        shouldUseHomeFallback ? homeFallbackUrl : doctorImageUrl;
+
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return CircleAvatar(
+        radius: radius,
+        backgroundImage: const AssetImage(AppImages.doctorImage),
+      );
+    }
+
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: AppColors.lightGrey,
+      child: ClipOval(
+        child: Image.network(
+          imageUrl,
+          width: diameter,
+          height: diameter,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) {
+            if (!_useHomeFallbackImage &&
+                doctorImageUrl != null &&
+                homeFallbackUrl != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() => _useHomeFallbackImage = true);
+                }
+              });
+            }
+            return Image.asset(
+              AppImages.doctorImage,
+              width: diameter,
+              height: diameter,
+              fit: BoxFit.cover,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  String? _resolveDoctorImageUrl() {
+    final doctorImage = widget.doctorDetails?.doctorImage.trim();
+    if (doctorImage == null || doctorImage.isEmpty) return null;
+    return doctorImage.startsWith('http')
+        ? doctorImage
+        : 'https://cure-doctor-booking.runasp.net/$doctorImage';
+  }
+
+  String? _resolveFallbackUrl() {
+    final fallbackUrl = widget.fallbackImageUrl?.trim();
+    if (fallbackUrl == null || fallbackUrl.isEmpty) return null;
+    return fallbackUrl;
   }
 }
 

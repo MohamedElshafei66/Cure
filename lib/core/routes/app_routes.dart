@@ -27,6 +27,7 @@ import 'package:round_7_mobile_cure_team3/feature/chat/presentation/view/chats_l
 import 'package:round_7_mobile_cure_team3/feature/chat/data/models/chat_model.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/data/data_sources/chat_remote_data_source.dart';
 import 'package:round_7_mobile_cure_team3/feature/chat/data/repositories/ChatRepositoryImp.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/models/doctor_details_args.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/add_review_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/confirm_appointment_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/doctor_details_view.dart';
@@ -238,8 +239,23 @@ abstract class AppRoutes {
       GoRoute(
         path: AppRoutes.doctorDetailsScreen,
         builder: (context, state) {
-          final doctorId = state.extra as int?;
-          return DoctorDetailsScreen(doctorId: doctorId);
+          final extra = state.extra;
+          int? doctorId;
+          String? fallbackImageUrl;
+
+          if (extra is DoctorDetailsArgs) {
+            doctorId = extra.doctorId;
+            fallbackImageUrl = extra.fallbackImageUrl;
+          } else if (extra is int) {
+            doctorId = extra;
+          } else {
+            doctorId = extra as int?;
+          }
+
+          return DoctorDetailsScreen(
+            doctorId: doctorId,
+            fallbackImageUrl: fallbackImageUrl,
+          );
         },
       ),
       GoRoute(

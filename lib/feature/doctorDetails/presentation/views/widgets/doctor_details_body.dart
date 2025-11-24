@@ -14,7 +14,8 @@ import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/vie
 import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/views/widgets/review_card.dart';
 
 class DoctorDetailsBody extends StatelessWidget {
-  const DoctorDetailsBody({super.key});
+  final String? fallbackImageUrl;
+  const DoctorDetailsBody({super.key, this.fallbackImageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,10 @@ class DoctorDetailsBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DoctorInfo(doctorDetails: state.doctorDetails),
+                DoctorInfo(
+                  doctorDetails: state.doctorDetails,
+                  fallbackImageUrl: fallbackImageUrl,
+                ),
                 const SizedBox(height: 24),
                 DoctorInfoDetails(doctorDetails: state.doctorDetails),
                 const SizedBox(height: 40),

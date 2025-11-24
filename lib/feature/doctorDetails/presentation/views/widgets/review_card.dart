@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:svg_image/svg_image.dart';
 import '../../../../../core/utils/app_colors.dart';
@@ -7,6 +6,7 @@ import '../../../../../core/utils/app_strings.dart';
 import '../../../../../core/utils/app_styles.dart';
 import '../../../domain/entites/doctor_details_entity.dart';
 import '../../../data/models/doctor_detail_model.dart';
+import '../../../data/models/doctor_review_model.dart';
 
 class ReviewCard extends StatelessWidget {
   final DoctorDetailsEntity doctorDetails;
@@ -16,11 +16,10 @@ class ReviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final isModel = doctorDetails is DoctorDetailsModel;
-    final reviewsList = isModel ? (doctorDetails as DoctorDetailsModel).reviewsList : null;
-    
+    final List<DoctorReviewModel> reviewsList =
+        isModel ? (doctorDetails as DoctorDetailsModel).reviewsList : [];
 
-    final hasReviews = reviewsList != null && reviewsList.isNotEmpty;
-    
+    final hasReviews = reviewsList.isNotEmpty;
 
     if (!hasReviews) {
       return Container(
@@ -34,12 +33,7 @@ class ReviewCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: CachedNetworkImageProvider(
-                    'https://images.unsplash.com/photo-1550831107-1553da8c8464',
-                  ),
-                ),
+                _buildDefaultAvatar(),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -88,11 +82,19 @@ class ReviewCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 9),
-            Text(
-              AppStrings.reviewText,
-              style: AppStyle.styleMedium14(context).copyWith(
-                color: AppColors.whiteColor79,
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(width: 42),
+                Expanded(
+                  child: Text(
+                    AppStrings.reviewText,
+                    style: AppStyle.styleMedium14(context).copyWith(
+                      color: AppColors.whiteColor79,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -101,7 +103,7 @@ class ReviewCard extends StatelessWidget {
     
     // If reviews exist, display them
     return Column(
-      children: reviewsList!.map((review) {
+      children: reviewsList.map((review) {
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(12),
@@ -114,26 +116,21 @@ class ReviewCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundImage: CachedNetworkImageProvider(
-                      'https://images.unsplash.com/photo-1550831107-1553da8c8464',
-                    ),
-                  ),
+                  _buildDefaultAvatar(),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "User",
+                          review.patientName,
                           style: AppStyle.styleRegular16(context).copyWith(
                             color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Recently",
+                          _formatCreatedAt(review.createdAt),
                           style: AppStyle.styleMedium14(context).copyWith(
                             color: AppColors.textHint,
                           ),
@@ -156,7 +153,7 @@ class ReviewCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          doctorDetails.rating.toStringAsFixed(1),
+                          review.rating.toStringAsFixed(1),
                           style: AppStyle.styleMedium14(context).copyWith(
                             color: AppColors.yellow,
                             fontWeight: FontWeight.w900,
@@ -168,16 +165,48 @@ class ReviewCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 9),
-              Text(
-                review,
-                style: AppStyle.styleMedium14(context).copyWith(
-                  color: AppColors.whiteColor79,
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 42),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:25),
+                      child: Text(
+                        textAlign:TextAlign.left,
+                        review.comment,
+                        style: AppStyle.styleMedium14(context).copyWith(
+                          color: AppColors.whiteColor79,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         );
       }).toList(),
+    );
+  }
+
+  String _formatCreatedAt(DateTime? date) {
+    if (date == null) return 'Unknown date';
+    final year = date.year.toString().padLeft(4, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  static Widget _buildDefaultAvatar() {
+    return const CircleAvatar(
+      radius: 30,
+      backgroundColor: AppColors.lightGrey,
+      child: Icon(
+        Icons.person,
+        color: AppColors.textPrimary,
+        size: 30,
+      ),
     );
   }
 }

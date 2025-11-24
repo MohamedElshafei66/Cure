@@ -8,6 +8,7 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctors/data/models/doctor_model.dart';
+import 'package:round_7_mobile_cure_team3/feature/doctorDetails/presentation/models/doctor_details_args.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_state.dart';
 
@@ -64,7 +65,10 @@ class _DoctorCardState extends State<DoctorCard> {
         return InkWell(
           onTap: () => context.push(
             AppRoutes.doctorDetailsScreen,
-            extra: widget.doctor.id,
+            extra: DoctorDetailsArgs(
+              doctorId: widget.doctor.id,
+              fallbackImageUrl: widget.doctor.imgUrl,
+            ),
           ),
           child: Container(
             margin: const EdgeInsets.only(top: 16),
