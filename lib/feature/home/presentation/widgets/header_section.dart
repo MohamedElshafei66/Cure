@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:round_7_mobile_cure_team3/core/constants/shared_data.dart';
-import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_colors.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_images.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
-import 'package:round_7_mobile_cure_team3/feature/home/data/models/user_model.dart';
-import 'package:round_7_mobile_cure_team3/feature/home/data/repositories/user_repo_impl.dart';
-
-import '../../../../core/constants/auth_provider.dart';
+import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/user_cubit.dart';
 
 class HeaderSection extends StatelessWidget {
   final VoidCallback onNotificationTap;
@@ -21,34 +16,53 @@ class HeaderSection extends StatelessWidget {
     required this.onFavoritesTap,
   });
 
-  Future<UserModel> getUser({required AuthProvider authProvider}) async {
-    return await UserReposotryImpl(
-      ApiServices(authProvider: authProvider),
-    ).getUser();
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.read<AuthProvider>();
-    return FutureBuilder<UserModel>(
-      future: getUser(authProvider: authProvider),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const CircularProgressIndicator();
+    return BlocBuilder<UserCubit, UserState>(
+      builder: (context, state) {
+        if (state is UserLoading || state is UserInitial) {
+          return const Center(
+            child: SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
         }
 
-        final currentUser = snapshot.data!;
+        if (state is UserError) {
+          return Center(
+            child: Text(
+              'Failed to load profile',
+              style: AppStyle.styleMedium14(context),
+            ),
+          );
+        }
+
+        if (state is! UserLoaded) {
+          return const SizedBox();
+        }
+
+        final currentUser = state.user;
 
         return Container(
           margin: const EdgeInsets.only(top: 24),
           child: Row(
             children: [
-              Flexible(
+              ClipRRect(
+                borderRadius: BorderRadius.circular(25),
                 child: Image.network(
-                  currentUser.imgUrl!,
+                  currentUser.imgUrl ?? AppImages.profileImage,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(AppImages.profileImage);
+                    return Image.asset(
+                      AppImages.profileImage,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    );
                   },
                 ),
               ),

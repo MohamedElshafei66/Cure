@@ -16,6 +16,11 @@ class HistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Don't show history section if there's no history
+    if (history.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

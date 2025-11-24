@@ -5,21 +5,18 @@ import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_icons.dart';
 import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/core/widgets/custom_search_bar.dart';
-import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/data/repositories/specialist_repo_impl.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/specialists_cubit.dart';
-import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/specialists_state.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/data/models/search_model.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/data/repositries/search_repo_impl.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/cubits/search_cubit/search_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/cubits/search_cubit/search_state.dart';
-import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/history_section.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/location_row.dart';
+import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/search_app_bar.dart';
+import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/search_default_view.dart';
 import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/search_results_list.dart';
-import 'package:round_7_mobile_cure_team3/feature/search/presentation/widgets/specialties_section.dart';
 
 class SearchScreen extends StatefulWidget {
   final int? preselectedSpecialtyId;
@@ -35,11 +32,6 @@ class _SearchScreenState extends State<SearchScreen> {
   int? selectedIndexSpecialist;
   int? selectedIndexHistory;
   bool _hasAppliedPreselection = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -65,24 +57,10 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           )..loadSpecialists(),
         ),
-        BlocProvider(
-          create: (context) =>
-              FavouritesCubit(authProvider: context.read<AuthProvider>())
-                ..fetchFavourites(),
-        ),
       ],
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Text('Search', style: AppStyle.styleRegular20(context)),
-          centerTitle: true,
-          leading: InkWell(
-            onTap: () => Navigator.pop(context),
-            child: Image.asset(AppIcons.arrowBackPng),
-          ),
-        ),
+        appBar: const SearchAppBar(),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -112,29 +90,36 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              Builder(
-                builder: (builderContext) {
-                  return LocationRow(
-                    onLocationPressed: () async {
-                      final searchCubit = builderContext.read<SearchCubit>();
-                      final result = await builderContext.push(AppRoutes.map);
-                      if (mounted && result is Position) {
-                        searchCubit.searchWithLocation(result);
-                      }
-                    },
-                  );
+              LocationRow(
+                onLocationPressed: () async {
+                  final searchCubit = context.read<SearchCubit>();
+                  final result = await context.push(AppRoutes.map);
+                  if (mounted && result is Position) {
+                    searchCubit.searchWithLocation(result);
+                  }
                 },
               ),
               const SizedBox(height: 16),
               BlocBuilder<SearchCubit, SearchState>(
                 builder: (context, state) {
                   if (state is SearchInitial || state is SearchHistoryLoaded) {
-                    return _buildDefaultSection(context, state);
-                  } else if (state is SearchLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is SearchLoaded) {
+                    return _buildDefaultView(context, state);
+                  }
+
+                  if (state is SearchLoading) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(32.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  if (state is SearchLoaded) {
                     return SearchResultsList(results: state.doctors);
-                  } else if (state is SearchEmpty) {
+                  }
+
+                  if (state is SearchEmpty) {
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(32.0),
@@ -144,7 +129,9 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),
                     );
-                  } else if (state is SearchFailed) {
+                  }
+
+                  if (state is SearchFailed) {
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(32.0),
@@ -156,7 +143,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     );
                   }
-                  return const SizedBox();
+
+                  return const SizedBox.shrink();
                 },
               ),
             ],
@@ -166,7 +154,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildDefaultSection(BuildContext context, SearchState state) {
+  Widget _buildDefaultView(BuildContext context, SearchState state) {
     List<Map<String, dynamic>> historyList = [];
 
     if (state is SearchHistoryLoaded) {
@@ -175,94 +163,22 @@ class _SearchScreenState extends State<SearchScreen> {
           .toList();
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        BlocBuilder<SpecialistCubit, SpecialistState>(
-          builder: (context, specialistState) {
-            if (specialistState is SpecialistLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (specialistState is SpecialistError) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Text(
-                  specialistState.message,
-                  style: AppStyle.styleMedium16(context),
-                ),
-              );
-            }
-            if (specialistState is SpecialistLoaded) {
-              final specialists = specialistState.specialists;
-
-              // Apply preselection once when specialists are loaded
-              if (widget.preselectedSpecialtyId != null &&
-                  !_hasAppliedPreselection) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (!mounted) return;
-
-                  final index = specialists.indexWhere(
-                    (s) => s.id == widget.preselectedSpecialtyId,
-                  );
-
-                  if (index != -1) {
-                    setState(() {
-                      selectedIndexSpecialist = index;
-                      _hasAppliedPreselection = true;
-                    });
-
-                    final specialist = specialists[index];
-                    context.read<SearchCubit>().searchDoctors(
-                      SearchModel(keyword: '', specialityId: specialist.id),
-                    );
-                  }
-                });
-              }
-
-              return SpecialtiesSection(
-                specialists: specialists,
-                selectedIndex: selectedIndexSpecialist,
-                onSelect: (index) {
-                  setState(() {
-                    selectedIndexSpecialist = selectedIndexSpecialist == index
-                        ? null
-                        : index;
-                  });
-                  if (selectedIndexSpecialist != null) {
-                    final specialist = specialists[selectedIndexSpecialist!];
-                    context.read<SearchCubit>().searchDoctors(
-                      SearchModel(keyword: '', specialityId: specialist.id),
-                    );
-                  } else {
-                    context.read<SearchCubit>().reset();
-                    context.read<SearchCubit>().fetchHistory();
-                  }
-                },
-              );
-            }
-            return const SizedBox();
-          },
-        ),
-        const SizedBox(height: 16),
-        HistorySection(
-          history: historyList,
-          selectedIndex: selectedIndexHistory,
-          onSelect: (index) {
-            setState(() {
-              selectedIndexHistory = selectedIndexHistory == index
-                  ? null
-                  : index;
-            });
-            if (selectedIndexHistory != null) {
-              final historyText = historyList[selectedIndexHistory!]['text'];
-              searchController.text = historyText;
-              context.read<SearchCubit>().searchDoctors(
-                SearchModel(keyword: historyText),
-              );
-            }
-          },
-        ),
-      ],
+    return SearchDefaultView(
+      historyList: historyList,
+      selectedIndexSpecialist: selectedIndexSpecialist,
+      selectedIndexHistory: selectedIndexHistory,
+      preselectedSpecialtyId: widget.preselectedSpecialtyId,
+      hasAppliedPreselection: _hasAppliedPreselection,
+      searchController: searchController,
+      onSpecialtySelected: (index) {
+        setState(() => selectedIndexSpecialist = index);
+      },
+      onHistorySelected: (index) {
+        setState(() => selectedIndexHistory = index);
+      },
+      onPreselectionApplied: () {
+        setState(() => _hasAppliedPreselection = true);
+      },
     );
   }
 }

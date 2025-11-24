@@ -3,14 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:round_7_mobile_cure_team3/core/network/api_services.dart';
 import 'package:round_7_mobile_cure_team3/core/routes/app_routes.dart';
-import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctors/presentation/cubits/doctor_cubit.dart';
-import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_cubit.dart';
 
 /// Specialist cubit & repo imports (adjust the import paths to match your project)
 import 'package:round_7_mobile_cure_team3/feature/home/data/repositories/specialist_repo_impl.dart';
+import 'package:round_7_mobile_cure_team3/feature/home/data/repositories/user_repo_impl.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/specialists_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/user_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/banner_section.dart';
+import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/doctors_near_you_header.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/doctors_nearby.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/header_section.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/search_section.dart';
@@ -29,6 +30,17 @@ class _HomeState extends State<Home> {
   final TextEditingController searchController = TextEditingController();
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Refresh user data when this screen becomes visible again
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<UserCubit>().refreshUser();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     searchController.dispose();
     super.dispose();
@@ -42,24 +54,18 @@ class _HomeState extends State<Home> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<DoctorCubit>(
-          create: (context) {
-            final cubit = DoctorCubit(authProvider: authProvider);
-            cubit.fetchAllDoctors();
-            return cubit;
-          },
+          create: (_) =>
+              DoctorCubit(authProvider: authProvider)..fetchAllDoctors(),
         ),
-
-        // Favourites cubit
-        BlocProvider<FavouritesCubit>(
-          create: (context) =>
-              FavouritesCubit(authProvider: authProvider)..fetchFavourites(),
-        ),
-
-        // Specialist cubit
-        BlocProvider(
-          create: (context) => SpecialistCubit(
+        BlocProvider<SpecialistCubit>(
+          create: (_) => SpecialistCubit(
             SpecialistRepoImpl(ApiServices(authProvider: authProvider)),
           )..loadSpecialists(),
+        ),
+        BlocProvider<UserCubit>(
+          create: (_) => UserCubit(
+            UserReposotryImpl(ApiServices(authProvider: authProvider)),
+          )..loadUser(),
         ),
       ],
       child: SafeArea(
@@ -103,22 +109,9 @@ class _HomeState extends State<Home> {
 
                       const SizedBox(height: 24),
 
-                      Row(
-                        children: [
-                          Text(
-                            'Doctors near you',
-                            style: AppStyle.styleRegular20(context),
-                          ),
-                          const Spacer(),
-                          TextButton(
-                            onPressed: () =>
-                                context.push(AppRoutes.allDoctorsScreen),
-                            child: Text(
-                              'View All',
-                              style: AppStyle.styleMedium14(context),
-                            ),
-                          ),
-                        ],
+                      DoctorsNearYouHeader(
+                        onViewAllTap: () =>
+                            context.push(AppRoutes.allDoctorsScreen),
                       ),
 
                       const SizedBox(height: 4),
@@ -126,8 +119,8 @@ class _HomeState extends State<Home> {
                       // DoctorsNearby remains unchanged and reads its own cubit inside
                       const DoctorsNearby(),
 
-                      // Give extra padding at bottom so floating UI or bottom bars don't overlap
-                      SizedBox(height: 24),
+                      // Extra padding at bottom for better spacing
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),

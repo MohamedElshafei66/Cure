@@ -12,6 +12,7 @@ import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/domain/register
 import 'package:round_7_mobile_cure_team3/feature/auth/sign%20up/presentation/mange/cubit/sign_up_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/notifications/data/notification_repo_impl.dart';
 import 'package:round_7_mobile_cure_team3/feature/notifications/presentation/manage/cubit/notification_cubit.dart';
+import 'package:round_7_mobile_cure_team3/feature/favourites/presentation/cubits/favourties_cubit.dart';
 import 'core/routes/app_routes.dart';
 
 class MyApp extends StatelessWidget {
@@ -59,6 +60,10 @@ class MyApp extends StatelessWidget {
                   );
                   return NotificationCubit(repo);
                 },
+              ),
+              BlocProvider(
+                create: (_) => FavouritesCubit(authProvider: authProvider)
+                  ..fetchFavourites(),
               ),
             ],
             child: MaterialApp.router(

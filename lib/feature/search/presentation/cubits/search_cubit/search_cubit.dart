@@ -29,9 +29,14 @@ class SearchCubit extends Cubit<SearchState> {
       final List<HistoryModel> historyList = await searchRepository
           .getHistory();
 
+      if (historyList.isEmpty) {
+        emit(SearchHistoryLoaded([]));
+        return;
+      }
+
       final seen = <String>{};
       final uniqueHistory = historyList.reversed
-          .where((item) => seen.add(item.keyword)) // adjust key if different
+          .where((item) => seen.add(item.keyword))
           .toList()
           .reversed
           .toList();
@@ -42,7 +47,8 @@ class SearchCubit extends Cubit<SearchState> {
 
       emit(SearchHistoryLoaded(lastFour));
     } catch (e) {
-      emit(SearchFailed('Failed to load history: $e'));
+      // If there's an error (like 404 for no history), just emit empty history
+      emit(SearchHistoryLoaded([]));
     }
   }
 
