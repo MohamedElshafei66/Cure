@@ -4,6 +4,7 @@ import 'package:round_7_mobile_cure_team3/feature/doctors/data/models/doctor_mod
 import 'package:round_7_mobile_cure_team3/feature/doctors/presentation/cubits/doctor_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/doctors/presentation/cubits/doctor_state.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/doctor_card.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class DoctorsNearby extends StatelessWidget {
   final List<DoctorModel>? doctors;
@@ -12,60 +13,66 @@ class DoctorsNearby extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (doctors != null) {
-      // Limit to first 3-4 doctors for home screen
       final limitedDoctors = doctors!.take(4).toList();
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: limitedDoctors.map((doctor) => DoctorCard(doctor: doctor)).toList(),
+        children: limitedDoctors
+            .map((doctor) => DoctorCard(doctor: doctor))
+            .toList(),
       );
     }
 
     return BlocBuilder<DoctorCubit, DoctorState>(
       builder: (context, state) {
-        if (state is NearestDoctorLoading) {
-          return const SizedBox(
-            height: 200,
-            child: Center(child: CircularProgressIndicator()),
-          );
-        } else if (state is NearestDoctorLoaded) {
+        final loading = state is DoctorLoading || state is DoctorInitial;
+        List<DoctorModel> list = [];
+
+        if (state is NearestDoctorLoaded) {
           if (state.doctors.isEmpty) {
-            // If no nearest doctors, try to fetch all doctors
             WidgetsBinding.instance.addPostFrameCallback((_) {
               context.read<DoctorCubit>().fetchAllDoctors();
             });
-            return const SizedBox(
-              height: 200,
-              child: Center(child: CircularProgressIndicator()),
-            );
+          } else {
+            list = state.doctors.take(4).toList();
           }
-          // Limit to first 4 doctors for home screen
-          final limitedDoctors = state.doctors.take(4).toList();
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: limitedDoctors
-                .map((doctor) => DoctorCard(doctor: doctor))
-                .toList(),
-          );
-        } else if (state is DoctorLoaded) {
-          // Fallback to all doctors if nearest doctors failed
-          final limitedDoctors = state.doctors.take(4).toList();
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: limitedDoctors
-                .map((doctor) => DoctorCard(doctor: doctor))
-                .toList(),
-          );
-        } else if (state is DoctorError) {
-          // Try to fetch all doctors as fallback
+        }
+
+        if (state is DoctorLoaded) {
+          list = state.doctors.take(4).toList();
+        }
+
+        if (state is DoctorError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.read<DoctorCubit>().fetchAllDoctors();
           });
-          return const SizedBox(
-            height: 200,
-            child: Center(child: CircularProgressIndicator()),
-          );
         }
-        return const SizedBox(height: 200);
+
+        return Skeletonizer(
+          enableSwitchAnimation: true,
+          enabled: loading,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: loading
+                ? List.generate(
+                    4,
+                    (_) => DoctorCard(
+                      doctor: DoctorModel(
+                        price: 0,
+                        isFavourite: false,
+                        specialistTitle: "Loading",
+                        address: "Loading",
+                        specialityId: 0,
+                        about: "Loading",
+                        id: 0,
+                        fullName: "Loading",
+                        rating: 0,
+                        imgUrl: "",
+                      ),
+                    ),
+                  )
+                : list.map((doctor) => DoctorCard(doctor: doctor)).toList(),
+          ),
+        );
       },
     );
   }

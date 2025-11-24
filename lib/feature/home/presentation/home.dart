@@ -48,7 +48,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // Read your auth provider (used by other cubits)
     final authProvider = context.read<AuthProvider>();
 
     return MultiBlocProvider(
@@ -73,7 +72,6 @@ class _HomeState extends State<Home> {
           backgroundColor: Colors.white,
           body: LayoutBuilder(
             builder: (context, constraints) {
-              // Use SingleChildScrollView to allow small screens to scroll
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

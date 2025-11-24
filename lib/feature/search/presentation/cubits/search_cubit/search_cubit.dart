@@ -20,7 +20,15 @@ class SearchCubit extends Cubit<SearchState> {
         emit(SearchLoaded(result));
       }
     } catch (e) {
-      emit(SearchFailed(e.toString()));
+      final errorMessage = e.toString().toLowerCase();
+      // Treat 404 errors as empty results instead of failures
+      if (errorMessage.contains('404') ||
+          errorMessage.contains('not found') ||
+          errorMessage.contains('no doctors')) {
+        emit(SearchEmpty());
+      } else {
+        emit(SearchFailed(e.toString()));
+      }
     }
   }
 
@@ -62,7 +70,15 @@ class SearchCubit extends Cubit<SearchState> {
         emit(SearchLoaded(result));
       }
     } catch (e) {
-      emit(SearchFailed(e.toString()));
+      final errorMessage = e.toString().toLowerCase();
+      // Treat 404 errors as empty results instead of failures
+      if (errorMessage.contains('404') ||
+          errorMessage.contains('not found') ||
+          errorMessage.contains('no doctors')) {
+        emit(SearchEmpty());
+      } else {
+        emit(SearchFailed(e.toString()));
+      }
     }
   }
 

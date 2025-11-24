@@ -4,14 +4,12 @@ import 'package:round_7_mobile_cure_team3/core/utils/app_styles.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/specialists_cubit.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/cubits/specialists_state.dart';
 import 'package:round_7_mobile_cure_team3/feature/home/presentation/widgets/specialist_card.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SpecialtiesSection extends StatelessWidget {
   final Function(int specialtyId) onTap;
 
-  const SpecialtiesSection({
-    super.key,
-    required this.onTap,
-  });
+  const SpecialtiesSection({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,22 +18,33 @@ class SpecialtiesSection extends StatelessWidget {
         Row(
           children: [
             Text('Specialties', style: AppStyle.styleRegular20(context)),
-            const Spacer(),
-            TextButton(
-              onPressed: () {},
-              child: Text('View All', style: AppStyle.styleMedium14(context)),
-            ),
           ],
         ),
-
         const SizedBox(height: 16),
-
         SizedBox(
           height: 60,
           child: BlocBuilder<SpecialistCubit, SpecialistState>(
             builder: (context, state) {
-              if (state is SpecialistLoading) {
-                return const Center(child: CircularProgressIndicator());
+              final bool loading =
+                  state is SpecialistLoading || state is SpecialistInitial;
+              if (loading) {
+                return Skeletonizer(
+                  enableSwitchAnimation: true,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 8,
+                    itemBuilder: (_, __) {
+                      return Container(
+                        width: 90,
+                        margin: const EdgeInsets.only(right: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      );
+                    },
+                  ),
+                );
               }
 
               if (state is SpecialistError) {
@@ -43,13 +52,13 @@ class SpecialtiesSection extends StatelessWidget {
               }
 
               if (state is SpecialistLoaded) {
-                final items = state.specialists;
+                final specialists = state.specialists;
 
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final s = items[index];
+                  itemCount: specialists.length,
+                  itemBuilder: (_, index) {
+                    final s = specialists[index]; // NOW VALID
                     return SpecialistCard(
                       text: s.title,
                       emoji: s.emoji,
