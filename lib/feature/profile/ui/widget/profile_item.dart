@@ -21,8 +21,8 @@ class ProfileItem extends StatelessWidget {
     this.icons,
     this.showArrow = true,
     this.switchValue,
-     this.onSwitchChanged,
-     this.onTap
+    this.onSwitchChanged,
+    this.onTap,
   });
 
   @override
@@ -35,8 +35,7 @@ class ProfileItem extends StatelessWidget {
         color: AppColors.lightGrey,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: GestureDetector
-      (
+      child: GestureDetector(
         onTap: onTap,
         child: Row(
           children: [
@@ -44,16 +43,20 @@ class ProfileItem extends StatelessWidget {
             Gap(15),
             Text(title, style: AppStyle.styleRegular16(context)),
             Spacer(),
-             if (onSwitchChanged != null)
+            if (onSwitchChanged != null)
               Switch(
                 value: switchValue ?? false,
                 onChanged: onSwitchChanged,
-                activeColor: Colors.green, 
+                activeColor: Colors.green,
               )
             else if (showArrow)
               Padding(
-                padding: const EdgeInsets.only(right: 5,),
-                child: Image.asset(icons ?? AppIcons.arrow, width: 40, height: 40),
+                padding: const EdgeInsets.only(right: 5),
+                child: Image.asset(
+                  icons ?? AppIcons.arrow,
+                  width: 40,
+                  height: 40,
+                ),
               ),
           ],
         ),

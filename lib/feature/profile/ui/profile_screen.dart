@@ -142,17 +142,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       confirmText: "Yes, Logout",
                                       onConfirm: () async {
                                         // Clear tokens from AuthProvider (this also clears from SecureStorageService)
-                                        final authProvider = context.read<AuthProvider>();
+                                        final authProvider = context
+                                            .read<AuthProvider>();
                                         await authProvider.clearTokens();
-                                        
+
                                         // Navigate to sign in screen
                                         if (context.mounted) {
                                           context.go(AppRoutes.sign_in_screen);
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
                                             const SnackBar(
                                               content: Text(
-                                                  "Logged out successfully"),
+                                                "Logged out successfully",
+                                              ),
                                             ),
                                           );
                                         }
@@ -180,8 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   );
                 } else {
-                  return const Center(
-                      child: Text("No profile data available"));
+                  return const Center(child: Text("No profile data available"));
                 }
               },
             ),

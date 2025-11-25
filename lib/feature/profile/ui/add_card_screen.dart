@@ -43,7 +43,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
 
       final service = PaymentService(authProvider: authProvider);
 
-      // ✅ تعديل السنة بحيث لو المستخدم كتب "31" تتحول لـ "2031"
+
       int year = int.parse(expiryYearController.text);
       if (year < 100) year += 2000;
 
@@ -159,8 +159,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         controller: expiryYearController,
                         hintText: "YY",
                         keyboardType: TextInputType.number,
-                        validator: (v) =>
-                            v!.isEmpty ? "Required" : null,
+                        validator: (v) => v!.isEmpty ? "Required" : null,
                       ),
                     ),
                     const Gap(12),
@@ -169,8 +168,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         controller: cvvController,
                         hintText: "CVV",
                         keyboardType: TextInputType.number,
-                        validator: (v) =>
-                            v!.length != 3 ? "3 digits" : null,
+                        validator: (v) => v!.length != 3 ? "3 digits" : null,
                       ),
                     ),
                   ],
@@ -189,6 +187,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
           ),
         ),
       ),
- );
- }
+    );
+  }
 }

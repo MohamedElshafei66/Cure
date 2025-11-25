@@ -77,60 +77,59 @@ class _PaymentMethodSecondScreenState extends State<PaymentMethodSecondScreen> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : cards.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(AppImages.noCardImage),
-                      const Gap(20),
-                      Text(
-                        "Nothing to display here!",
-                        style: AppStyle.styleRegular24(context),
-                      ),
-                      const Gap(8),
-                      Text(
-                        "Add your cards to make payment easier",
-                        style: AppStyle.styleMedium12(context),
-                      ),
-                      const Gap(200),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: ProfileButton(
-                          title: "Add ${widget.methodName} Card",
-                          onTap: () => _navigateToAddCard(context),
-                        ),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(AppImages.noCardImage),
+                  const Gap(20),
+                  Text(
+                    "Nothing to display here!",
+                    style: AppStyle.styleRegular24(context),
                   ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView.separated(
-                          itemCount: cards.length,
-                          separatorBuilder: (context, index) => const Gap(16),
-                          itemBuilder: (context, index) {
-                            final card = cards[index];
-                            return ProfileItem(
-                              icon: AppIcons.visa,
-                              title:
-                                  "${card['brand']} ****${card['last3']} (Exp: ${card['expMonth']}/${card['expYear']})",
-                            );
-                          },
-                        ),
-                      ),
-                      const Gap(20),
-                      CustomButton(
-                        text: "Add Another ${widget.methodName} Card",
-                        onPressed: () => _navigateToAddCard(context),
-                      ),
-                      const Gap(40),
-                    ],
+                  const Gap(8),
+                  Text(
+                    "Add your cards to make payment easier",
+                    style: AppStyle.styleMedium12(context),
                   ),
-                ),
+                  const Gap(200),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: ProfileButton(
+                      title: "Add ${widget.methodName} Card",
+                      onTap: () => _navigateToAddCard(context),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: cards.length,
+                      separatorBuilder: (context, index) => const Gap(16),
+                      itemBuilder: (context, index) {
+                        final card = cards[index];
+                        return ProfileItem(
+                          icon: AppIcons.visa,
+                          title:
+                              "${card['brand']} ****${card['last3']} (Exp: ${card['expMonth']}/${card['expYear']})",
+                        );
+                      },
+                    ),
+                  ),
+                  const Gap(20),
+                  CustomButton(
+                    text: "Add Another ${widget.methodName} Card",
+                    onPressed: () => _navigateToAddCard(context),
+                  ),
+                  const Gap(40),
+                ],
+              ),
+            ),
     );
   }
 }
-

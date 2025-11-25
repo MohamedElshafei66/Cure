@@ -6,14 +6,13 @@ part 'notification_state.dart';
 class NotificationCubit extends Cubit<NotificationState> {
   final ProfileRepository repo;
 
-  bool isOn = false; 
+  bool isOn = false;
 
   NotificationCubit(this.repo) : super(NotificationInitial());
 
   Future<void> loadStatus() async {
     emit(NotificationLoading());
 
-  
     emit(NotificationLoaded(isOn));
   }
 
@@ -23,7 +22,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     final success = await repo.toggleNotification();
 
     if (success) {
-      isOn = !isOn; 
+      isOn = !isOn;
       emit(NotificationLoaded(isOn));
     } else {
       emit(NotificationError("Failed to toggle notification"));

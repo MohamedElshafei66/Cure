@@ -9,7 +9,6 @@ class PaymentService {
 
   PaymentService({required this.authProvider});
 
- 
   Future<String?> getToken() async {
     return authProvider.accessToken;
   }
@@ -33,14 +32,15 @@ class PaymentService {
       // Generate a placeholder token from card data
       // In production, this should be obtained from a payment gateway (e.g., Stripe)
       // For now, we create a simple token identifier from card details
-      final last4Digits = cardNumber.length >= 4 
-          ? cardNumber.substring(cardNumber.length - 4) 
+      final last4Digits = cardNumber.length >= 4
+          ? cardNumber.substring(cardNumber.length - 4)
           : cardNumber;
       final expYearStr = expYear.toString();
-      final expYearLast2 = expYearStr.length >= 2 
-          ? expYearStr.substring(expYearStr.length - 2) 
+      final expYearLast2 = expYearStr.length >= 2
+          ? expYearStr.substring(expYearStr.length - 2)
           : expYearStr.padLeft(2, '0');
-      final providerToken = "card_${last4Digits}_${expMonth.toString().padLeft(2, '0')}${expYearLast2}_${DateTime.now().millisecondsSinceEpoch}";
+      final providerToken =
+          "card_${last4Digits}_${expMonth.toString().padLeft(2, '0')}${expYearLast2}_${DateTime.now().millisecondsSinceEpoch}";
 
       final body = {
         "methodName": methodName,
@@ -48,7 +48,8 @@ class PaymentService {
         "brand": methodName,
         "expMonth": expMonth,
         "expYear": expYear,
-        "providerToken": providerToken, // Placeholder token - should be replaced with actual payment gateway token
+        "providerToken":
+            providerToken, // Placeholder token - should be replaced with actual payment gateway token
         "isEnabled": true,
       };
 
@@ -63,7 +64,7 @@ class PaymentService {
             "Accept": "application/json",
             "Content-Type": "application/json",
           },
-          validateStatus: (status) => true, 
+          validateStatus: (status) => true,
         ),
       );
 
@@ -97,7 +98,8 @@ class PaymentService {
       print(" DioException: ${e.response?.data}");
       return {
         "success": false,
-        "message": e.response?.data?["message"] ??
+        "message":
+            e.response?.data?["message"] ??
             "Failed to add payment method (Dio error)",
       };
     } catch (e) {
@@ -107,7 +109,9 @@ class PaymentService {
   }
 
   /// 🔹 Fetch all payment methods
-  Future<Map<String, dynamic>> getAllPaymentMethods({String? methodName}) async {
+  Future<Map<String, dynamic>> getAllPaymentMethods({
+    String? methodName,
+  }) async {
     try {
       final token = await getToken();
       if (token == null || token.isEmpty) {
@@ -162,4 +166,3 @@ class PaymentService {
     }
   }
 }
-

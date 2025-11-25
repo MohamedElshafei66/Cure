@@ -17,8 +17,7 @@ class ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector
-    (
+    return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 120),
@@ -28,19 +27,18 @@ class ProfileButton extends StatelessWidget {
           color: AppColors.primary,
           borderRadius: BorderRadius.circular(8),
         ),
-       
-          child: Row(
-            children: [
-              if (showicon) Icon(Icons.add, color: Colors.white),
-              Text(
-                title,
-                style: AppStyle.styleRegular16(
-                  context,
-                ).copyWith(color: Colors.white),
-              ),
-            ],
-          ),
-        
+
+        child: Row(
+          children: [
+            if (showicon) Icon(Icons.add, color: Colors.white),
+            Text(
+              title,
+              style: AppStyle.styleRegular16(
+                context,
+              ).copyWith(color: Colors.white),
+            ),
+          ],
+        ),
       ),
     );
   }

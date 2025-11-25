@@ -34,6 +34,5 @@ class ProfileRepository {
   Future<bool> getNotificationStatus() =>
       remoteDataSource.getNotificationStatus();
 
-  Future<bool> toggleNotification() =>
-      remoteDataSource.toggleNotification();
+  Future<bool> toggleNotification() => remoteDataSource.toggleNotification();
 }

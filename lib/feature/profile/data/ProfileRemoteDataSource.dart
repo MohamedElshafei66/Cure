@@ -8,9 +8,7 @@ class ProfileRemoteDataSource {
   ProfileRemoteDataSource(this.api);
 
   Future<ProfileModel> getProfile() async {
-    final response = await api.get(
-      endPoint: 'profile/EditProfile/getprofile',
-    );
+    final response = await api.get(endPoint: 'profile/EditProfile/getprofile');
     return ProfileModel.fromJson(response);
   }
 
@@ -41,11 +39,7 @@ class ProfileRemoteDataSource {
       final response = await api.dio.put(
         'profile/EditProfile/updateprofile',
         data: formData,
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
-        ),
+        options: Options(headers: {'Accept': 'application/json'}),
       );
 
       print("UPDATE PROFILE SUCCESS RESPONSE: ${response.data}");
@@ -56,7 +50,6 @@ class ProfileRemoteDataSource {
         print("RESPONSE IS NOT A MAP! VALUE = ${response.data}");
         return {"success": false, "message": "Invalid response from server"};
       }
-
     } catch (e) {
       print("ERROR IN updateProfile(): $e");
 
@@ -74,16 +67,11 @@ class ProfileRemoteDataSource {
     try {
       final response = await api.dio.put(
         "Profile/NotificationSettings/toggle",
-        options: Options(
-          headers: {
-            "Accept": "application/json",
-          },
-        ),
+        options: Options(headers: {"Accept": "application/json"}),
       );
 
       print("TOGGLE NOTIFICATION RESPONSE: ${response.data}");
       return response.statusCode == 200;
-
     } catch (e) {
       print("ERROR IN toggleNotification(): $e");
 
@@ -96,14 +84,11 @@ class ProfileRemoteDataSource {
 
   Future<bool> getNotificationStatus() async {
     try {
-      final response = await api.get(
-        endPoint: "Profile/NotificationSettings",
-      );
+      final response = await api.get(endPoint: "Profile/NotificationSettings");
 
       print("GET NOTIFICATION STATUS RESPONSE: $response");
 
       return response["status"] == true;
-
     } catch (e) {
       print("ERROR IN getNotificationStatus(): $e");
       return false;

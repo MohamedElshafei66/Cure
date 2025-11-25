@@ -7,11 +7,11 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Image.asset(AppIcons.arrowLeft, height: 24, width: 24),
-        ),
-      );
+      backgroundColor: Colors.white,
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: Image.asset(AppIcons.arrowLeft, height: 24, width: 24),
+      ),
+    );
   }
 }

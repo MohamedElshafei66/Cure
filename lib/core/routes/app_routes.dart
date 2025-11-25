@@ -88,7 +88,7 @@ abstract class AppRoutes {
   static String paymentWebView = '/paymentWebView';
 
   static final router = GoRouter(
-    initialLocation: "/",
+    initialLocation:profileScreen,
     routes: [
       GoRoute(
         path: profileEdit,
