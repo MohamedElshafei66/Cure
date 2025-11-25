@@ -47,6 +47,10 @@ import 'package:round_7_mobile_cure_team3/feature/profile/ui/faqs_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_second_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/payment_method_third_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/ui/visa_payment_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/ui/mastercard_payment_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/ui/apple_pay_payment_screen.dart';
+import 'package:round_7_mobile_cure_team3/feature/profile/ui/paypal_payment_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/privacy_policy_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_edit_screen.dart';
 import 'package:round_7_mobile_cure_team3/feature/profile/ui/profile_screen.dart';
@@ -75,6 +79,10 @@ abstract class AppRoutes {
   static String paymentMethodScreen = "/paymentMethodScreen";
   static String paymentMethodSecondScreen = "/paymentMethodSecondScreen";
   static String paymentMethodThirdScreen = "/paymentMethodThirdScreen";
+  static String visaPaymentScreen = "/visaPaymentScreen";
+  static String masterCardPaymentScreen = "/masterCardPaymentScreen";
+  static String applePayPaymentScreen = "/applePayPaymentScreen";
+  static String payPalPaymentScreen = "/payPalPaymentScreen";
   static String chatsListScreen = "/chats_list_screen";
   static String chatScreen = "/chatScreen";
   static String allDoctorsScreen = '/doctors';
@@ -88,7 +96,7 @@ abstract class AppRoutes {
   static String paymentWebView = '/paymentWebView';
 
   static final router = GoRouter(
-    initialLocation:profileScreen,
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: profileEdit,
@@ -160,20 +168,38 @@ abstract class AppRoutes {
           final chatRemote = ChatRemoteDataSource(authProvider: authProvider);
           final chatRepository = ChatRepositoryImpl(chatRemote);
 
-          // Handle both ChatData and DoctorDTO types
+          // Handle multiple data types: Map, ChatData, and DoctorDTO
           dynamic data = state.extra;
 
           String? doctorName;
           String? doctorImage;
           String? chatId;
           String? receiverId;
+          dynamic customRepository;
 
+          // Check if it's a Map (from Doctor Details screen)
+          if (data is Map<String, dynamic>) {
+            doctorName = data['doctorName'] as String?;
+            doctorImage = data['doctorImage'] as String?;
+            chatId = data['chatId'] as String?;
+            receiverId = data['receiverId'] as String?;
+            customRepository = data['chatRepository'];
+          }
           // Check if it's ChatData (from All tab)
-          if (data is ChatData) {
+          else if (data is ChatData) {
             doctorName = data.name;
             doctorImage = data.image;
             chatId = data.id.toString();
-            receiverId = data.receiverId;
+            // receiverId should be the other person in the conversation
+            // If senderId is current user, use receiverId, otherwise use senderId
+            receiverId = data.receiverId.isNotEmpty
+                ? data.receiverId
+                : data.senderId;
+
+            print('🔍 Route - ChatData:');
+            print('  - chatId: $chatId');
+            print('  - receiverId: $receiverId');
+            print('  - senderId: ${data.senderId}');
           }
           // Check if it's a DoctorDTO (from Unread/Favorite tabs)
           else {
@@ -189,7 +215,7 @@ abstract class AppRoutes {
             doctorImage: doctorImage,
             chatId: chatId,
             receiverId: receiverId,
-            chatRepository: chatRepository,
+            chatRepository: customRepository ?? chatRepository,
           );
         },
       ),
@@ -210,6 +236,22 @@ abstract class AppRoutes {
           final method = state.extra as String;
           return AddCardScreen(methodName: method);
         },
+      ),
+      GoRoute(
+        path: AppRoutes.visaPaymentScreen,
+        builder: (context, state) => const VisaPaymentScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.masterCardPaymentScreen,
+        builder: (context, state) => const MasterCardPaymentScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.applePayPaymentScreen,
+        builder: (context, state) => const ApplePayPaymentScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.payPalPaymentScreen,
+        builder: (context, state) => const PayPalPaymentScreen(),
       ),
       GoRoute(
         path: settingScreen,

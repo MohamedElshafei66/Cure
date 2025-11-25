@@ -12,12 +12,22 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> fetchChats() async {
     emit(ChatLoading());
     try {
-      ChatModel chatModel = await repository.getChatsList();
-      emit(ChatLoaded(chatModel.data != null ? [chatModel.data!] : []));
+      print('🔄 ChatCubit: Fetching chats...');
+      ChatListModel chatListModel = await repository.getChatsListMultiple();
+
+      print('✅ ChatCubit: Received ${chatListModel.chatListDTOS.length} chats');
+      print('   - Unread messages: ${chatListModel.unReadMessagesCount}');
+      print('   - Total records: ${chatListModel.pagination.totalRecords}');
+
+      if (chatListModel.success) {
+        // Use chatListDTOS which matches the API response structure
+        emit(ChatLoaded(chatListModel.chatListDTOS));
+      } else {
+        emit(ChatError(chatListModel.message));
+      }
     } catch (e) {
+      print('❌ ChatCubit error: $e');
       emit(ChatError(e.toString()));
     }
   }
-
-
 }

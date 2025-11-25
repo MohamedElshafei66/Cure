@@ -14,6 +14,11 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
+  Future<ChatListModel> getChatsListMultiple() async {
+    return await remoteDataSource.getChatsListMultiple();
+  }
+
+  @override
   Future<ChatModel> startChat(Map<String, dynamic> body) async {
     return await remoteDataSource.startChat(body);
   }
@@ -21,6 +26,11 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<ChatModel> sendChat(ChatModel chat) async {
     return await remoteDataSource.sendChat(chat.toJson());
+  }
+
+  @override
+  Future<ChatModel> sendChatMessage(Map<String, dynamic> messageData) async {
+    return await remoteDataSource.sendChatMessage(messageData);
   }
 
   @override

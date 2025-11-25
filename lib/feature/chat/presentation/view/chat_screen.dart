@@ -23,11 +23,11 @@ class ChatScreen extends StatefulWidget {
 
   const ChatScreen({
     super.key,
-     this.doctorName,
-     this.doctorImage,
-     this.chatId,
-     this.receiverId,
-     this.chatRepository,
+    this.doctorName,
+    this.doctorImage,
+    this.chatId,
+    this.receiverId,
+    this.chatRepository,
   });
 
   @override
@@ -38,6 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isTextingMood = false;
   final TextEditingController messageController = TextEditingController();
   final ImagePicker picker = ImagePicker();
+  ConversationCubit? _conversationCubit;
 
   @override
   void dispose() {
@@ -49,9 +50,9 @@ class _ChatScreenState extends State<ChatScreen> {
     final message = messageController.text.trim();
     if (message.isEmpty) return;
 
-    context.read<ConversationCubit>().sendMessage(
-      widget.chatId??"",
-      widget.receiverId??"",
+    _conversationCubit?.sendMessage(
+      widget.chatId ?? "",
+      widget.receiverId ?? "",
       message,
     );
 
@@ -80,7 +81,9 @@ class _ChatScreenState extends State<ChatScreen> {
       if (result != null) {
         File file = File(result.files.single.path!);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Selected file: ${file.path.split('/').last}')),
+          SnackBar(
+            content: Text('Selected file: ${file.path.split('/').last}'),
+          ),
         );
       }
     }
@@ -94,14 +97,19 @@ class _ChatScreenState extends State<ChatScreen> {
         body: const Center(child: Text('Chat repository not available')),
       );
     }
-    
+
     return BlocProvider(
-      create: (_) => ConversationCubit(widget.chatRepository!),
+      create: (_) {
+        _conversationCubit = ConversationCubit(widget.chatRepository!)
+          ..loadMessages(widget.chatId ?? '', widget.receiverId ?? '');
+        return _conversationCubit!;
+      },
       child: BlocListener<ConversationCubit, ConversationState>(
         listener: (context, state) {
           if (state is ConversationError) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         child: Scaffold(
@@ -118,9 +126,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 CircleAvatar(
                   radius: 20,
                   backgroundColor: AppColors.lightGrey,
-                   backgroundImage:AssetImage(AppImages.doctorImage),
+                  backgroundImage: AssetImage(AppImages.doctorImage),
 
-                   //(widget.doctorImage != null &&
+                  //(widget.doctorImage != null &&
                   //                  widget.doctorImage!.isNotEmpty)
                   //     ? CachedNetworkImageProvider(
                   //         widget.doctorImage!.startsWith('http')
@@ -151,7 +159,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Unable to open Google Meet. Please check your connection.'),
+                          content: Text(
+                            'Unable to open Google Meet. Please check your connection.',
+                          ),
                         ),
                       );
                     }
@@ -177,10 +187,110 @@ class _ChatScreenState extends State<ChatScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Expanded(child: Container()),
+                Expanded(
+                  child: BlocBuilder<ConversationCubit, ConversationState>(
+                    builder: (context, state) {
+                      if (state is ConversationLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      List<dynamic> messages = [];
+
+                      if (state is ConversationLoaded) {
+                        messages = state.messages;
+                      } else if (state is ConversationSending) {
+                        messages = state.messages;
+                      } else if (state is ConversationSent) {
+                        messages = state.messages;
+                      } else if (state is ConversationError) {
+                        messages = state.messages;
+                      }
+
+                      if (messages.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.chat_bubble_outline,
+                                size: 64,
+                                color: Colors.grey.shade400,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No messages yet',
+                                style: AppStyle.styleMedium16(
+                                  context,
+                                ).copyWith(color: Colors.grey.shade600),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Start a conversation',
+                                style: AppStyle.styleRegular14(
+                                  context,
+                                ).copyWith(color: Colors.grey.shade500),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      return ListView.builder(
+                        reverse: false,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 16,
+                        ),
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          final message = messages[index];
+                          final isMe = message.senderId != widget.receiverId;
+
+                          return Align(
+                            alignment: isMe
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.7,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isMe
+                                    ? AppColors.primary
+                                    : AppColors.lightGrey,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(16),
+                                  topRight: const Radius.circular(16),
+                                  bottomLeft: Radius.circular(isMe ? 16 : 4),
+                                  bottomRight: Radius.circular(isMe ? 4 : 16),
+                                ),
+                              ),
+                              child: Text(
+                                message.message ?? '',
+                                style: AppStyle.styleRegular14(context)
+                                    .copyWith(
+                                      color: isMe ? Colors.white : Colors.black,
+                                    ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
                 Padding(
-                  padding:
-                  const EdgeInsets.only(bottom: 20, right: 30, left: 10),
+                  padding: const EdgeInsets.only(
+                    bottom: 20,
+                    right: 30,
+                    left: 10,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
@@ -198,7 +308,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                 children: [
                                   GestureDetector(
                                     onTap: pickFile,
-                                    child: Image.asset(AppIcons.sendDocumentChat),
+                                    child: Image.asset(
+                                      AppIcons.sendDocumentChat,
+                                    ),
                                   ),
                                   const SizedBox(width: 10),
                                   GestureDetector(

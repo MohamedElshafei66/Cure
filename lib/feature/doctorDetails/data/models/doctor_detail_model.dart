@@ -11,6 +11,7 @@ class DoctorDetailsModel extends DoctorDetailsEntity {
  final List<AvailableSlotModel> availableSlots;
   DoctorDetailsModel({
     required int doctorId,
+    required String doctorUserId,
     required String doctorName,
     required String doctorSpecialty,
     required String doctorLocation,
@@ -27,6 +28,7 @@ class DoctorDetailsModel extends DoctorDetailsEntity {
     required this.reviewsList
   }) : super(
     doctorId,
+    doctorUserId,
     doctorName,
     doctorSpecialty,
     doctorLocation,
@@ -65,10 +67,13 @@ class DoctorDetailsModel extends DoctorDetailsEntity {
         }
       }
       
-      print('Model: doctorId=$doctorId, name=$doctorName, specialty=$doctorSpecialty');
+      final doctorUserId = _parseString(json['userId']);
+      
+      print('Model: doctorId=$doctorId, userId=$doctorUserId, name=$doctorName, specialty=$doctorSpecialty');
       
       return DoctorDetailsModel(
         doctorId: doctorId,
+        doctorUserId: doctorUserId,
         doctorName: doctorName,
         doctorSpecialty: doctorSpecialty,
         doctorLocation: _parseString(json['address']),

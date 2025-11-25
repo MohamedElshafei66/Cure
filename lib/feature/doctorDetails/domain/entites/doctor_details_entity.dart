@@ -1,5 +1,6 @@
 class DoctorDetailsEntity{
   final int doctorId;
+  final String doctorUserId;  // Doctor's user account GUID
   final String doctorName;
   final String doctorSpecialty;
   final String doctorLocation;
@@ -13,6 +14,7 @@ class DoctorDetailsEntity{
 
   DoctorDetailsEntity(
       this.doctorId,
+      this.doctorUserId,
       this.doctorName,
       this.doctorSpecialty,
       this.doctorLocation,

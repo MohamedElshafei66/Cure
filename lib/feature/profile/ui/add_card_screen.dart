@@ -27,6 +27,54 @@ class _AddCardScreenState extends State<AddCardScreen> {
 
   bool isLoading = false;
 
+  /// 🔹 Check if the expiration date is expired
+  bool _isExpirationDateExpired(int month, int year) {
+    final now = DateTime.now();
+    final currentYear = now.year;
+    final currentMonth = now.month;
+
+    // Normalize year (handle 2-digit years)
+    int normalizedYear = year;
+    if (year < 100) {
+      normalizedYear = 2000 + year;
+    }
+
+    // Card expires at the end of the expiration month
+    // So if current date is past the expiration month, it's expired
+    if (normalizedYear < currentYear) {
+      return true; // Expired - year is in the past
+    } else if (normalizedYear == currentYear) {
+      // Same year - check if month has passed
+      return month < currentMonth;
+    } else {
+      return false; // Future year - not expired
+    }
+  }
+
+  /// 🔹 Validate expiration date (used by both month and year validators)
+  String? _validateExpirationDate() {
+    final monthText = expiryMonthController.text.trim();
+    final yearText = expiryYearController.text.trim();
+
+    // Both fields must be filled to check expiration
+    if (monthText.isEmpty || yearText.isEmpty) {
+      return null; // Let individual validators handle empty fields
+    }
+
+    final month = int.tryParse(monthText);
+    final year = int.tryParse(yearText);
+
+    if (month == null || year == null) {
+      return null; // Let individual validators handle invalid format
+    }
+
+    if (_isExpirationDateExpired(month, year)) {
+      return "Card has expired";
+    }
+
+    return null; // Valid expiration date
+  }
+
   /// 🔹 Save the card after validation
   Future<void> _saveCard() async {
     if (!formKey.currentState!.validate()) return;
@@ -43,9 +91,27 @@ class _AddCardScreenState extends State<AddCardScreen> {
 
       final service = PaymentService(authProvider: authProvider);
 
-
+      // Parse and validate expiration date
+      int month = int.parse(expiryMonthController.text);
       int year = int.parse(expiryYearController.text);
       if (year < 100) year += 2000;
+
+      // Double-check expiration before sending to API
+      if (_isExpirationDateExpired(month, year)) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("This card has expired. Please use a valid card."),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        setState(() => isLoading = false);
+        return;
+      }
+
+      // Debug: Log method name being saved
+      print('💾 Saving card with methodName: ${widget.methodName}');
 
       final response = await service.addPaymentMethod(
         cardholderName: cardholderNameController.text.trim(),
@@ -149,7 +215,8 @@ class _AddCardScreenState extends State<AddCardScreen> {
                           if (month == null || month < 1 || month > 12) {
                             return "Invalid";
                           }
-                          return null;
+                          // Check expiration date when both fields are filled
+                          return _validateExpirationDate();
                         },
                       ),
                     ),
@@ -159,7 +226,20 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         controller: expiryYearController,
                         hintText: "YY",
                         keyboardType: TextInputType.number,
-                        validator: (v) => v!.isEmpty ? "Required" : null,
+                        validator: (v) {
+                          if (v!.isEmpty) return "Required";
+                          // Validate year format (should be 2 digits, typically 00-99)
+                          final year = int.tryParse(v);
+                          if (year == null) {
+                            return "Invalid";
+                          }
+                          // Check if year is reasonable (not negative, not too large)
+                          if (year < 0 || year > 99) {
+                            return "Invalid";
+                          }
+                          // Check expiration date when both fields are filled
+                          return _validateExpirationDate();
+                        },
                       ),
                     ),
                     const Gap(12),

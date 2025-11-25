@@ -51,14 +51,13 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
       context,
       listen: false,
     );
-    final authProvider = Provider.of<AuthProvider>(
-      context,
-      listen: false,
-    );
-    
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     final chatRemote = ChatRemoteDataSource(authProvider: authProvider);
     final unreadRemote = UnreadChatRemoteDataSource(authProvider: authProvider);
-    final favoriteRemote = FavoriteChatRemoteDataSource(authProvider: authProvider);
+    final favoriteRemote = FavoriteChatRemoteDataSource(
+      authProvider: authProvider,
+    );
 
     chatCubit = ChatCubit(ChatRepositoryImpl(chatRemote));
     unreadCubit = UnreadChatCubit(UnreadChatRepositoryImpl(unreadRemote));
@@ -132,7 +131,10 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              CustomTextFormFeild(iconpath: AppIcons.search,hintText: "search for chat,doctor",),
+              CustomTextFormFeild(
+                iconpath: AppIcons.search,
+                hintText: "search for chat,doctor",
+              ),
               // Tabs
               SizedBox(
                 height: 50,
@@ -216,7 +218,12 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                                   onLongPress: () =>
                                       setState(() => isSelectionMode = true),
                                   onTap: () {
-                                    DoctorDTO(name: chat.name, img: chat.image);
+                                    print('🔍 Opening chat:');
+                                    print('  - Chat ID: ${chat.id}');
+                                    print('  - Name: ${chat.name}');
+                                    print('  - SenderId: ${chat.senderId}');
+                                    print('  - ReceiverId: ${chat.receiverId}');
+
                                     GoRouter.of(
                                       context,
                                     ).push(AppRoutes.chatScreen, extra: chat);
@@ -257,10 +264,9 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                                 final chat = state.doctors[index];
                                 return GestureDetector(
                                   onTap: () {
-                                    GoRouter.of(context).push(
-                                      AppRoutes.chatScreen,
-                                      extra: chat,
-                                    );
+                                    GoRouter.of(
+                                      context,
+                                    ).push(AppRoutes.chatScreen, extra: chat);
                                   },
                                   child: ChatCard(
                                     doctorDTO: DoctorDTO(
@@ -298,10 +304,9 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                                 final doctor = state.doctors[index];
                                 return GestureDetector(
                                   onTap: () {
-                                    GoRouter.of(context).push(
-                                      AppRoutes.chatScreen,
-                                      extra: doctor,
-                                    );
+                                    GoRouter.of(
+                                      context,
+                                    ).push(AppRoutes.chatScreen, extra: doctor);
                                   },
                                   child: ChatCard(doctorDTO: doctor),
                                 );

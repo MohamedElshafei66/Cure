@@ -36,19 +36,13 @@ class PaymentMethodScreen extends StatelessWidget {
             ProfileItem(
               icon: AppIcons.visa,
               title: "VISA",
-              onTap: () => context.push(
-                AppRoutes.paymentMethodSecondScreen,
-                extra: "Visa",
-              ),
+              onTap: () => context.push(AppRoutes.visaPaymentScreen),
             ),
             const Gap(30),
             ProfileItem(
               icon: AppIcons.masterCaed,
               title: "MasterCard",
-              onTap: () => context.push(
-                AppRoutes.paymentMethodSecondScreen,
-                extra: "MasterCard",
-              ),
+              onTap: () => context.push(AppRoutes.masterCardPaymentScreen),
             ),
             const Gap(20),
             Text("Mobile Wallets", style: AppStyle.styleRegular20(context)),
@@ -56,19 +50,13 @@ class PaymentMethodScreen extends StatelessWidget {
             ProfileItem(
               icon: AppIcons.applePay,
               title: "Apple Pay",
-              onTap: () => context.push(
-                AppRoutes.paymentMethodSecondScreen,
-                extra: "ApplePay",
-              ),
+              onTap: () => context.push(AppRoutes.applePayPaymentScreen),
             ),
             const Gap(30),
             ProfileItem(
               icon: AppIcons.payPal,
               title: "PayPal",
-              onTap: () => context.push(
-                AppRoutes.paymentMethodSecondScreen,
-                extra: "PayPal",
-              ),
+              onTap: () => context.push(AppRoutes.payPalPaymentScreen),
             ),
           ],
         ),
