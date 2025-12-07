@@ -38,11 +38,11 @@ Cure is a mobile application for booking doctors, viewing doctor details, and ma
 ---
 
 ## 🖼 Screenshots
-| Splash | onBoarding |
-|------|----------------|----------------|
-| ![Solash Screen](screenshots/splash.png) | ![onBoarding Screen](screenshots/onBoarding.png) |
+| Splash | Onboarding |
+|--------|------------|
+| ![Splash](screenshots/splash.png) | ![Onboarding](screenshots/onBoarding.png) |
 
-| Auth | Home / Doctors | Doctor Details |
+| Auth | Home | Doctor Details |
 |------|----------------|----------------|
 | ![Auth Screen](screenshots/signIn.png) | ![Auth Screen](screenshots/signUp.png) | ![Home Screen](screenshots/Home.png) | ![Doctor Details](screenshots/doctorDetails.png) |
 
