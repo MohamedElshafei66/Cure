@@ -38,9 +38,13 @@ Cure is a mobile application for booking doctors, viewing doctor details, and ma
 ---
 
 ## 🖼 Screenshots
-| Splash | Onboarding |
-|--------|------------|
-| ![Splash](screenshots/splash.png) | ![Onboarding](screenshots/onBoarding.png) |
+| Splash |
+|--------|
+| ![Splash](screenshots/splash.png) |
+
+| OnBoarding |
+|------------|--------|------------|
+| ![Onboarding](screenshots/onBoarding1.png) | ![Splash](screenshots/onBoarding2.png) |
 
 | Auth | Home | Doctor Details |
 |------|----------------|----------------|
