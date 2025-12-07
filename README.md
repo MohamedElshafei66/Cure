@@ -56,7 +56,6 @@ Cure is a mobile application for booking doctors, viewing doctor details, and ma
 |---------|-----|---------------|
 | ![Booking Screen](screenshots/booking.png) | ![Map Screen](screenshots/location.png) | ![Notifications Screen](screenshots/chatdoc.png) |
 
-> Make sure the file names in the `screenshots` folder match the ones used above.
 
 ---
 
@@ -70,7 +69,7 @@ Cure is a mobile application for booking doctors, viewing doctor details, and ma
 - **Maps:** (Google Maps SDK)  
 - **Notifications:** (flutter_local_notifications)
 
-> Update this section to exactly match what you used so anyone reading your code understands your choices.
+
 
 ---
 
