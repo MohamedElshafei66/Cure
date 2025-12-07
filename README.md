@@ -2,7 +2,6 @@
 
 Cure is a mobile application for booking doctors, viewing doctor details, and managing medical appointments with an easy and clean UI.
 
-> This project is part of my personal work on a complete doctor booking flow including authentication, booking, maps, and notifications.
 
 ---
 
