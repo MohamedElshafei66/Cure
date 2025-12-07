@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:round_7_mobile_cure_team3/core/constants/auth_provider.dart';
